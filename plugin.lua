@@ -85,7 +85,7 @@ root.Parent = widget
 -- CHANGE 1: New constants for SC-key auth system
 local SESSION_KEY = "stud_session_v3"
 local PLUGKEY_KEY = "stud_plugin_key_v3"
-local BASE_URL    = "https://YOUR-APP.up.railway.app"  -- ← change this after deploying
+local BASE_URL    = "https://studcoding-production.up.railway.app"
 
 local savedSession   = plugin:GetSetting(SESSION_KEY)  or ""
 local savedPluginKey = plugin:GetSetting(PLUGKEY_KEY)  or ""
