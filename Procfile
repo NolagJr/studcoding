@@ -1,1 +1,1 @@
-web: /opt/venv/bin/python server.py
+web: python server.py
