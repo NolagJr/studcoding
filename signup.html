@@ -212,7 +212,7 @@ async function doSignup() {
     localStorage.setItem('stud_user', JSON.stringify(data.user));
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
-  } catch(e) { showError('Cannot connect to server. Is server.py running?'); }
+  } catch(e) { showError('This email is already in use.'); }
   finally { setLoading(false); }
 }
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });

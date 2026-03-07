@@ -133,7 +133,7 @@ async function doLogin() {
     localStorage.setItem('stud_user', JSON.stringify(data.user));
     showSuccess('Signed in! Redirecting...');
     setTimeout(() => window.location.href = 'index.html', 600);
-  } catch(e) { showError('Cannot connect to server. Is server.py running?'); }
+  } catch(e) { showError('Wrong email or password.'); }
   finally { setLoading(false); }
 }
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
