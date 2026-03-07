@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — Stud</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #060b11; --surface: #0d1520; --border: #162336;
+    --accent: #2e7fff; --cyan: #0af0ff; --success: #00e5a0;
+    --danger: #ff4567; --text: #dce8ff; --muted: #4a6080;
+    --purple: #8c50ff;
+  }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif;
+    min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(46,127,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46,127,255,.04) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
+  }
+  .glow {
+    position: fixed; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(140,80,255,.1) 0%, transparent 70%);
+    top: -200px; left: 50%; transform: translateX(-50%);
+    pointer-events: none; z-index: 0;
+  }
+  .card {
+    position: relative; z-index: 1; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 40px 36px; width: 100%; max-width: 440px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+  .logo-mark {
+    width: 36px; height: 36px; background: var(--accent); border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; color: #fff;
+  }
+  .logo-text { font-size: 18px; font-weight: 800; }
+  .logo-text span { color: var(--cyan); }
+  h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+  .field { margin-bottom: 14px; }
+  label {
+    display: block; font-size: 10px; font-weight: 700;
+    letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;
+  }
+  input {
+    width: 100%; background: #0a1220; border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; padding: 12px 14px; outline: none; transition: border-color .15s;
+  }
+  input:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+  .hint { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .btn {
+    width: 100%; padding: 14px; border-radius: 10px; border: none;
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .15s; margin-top: 8px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #4a8fff; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+  .error-box {
+    background: rgba(255,69,103,.1); border: 1px solid rgba(255,69,103,.3);
+    border-radius: 8px; padding: 10px 14px; font-size: 12px;
+    color: var(--danger); margin-bottom: 16px; display: none;
+  }
+  .error-box.show { display: block; }
+
+  /* success screen */
+  .success-screen {
+    display: none; text-align: center;
+  }
+  .success-screen.show { display: block; }
+  .success-icon {
+    width: 60px; height: 60px; background: rgba(0,229,160,.15);
+    border: 2px solid var(--success); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; margin: 0 auto 20px;
+  }
+  .success-screen h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .success-screen p { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+
+  .steps-list {
+    text-align: left;
+    background: #0a1220;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .step {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    min-width: 22px; height: 22px; background: var(--accent); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; color: #fff; margin-top: 1px;
+  }
+  .step-text { color: var(--text); line-height: 1.5; }
+  .step-text b { color: var(--cyan); }
+
+  .go-btn {
+    display: block; width: 100%; padding: 14px;
+    background: var(--success); color: #050c0a;
+    border: none; border-radius: 10px; font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+    text-decoration: none; transition: all .15s;
+  }
+  .go-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 20px 0; color: var(--muted); font-size: 11px;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .footer-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+  .footer-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
+  .footer-link a:hover { text-decoration: underline; }
+
+  .form-section { }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="card">
+  <div class="logo">
+    <div class="logo-mark">S.</div>
+    <div class="logo-text">Stud<span>Coding</span></div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-section" id="formSection">
+    <h1>Create account</h1>
+    <p class="subtitle">Start building smarter with AI</p>
+    <div class="error-box" id="errorBox"></div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="cooldevname" autocomplete="username">
+      <div class="hint">Min 3 characters</div>
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="new-password">
+      <div class="hint">Min 8 characters</div>
+    </div>
+    <button class="btn btn-primary" id="signupBtn" onclick="doSignup()">Create Account</button>
+    <div class="divider">or</div>
+    <div class="footer-link">Already have an account? <a href="login.html">Sign In</a></div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">🎉</div>
+    <h2>You're in!</h2>
+    <p>Account created. Now connect the Roblox Studio plugin to start building with AI.</p>
+    <div class="steps-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Go to your <b>Dashboard</b> and click <b>Install Plugin</b></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Copy your unique <b>Plugin Key</b> (SC-XXXXX-XXXXX)</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Install the plugin from <b>Roblox Marketplace</b></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Paste the key in Studio → check email for <b>6-digit code</b> → done!</div>
+      </div>
+    </div>
+    <a href="index.html" class="go-btn">Go to Dashboard →</a>
+  </div>
+</div>
+
+<script>
+const BASE = 'http://127.0.0.1:5000';
+if (localStorage.getItem('stud_token')) window.location.href = 'index.html';
+function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('show'); }
+function clearError() { document.getElementById('errorBox').classList.remove('show'); }
+function setLoading(on) { const btn = document.getElementById('signupBtn'); btn.disabled = on; btn.textContent = on ? 'Creating account...' : 'Create Account'; }
+async function doSignup() {
+  clearError();
+  const username = document.getElementById('username').value.trim();
+  const email    = document.getElementById('email').value.trim().toLowerCase();
+  const password = document.getElementById('password').value;
+  if (!username) return showError('Enter a username.');
+  if (username.length < 3) return showError('Username must be at least 3 characters.');
+  if (!email || !email.includes('@')) return showError('Enter a valid email address.');
+  if (!password || password.length < 8) return showError('Password must be at least 8 characters.');
+  setLoading(true);
+  try {
+    const res = await fetch(`${BASE}/auth/signup`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username, email, password}) });
+    const data = await res.json();
+    if (data.error) { showError(data.error); return; }
+    localStorage.setItem('stud_token', data.token);
+    localStorage.setItem('stud_user', JSON.stringify(data.user));
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+  } catch(e) { showError('Cannot connect to server. Is server.py running?'); }
+  finally { setLoading(false); }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
+</script>
+</body>
+</html>

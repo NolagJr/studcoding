@@ -1,0 +1,32 @@
+{
+  "level": "Beginner",
+  "xp": 34,
+  "xp_to_next": 100,
+  "total_fixes": 0,
+  "quiz_correct": 0,
+  "quiz_total": 0,
+  "mistakes": [],
+  "topics_mastered": [],
+  "topics_struggling": [],
+  "chat_history": [
+    {
+      "role": "user",
+      "content": "no im an advanced dev"
+    },
+    {
+      "role": "assistant",
+      "content": "Got it! I'll update your profile and treat you accordingly. \n\nLet's cut to the chase \u2014 what are you working on or what do you need help with?"
+    },
+    {
+      "role": "user",
+      "content": "whats ur name?"
+    },
+    {
+      "role": "assistant",
+      "content": "I'm **StudCoding AI Tutor** \u2014 your Roblox Lua assistant built into this tool.\n\nNow, what are we building? \ud83d\ude80"
+    }
+  ],
+  "lessons_completed": [
+    "Variables and Data Types"
+  ]
+}

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stud — AI Roblox Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060b11;
+    --surface: #0d1520;
+    --border: rgba(46,127,255,0.15);
+    --accent: #2e7fff;
+    --cyan: #0af0ff;
+    --text: #e8edf5;
+    --muted: #5a6a80;
+    --success: #00d68f;
+    --danger: #ff4d6a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; overflow-x: hidden; }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(rgba(46,127,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(46,127,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(46,127,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 48px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(6,11,17,0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-actions { display: flex; gap: 12px; align-items: center; }
+  .btn-ghost { padding: 8px 20px; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); background: transparent; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+  .btn-primary { padding: 8px 20px; border: none; border-radius: 8px; background: var(--accent); color: #fff; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-primary:hover { background: #4a8fff; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(46,127,255,0.4); }
+  .hero { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 24px 80px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border: 1px solid rgba(10,240,255,0.2); border-radius: 100px; background: rgba(10,240,255,0.05); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); margin-bottom: 32px; animation: fadeUp 0.6s ease both; }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 { font-size: clamp(48px, 8vw, 88px); font-weight: 800; line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; animation: fadeUp 0.6s 0.1s ease both; }
+  .hero h1 .gradient { background: linear-gradient(135deg, var(--accent), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { font-size: 18px; color: var(--muted); max-width: 520px; line-height: 1.7; margin-bottom: 40px; animation: fadeUp 0.6s 0.2s ease both; }
+  .hero-actions { display: flex; gap: 16px; align-items: center; animation: fadeUp 0.6s 0.3s ease both; }
+  .btn-hero { padding: 16px 36px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+  .btn-hero:hover { background: #4a8fff; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(46,127,255,0.4); }
+  .btn-hero-ghost { padding: 16px 36px; border: 1px solid var(--border); border-radius: 10px; background: transparent; color: var(--text); font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-hero-ghost:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .code-preview { position: relative; z-index: 1; margin: 64px auto 0; max-width: 720px; width: 100%; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); overflow: hidden; animation: fadeUp 0.6s 0.4s ease both; box-shadow: 0 32px 80px rgba(0,0,0,0.5); }
+  .code-header { display: flex; align-items: center; gap: 8px; padding: 14px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+  .code-filename { margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+  .code-body { display: grid; grid-template-columns: 1fr 1fr; }
+  .code-col { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; }
+  .code-col:first-child { border-right: 1px solid var(--border); }
+  .code-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .label-before { color: var(--danger); }
+  .label-after { color: var(--success); }
+  .code-err { color: var(--danger); }
+  .code-ok { color: var(--success); }
+  .code-dim { color: var(--muted); }
+  .code-blue { color: #7eb8ff; }
+  .code-str { color: #ffd580; }
+  .stats { position: relative; z-index: 1; padding: 40px 48px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; justify-content: center; gap: 80px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-value { font-size: 36px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, var(--accent), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+  section { position: relative; z-index: 1; padding: 100px 48px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .section-title { font-size: clamp(32px, 4vw, 52px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; }
+  .section-sub { font-size: 17px; color: var(--muted); max-width: 480px; line-height: 1.7; margin-bottom: 56px; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature-card { padding: 28px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); transition: all 0.3s; }
+  .feature-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(46,127,255,0.1); }
+  .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(46,127,255,0.1); border: 1px solid rgba(46,127,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+  .feature-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative; }
+  .steps::before { content: ''; position: absolute; top: 28px; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+  .step { text-align: center; padding: 24px 16px; }
+  .step-num { width: 56px; height: 56px; border-radius: 50%; background: var(--surface); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent); position: relative; z-index: 1; }
+  .step-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .tutor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .chat-mock { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); overflow: hidden; }
+  .chat-topbar { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; }
+  .chat-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+  .chat-messages { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.6; }
+  .msg-user { background: var(--accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg-ai { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg-ai code { font-family: 'JetBrains Mono', monospace; background: rgba(46,127,255,0.15); padding: 2px 6px; border-radius: 4px; font-size: 12px; color: var(--cyan); }
+  .cta-section { text-align: center; padding: 120px 48px; position: relative; z-index: 1; border-top: 1px solid var(--border); }
+  .cta-section h2 { font-size: clamp(36px, 5vw, 64px); font-weight: 800; letter-spacing: -2px; margin-bottom: 16px; }
+  .cta-section p { font-size: 18px; color: var(--muted); margin-bottom: 40px; }
+  footer { position: relative; z-index: 1; padding: 32px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+  footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--text); }
+  .footer-links { display: flex; gap: 24px; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; max-width: 480px; width: 90%; transform: translateY(20px); transition: transform 0.2s; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .modal p { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  .install-steps { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+  .install-step { display: flex; gap: 16px; align-items: flex-start; }
+  .install-step-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(46,127,255,0.15); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+  .install-step-text { font-size: 14px; line-height: 1.6; color: var(--text); }
+  .install-step-text strong { color: var(--accent); }
+  .modal-actions { display: flex; gap: 12px; }
+  .modal-close { padding: 12px 24px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .modal-close:hover { color: var(--text); border-color: var(--accent); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 900px) { nav { padding: 0 24px; } .nav-links { display: none; } .features-grid { grid-template-columns: 1fr 1fr; } .steps { grid-template-columns: 1fr 1fr; } .tutor-grid { grid-template-columns: 1fr; } .stats { gap: 40px; } section { padding: 60px 24px; } }
+  @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } .steps { grid-template-columns: 1fr; } .steps::before { display: none; } .code-body { grid-template-columns: 1fr; } footer { flex-direction: column; gap: 16px; text-align: center; } }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">Stud<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#tutor">Tutor</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="/login.html" class="btn-ghost">Sign in</a>
+    <a href="#" class="btn-primary" onclick="openModal();return false;">Get Plugin</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">AI-Powered Roblox Dev Tool — Phase 6</div>
+  <h1>Your game.<br><span class="gradient">Perfected by AI.</span></h1>
+  <p>Stud fixes broken scripts, writes new ones, scans your full workspace, and teaches you Lua — all without leaving Roblox Studio.</p>
+  <div class="hero-actions">
+    <button class="btn-hero" onclick="openModal()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Install Studio Plugin
+    </button>
+    <a href="#features" class="btn-hero-ghost">See how it works</a>
+  </div>
+  <div class="code-preview">
+    <div class="code-header">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+      <span class="code-filename">ShopHandler.lua</span>
+    </div>
+    <div class="code-body">
+      <div class="code-col">
+        <div class="code-label label-before">&#x2717; Before</div>
+        <div class="code-err">local Players = game:GetService"Players"</div>
+        <div class="code-err">local function onBuy(plr, item)</div>
+        <div class="code-dim">&nbsp;&nbsp;local data = plr.leaderstats</div>
+        <div class="code-err">&nbsp;&nbsp;if data.Coins >= item.Price then</div>
+        <div class="code-err">&nbsp;&nbsp;&nbsp;&nbsp;data.Coins.Value = data.Coins - item.Price</div>
+        <div class="code-dim">&nbsp;&nbsp;end</div>
+        <div class="code-dim">end</div>
+        <div class="code-err">RemoteEvent.OnServerEvent:connect(onBuy)</div>
+      </div>
+      <div class="code-col">
+        <div class="code-label label-after">&#x2713; Fixed by Stud</div>
+        <div class="code-blue">local Players = <span class="code-ok">game:GetService</span>(<span class="code-str">"Players"</span>)</div>
+        <div class="code-blue">local BuyEvent = <span class="code-ok">game.ReplicatedStorage</span>.BuyEvent</div>
+        <div class="code-dim">&nbsp;</div>
+        <div class="code-blue">local function onBuy(plr, item)</div>
+        <div class="code-dim">&nbsp;&nbsp;local coins = plr.leaderstats.Coins</div>
+        <div class="code-ok">&nbsp;&nbsp;if coins.Value >= item.Price then</div>
+        <div class="code-ok">&nbsp;&nbsp;&nbsp;&nbsp;coins.Value -= item.Price</div>
+        <div class="code-dim">&nbsp;&nbsp;end</div>
+        <div class="code-dim">end</div>
+        <div class="code-ok">BuyEvent.OnServerEvent:Connect(onBuy)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">4x</div><div class="stat-label">Self-review loop</div></div>
+  <div class="stat"><div class="stat-value">0</div><div class="stat-label">Copy-paste required</div></div>
+  <div class="stat"><div class="stat-value">17</div><div class="stat-label">API endpoints</div></div>
+  <div class="stat"><div class="stat-value">inf</div><div class="stat-label">Game context memory</div></div>
+</div>
+
+<section id="features">
+  <div class="section-label">// Features</div>
+  <h2 class="section-title">Built for serious<br>Roblox developers.</h2>
+  <p class="section-sub">Every feature is designed around how you actually build games — not how a generic AI thinks you do.</p>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">&#128269;</div><div class="feature-title">Full Game Scan</div><div class="feature-desc">Scans every script in your workspace and builds a complete understanding of your game before touching anything.</div></div>
+    <div class="feature-card"><div class="feature-icon">&#128257;</div><div class="feature-title">Self-Review Loop</div><div class="feature-desc">Fixes your script, reviews its own work, and retries up to 4 times until the score hits 8/10 or higher.</div></div>
+    <div class="feature-card"><div class="feature-icon">&#9997;&#65039;</div><div class="feature-title">Script Writer</div><div class="feature-desc">Describe what you need. Stud writes a complete, production-ready Lua script from scratch with full context.</div></div>
+    <div class="feature-card"><div class="feature-icon">&#9889;</div><div class="feature-title">Writes Directly to Studio</div><div class="feature-desc">Fixed scripts get injected straight into Roblox Studio. No copy-paste. No switching windows.</div></div>
+    <div class="feature-card"><div class="feature-icon">&#129504;</div><div class="feature-title">Game Memory</div><div class="feature-desc">Approves and stores your game context so every fix and script is aware of your full game architecture.</div></div>
+    <div class="feature-card"><div class="feature-icon">&#128065;&#65039;</div><div class="feature-title">Run + Watch Mode</div><div class="feature-desc">Monitors script output in real time and catches errors as they happen during playtesting.</div></div>
+  </div>
+</section>
+
+<section id="how-it-works" style="padding-top:0;">
+  <div class="section-label">// How it works</div>
+  <h2 class="section-title">From broken to shipped<br>in 4 steps.</h2>
+  <p class="section-sub">Stud handles the full cycle — scan, fix, review, deploy — without you leaving Studio.</p>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><div class="step-title">Install Plugin</div><div class="step-desc">Drop the plugin into your Roblox Studio plugins folder. One time setup.</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Scan Workspace</div><div class="step-desc">Stud reads every script in your game and builds full context of what you have built.</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Fix or Write</div><div class="step-desc">Paste a broken script or describe what you need. Stud handles the rest with 4-pass review.</div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-title">Ship It</div><div class="step-desc">Scripts are injected directly into Studio. Approve and publish.</div></div>
+  </div>
+</section>
+
+<section id="tutor" style="padding-top:0;">
+  <div class="tutor-grid">
+    <div>
+      <div class="section-label">// AI Tutor</div>
+      <h2 class="section-title">Learn Lua while<br>you build.</h2>
+      <p class="section-sub">Stud tracks where you struggle, teaches you the concepts behind every fix, and adapts to your level over time.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+        <div style="display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted);"><span style="color:var(--success);font-size:18px;">&#10003;</span> Adaptive lessons based on your mistakes</div>
+        <div style="display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted);"><span style="color:var(--success);font-size:18px;">&#10003;</span> XP system — Beginner to Expert</div>
+        <div style="display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted);"><span style="color:var(--success);font-size:18px;">&#10003;</span> Quiz mode to test your knowledge</div>
+        <div style="display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted);"><span style="color:var(--success);font-size:18px;">&#10003;</span> Game-aware — examples use YOUR game</div>
+      </div>
+    </div>
+    <div class="chat-mock">
+      <div class="chat-topbar">
+        <div class="chat-avatar">S</div>
+        Stud AI
+        <span style="margin-left:auto;font-size:11px;color:var(--success);font-family:'JetBrains Mono',monospace;">&#9679; online</span>
+      </div>
+      <div class="chat-messages">
+        <div class="msg msg-user">Why does my RemoteEvent fire on the client but nothing happens on the server?</div>
+        <div class="msg msg-ai">Classic issue. You need <code>OnServerEvent</code> on the server, not <code>OnClientEvent</code>. Also make sure both scripts reference the same RemoteEvent in ReplicatedStorage.</div>
+        <div class="msg msg-user">Should I use FireServer or FireAllClients?</div>
+        <div class="msg msg-ai"><code>FireServer</code> goes client to server. <code>FireAllClients</code> goes server to all clients. For a shop purchase: client fires <code>FireServer</code>, server validates, then fires <code>FireAllClients</code> to update everyone's UI.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-section">
+  <h2>Start building.<br><span style="background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Stop debugging.</span></h2>
+  <p>Install the plugin and let Stud handle the hard parts.</p>
+  <button class="btn-hero" style="margin:0 auto;" onclick="openModal()">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+    Install Studio Plugin
+  </button>
+</div>
+
+<footer>
+  <span>Built by Logan — Stud AI · Phase 6</span>
+  <div class="footer-links">
+    <a href="/login.html">Sign in</a>
+    <a href="/signup.html">Create account</a>
+    <a href="/dashboard.html">Dashboard</a>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <h3>Install Studio Plugin</h3>
+    <p>Get Stud running in Roblox Studio in under 2 minutes.</p>
+    <div class="install-steps">
+      <div class="install-step"><div class="install-step-num">1</div><div class="install-step-text">Download <strong>plugin.lua</strong> from your Rocode folder</div></div>
+      <div class="install-step"><div class="install-step-num">2</div><div class="install-step-text">Copy it to <strong>C:\Users\[you]\AppData\Local\Roblox\Plugins\</strong></div></div>
+      <div class="install-step"><div class="install-step-num">3</div><div class="install-step-text">Start your server: run <strong>python server.py</strong> in your Rocode folder</div></div>
+      <div class="install-step"><div class="install-step-num">4</div><div class="install-step-text">Open Roblox Studio — the <strong>Stud panel</strong> will appear in your plugins toolbar</div></div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-close" onclick="closeModal()">Got it</button>
+      <button class="btn-primary" onclick="closeModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal() { document.getElementById('modal').classList.add('open'); }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+  function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

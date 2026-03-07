@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Stud</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #060b11; --surface: #0d1520; --border: #162336;
+    --accent: #2e7fff; --cyan: #0af0ff; --success: #00e5a0;
+    --danger: #ff4567; --text: #dce8ff; --muted: #4a6080;
+  }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif;
+    min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(46,127,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46,127,255,.04) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
+  }
+  .glow {
+    position: fixed; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,127,255,.12) 0%, transparent 70%);
+    top: -200px; left: 50%; transform: translateX(-50%);
+    pointer-events: none; z-index: 0;
+  }
+  .card {
+    position: relative; z-index: 1; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 40px 36px; width: 100%; max-width: 420px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+  .logo-mark {
+    width: 36px; height: 36px; background: var(--accent); border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; color: #fff;
+  }
+  .logo-text { font-size: 18px; font-weight: 800; }
+  .logo-text span { color: var(--cyan); }
+  h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+  .field { margin-bottom: 16px; }
+  label {
+    display: block; font-size: 10px; font-weight: 700;
+    letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;
+  }
+  input {
+    width: 100%; background: #0a1220; border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; padding: 12px 14px; outline: none; transition: border-color .15s;
+  }
+  input:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+  .btn {
+    width: 100%; padding: 14px; border-radius: 10px; border: none;
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .15s; margin-top: 8px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #4a8fff; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+  .error-box {
+    background: rgba(255,69,103,.1); border: 1px solid rgba(255,69,103,.3);
+    border-radius: 8px; padding: 10px 14px; font-size: 12px;
+    color: var(--danger); margin-bottom: 16px; display: none;
+  }
+  .error-box.show { display: block; }
+  .success-box {
+    background: rgba(0,229,160,.1); border: 1px solid rgba(0,229,160,.3);
+    border-radius: 8px; padding: 10px 14px; font-size: 12px;
+    color: var(--success); margin-bottom: 16px; display: none;
+  }
+  .success-box.show { display: block; }
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 20px 0; color: var(--muted); font-size: 11px;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .footer-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+  .footer-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
+  .footer-link a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="card">
+  <div class="logo">
+    <div class="logo-mark">S.</div>
+    <div class="logo-text">Stud<span>Coding</span></div>
+  </div>
+  <h1>Welcome back</h1>
+  <p class="subtitle">Sign in to your Stud account</p>
+  <div class="error-box" id="errorBox"></div>
+  <div class="success-box" id="successBox"></div>
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+  </div>
+  <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">Sign In</button>
+  <div class="divider">or</div>
+  <div class="footer-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
+</div>
+<script>
+const BASE = 'http://127.0.0.1:5000';
+if (localStorage.getItem('stud_token')) window.location.href = 'index.html';
+const params = new URLSearchParams(window.location.search);
+if (params.get('error')) showError(decodeURIComponent(params.get('error')));
+if (params.get('token')) { localStorage.setItem('stud_token', params.get('token')); window.location.href = 'index.html'; }
+function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('show'); document.getElementById('successBox').classList.remove('show'); }
+function showSuccess(msg) { const b = document.getElementById('successBox'); b.textContent = msg; b.classList.add('show'); document.getElementById('errorBox').classList.remove('show'); }
+function setLoading(on) { const btn = document.getElementById('loginBtn'); btn.disabled = on; btn.textContent = on ? 'Signing in...' : 'Sign In'; }
+async function doLogin() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  if (!email) return showError('Enter your email.');
+  if (!email.includes('@')) return showError('Enter a valid email address.');
+  if (!password) return showError('Enter your password.');
+  setLoading(true);
+  try {
+    const res = await fetch(`${BASE}/auth/login`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
+    const data = await res.json();
+    if (data.error) { showError(data.error); return; }
+    localStorage.setItem('stud_token', data.token);
+    localStorage.setItem('stud_user', JSON.stringify(data.user));
+    showSuccess('Signed in! Redirecting...');
+    setTimeout(() => window.location.href = 'index.html', 600);
+  } catch(e) { showError('Cannot connect to server. Is server.py running?'); }
+  finally { setLoading(false); }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>
