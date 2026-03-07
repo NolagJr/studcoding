@@ -4,10 +4,3 @@ builder = "nixpacks"
 [deploy]
 startCommand = "gunicorn server:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
 restartPolicyType = "on_failure"
-```
-
-Fix that, save, then:
-```
-git add .
-git commit -m "fix railway config"
-git push
