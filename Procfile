@@ -1,1 +1,1 @@
-web: /app/.venv/bin/python server.py
+web: pip install flask flask-cors PyJWT anthropic openai gunicorn && python server.py
