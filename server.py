@@ -68,7 +68,7 @@ def init_db():
         user_id    INTEGER UNIQUE NOT NULL,
         provider   TEXT DEFAULT 'anthropic',
         api_key    TEXT DEFAULT '',
-        model      TEXT DEFAULT 'claude-opus-4-5',
+        model      TEXT DEFAULT 'claude-3-5-sonnet-20241022',
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
@@ -149,7 +149,7 @@ def ai_complete(user_id=None, system=None, messages=None, max_tokens=1000):
         else:
             client = anthropic.Anthropic(api_key=api_key)
             kwargs = {
-                'model':      model or 'claude-opus-4-5',
+                'model':      model or 'claude-3-5-sonnet-20241022',
                 'max_tokens': max_tokens,
                 'messages':   messages
             }
@@ -581,7 +581,7 @@ def save_ai_settings():
         return jsonify({'error': 'API key is required.'}), 400
 
     if not model:
-        model = 'claude-opus-4-5' if provider == 'anthropic' else 'gpt-4o'
+        model = 'claude-3-5-sonnet-20241022' if provider == 'anthropic' else 'gpt-4o'
 
     conn = get_db()
     c = conn.cursor()
