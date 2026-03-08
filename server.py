@@ -690,7 +690,7 @@ def tutor_quiz():
     pd = profile_to_dict(p)
 
     text = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content':
-            f'Create a multiple choice Roblox Lua quiz question for a {pd["level"]} student'
+            f'Create a UNIQUE and RANDOM multiple choice Roblox Lua quiz question for a {pd["level"]} student. Pick a random subtopic each time, never repeat obvious questions.'
             f'{f" about {topic}" if topic else ""}.\n'
             'Return ONLY valid JSON:\n'
             '{"topic":"topic","question":"the question","code":"optional lua or empty",'
