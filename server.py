@@ -6,11 +6,11 @@ from email.mime.multipart import MIMEMultipart
 import anthropic
 
 app = Flask(__name__, static_folder='.')
-CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5500", "https://nolagjr.github.io"])
+CORS(app)
 
 # ── CONFIG ──
 SECRET_KEY      = os.environ.get('JWT_SECRET', 'stud-secret-key-change-in-prod')
-ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')   # fallback key
 DB_PATH         = 'stud.db'
 SMTP_HOST       = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT       = int(os.environ.get('SMTP_PORT', '587'))
@@ -690,19 +690,23 @@ def tutor_quiz():
     pd = profile_to_dict(p)
 
     text = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content':
-            f'Create a UNIQUE and RANDOM multiple choice Roblox Lua quiz question for a {pd["level"]} student. Pick a random subtopic each time, never repeat obvious questions.'
-            f'{f" about {topic}" if topic else ""}.\n'
-            'Return ONLY valid JSON:\n'
-            '{"topic":"topic","question":"the question","code":"optional lua or empty",'
-            '"options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A","explanation":"why"}'}],
-        max_tokens=600)
+            f'Generate exactly 10 UNIQUE multiple choice Roblox Lua quiz questions for a {pd["level"]} student'
+            f'{f" specifically about {topic}" if topic else ", covering a wide variety of Roblox Lua topics"}.\n'
+            'Rules: Never repeat the same question. Each question must test a DIFFERENT concept. Vary difficulty.\n'
+            'Return ONLY a valid JSON array of 10 objects, no markdown:\n'
+            '[{"topic":"subtopic","question":"the question","code":"lua code or empty string",'
+            '"options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A","explanation":"why A is correct"}]'}],
+        max_tokens=3000)
     try:
-        quiz = json.loads(text)
+        text = clean_json_response(text)
+        questions = json.loads(text)
+        if not isinstance(questions, list):
+            raise ValueError('not a list')
     except:
-        quiz = {'topic': 'Lua Basics', 'question': 'Error generating question.',
-                'code': '', 'options': ['A. Try again'], 'correct': 'A', 'explanation': ''}
+        questions = [{'topic': topic or 'Lua Basics', 'question': 'Error generating questions. Try again.',
+                'code': '', 'options': ['A. Retry'], 'correct': 'A', 'explanation': ''}]
 
-    return jsonify({'quiz': quiz})
+    return jsonify({'questions': questions})
 
 @app.route('/tutor-answer', methods=['POST'])
 def tutor_answer():

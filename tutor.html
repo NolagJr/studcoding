@@ -437,7 +437,7 @@ body::before {
 <div class="toast" id="toast"></div>
 
 <script>
-const BASE = 'https://studcoding-production-3b79.up.railway.app';
+const BASE = 'https://studcoding-production.up.railway.app';
 let profile = null;
 let chatHistory = [];
 let quizData = null;
@@ -649,6 +649,10 @@ async function loadLesson(topic) {
 }
 
 // ── QUIZ ──
+let quizQuestions = [];
+let quizIndex = 0;
+let quizResults = [];
+
 function buildQuizStartHTML() {
   return `
     <div class="quiz-wrap">
@@ -657,42 +661,64 @@ function buildQuizStartHTML() {
         <div class="q-score"><div class="q-score-val" id="qTotal">${profile?.quiz_total || 0}</div><div class="q-score-lbl">Total</div></div>
         <div class="q-score"><div class="q-score-val" id="qStreak">${quizStreak}</div><div class="q-score-lbl">Streak 🔥</div></div>
       </div>
-      <div style="text-align:center;padding:20px 0;">
-        <div style="font-size:28px;margin-bottom:10px;">⚡</div>
-        <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Ready?</div>
-        <div style="font-size:12px;color:var(--muted2);margin-bottom:16px;">Earn XP for every correct answer.</div>
-        <button onclick="loadQuiz()" style="padding:10px 24px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Start Quiz</button>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;color:var(--muted2);margin-bottom:8px;">Pick a topic (optional):</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="topic-chip" onclick="startQuiz('')">🎲 Random</span>
+          <span class="topic-chip" onclick="startQuiz('Variables')">Variables</span>
+          <span class="topic-chip" onclick="startQuiz('Loops')">Loops</span>
+          <span class="topic-chip" onclick="startQuiz('Functions')">Functions</span>
+          <span class="topic-chip" onclick="startQuiz('RemoteEvents')">RemoteEvents</span>
+          <span class="topic-chip" onclick="startQuiz('DataStores')">DataStores</span>
+          <span class="topic-chip" onclick="startQuiz('ModuleScripts')">ModuleScripts</span>
+          <span class="topic-chip" onclick="startQuiz('Metatables')">Metatables</span>
+          <span class="topic-chip" onclick="startQuiz('OOP')">OOP</span>
+        </div>
       </div>
     </div>`;
 }
 
-async function loadQuiz(topic) {
+async function startQuiz(topic) {
+  quizQuestions = [];
+  quizIndex = 0;
+  quizResults = [];
   quizAnswered = false;
-  document.getElementById('rpBody').innerHTML = '<div style="color:var(--muted2);padding:20px;text-align:center;font-size:13px;">Loading question...</div>';
+
+  document.getElementById('rpBody').innerHTML = '<div style="color:var(--muted2);padding:20px;text-align:center;font-size:13px;">⚡ Generating 10 questions...</div>';
+
   try {
     const r = await fetch(`${BASE}/tutor-quiz`, {
       method:'POST', headers: authHeaders(),
-      body: JSON.stringify({ topic: topic || '' })
+      body: JSON.stringify({ topic })
     });
     const data = await r.json();
-    quizData = data.quiz;
-    renderQuiz();
-    if (data.profile) { profile = data.profile; updateUI(); }
+    quizQuestions = data.questions || [];
+    if (quizQuestions.length === 0) throw new Error('No questions');
+    renderQuizQuestion();
   } catch(e) {
-    document.getElementById('rpBody').innerHTML = '<div style="color:var(--danger);padding:20px;font-size:12px;">Could not load quiz.</div>';
+    document.getElementById('rpBody').innerHTML = '<div style="color:var(--danger);padding:20px;font-size:12px;">Could not load quiz. Is the server running?</div>';
   }
 }
 
-function renderQuiz() {
-  if (!quizData) return;
+function renderQuizQuestion() {
+  if (quizIndex >= quizQuestions.length) {
+    renderQuizResults();
+    return;
+  }
+  quizAnswered = false;
+  quizData = quizQuestions[quizIndex];
+  const num = quizIndex + 1;
+  const total = quizQuestions.length;
+
   document.getElementById('rpBody').innerHTML = `
     <div class="quiz-wrap">
-      <div class="quiz-score-row">
-        <div class="q-score"><div class="q-score-val">${profile?.quiz_correct || 0}</div><div class="q-score-lbl">Correct</div></div>
-        <div class="q-score"><div class="q-score-val">${profile?.quiz_total || 0}</div><div class="q-score-lbl">Total</div></div>
-        <div class="q-score"><div class="q-score-val">${quizStreak}</div><div class="q-score-lbl">Streak 🔥</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);">Question ${num} of ${total}</div>
+        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted2);">${quizData.topic}</div>
       </div>
-      <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);letter-spacing:1px;text-transform:uppercase;">${quizData.topic}</div>
+      <div style="background:rgba(46,127,255,0.08);border-radius:4px;height:4px;margin-bottom:14px;">
+        <div style="height:100%;width:${((num-1)/total)*100}%;background:var(--accent);border-radius:4px;transition:width 0.4s;"></div>
+      </div>
       <div class="quiz-q">${quizData.question}</div>
       ${quizData.code ? `<pre class="quiz-code">${escHtml(quizData.code)}</pre>` : ''}
       <div class="quiz-opts" id="quizOpts">
@@ -700,29 +726,873 @@ function renderQuiz() {
       </div>
       <div class="quiz-exp" id="quizExp">${quizData.explanation}</div>
       <div id="quizNextBtn" style="display:none;margin-top:4px;">
-        <button onclick="loadQuiz()" style="width:100%;padding:10px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Next Question →</button>
+        <button onclick="nextQuizQuestion()" style="width:100%;padding:10px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">${quizIndex + 1 < quizQuestions.length ? 'Next Question →' : 'See Results →'}</button>
       </div>
+    </div>`;
+}
+
+function nextQuizQuestion() {
+  quizIndex++;
+  renderQuizQuestion();
+}
+
+function renderQuizResults() {
+  const correct = quizResults.filter(r => r).length;
+  const total = quizResults.length;
+  const pct = Math.round((correct / total) * 100);
+  const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '📚';
+
+  document.getElementById('rpBody').innerHTML = `
+    <div class="quiz-wrap">
+      <div style="text-align:center;padding:16px 0;">
+        <div style="font-size:40px;margin-bottom:10px;">${emoji}</div>
+        <div style="font-size:24px;font-weight:800;color:var(--accent);">${correct}/${total}</div>
+        <div style="font-size:13px;color:var(--muted2);margin:4px 0 16px;">${pct}% correct</div>
+        ${pct >= 80 ? '<div style="font-size:12px;color:var(--success);">Great work! You know your stuff.</div>' : 
+          pct >= 60 ? '<div style="font-size:12px;color:var(--warning);">Good effort! Keep practicing.</div>' :
+          '<div style="font-size:12px;color:var(--danger);">Keep studying — you\'ve got this!</div>'}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+        ${quizQuestions.map((q, i) => `
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:${quizResults[i] ? 'rgba(0,214,143,0.07)' : 'rgba(255,77,106,0.07)'};border:1px solid ${quizResults[i] ? 'rgba(0,214,143,0.2)' : 'rgba(255,77,106,0.2)'};">
+            <span style="font-size:14px;">${quizResults[i] ? '✓' : '✗'}</span>
+            <span style="font-size:11px;color:var(--text);flex:1;line-height:1.4;">${q.question.substring(0, 60)}${q.question.length > 60 ? '...' : ''}</span>
+          </div>`).join('')}
+      </div>
+      <button onclick="setMode('quiz')" style="width:100%;padding:10px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Try Again →</button>
     </div>`;
 }
 
 async function answerQuiz(answer, el) {
   if (quizAnswered) return;
   quizAnswered = true;
+
+  const isCorrect = answer.toUpperCase() === quizData.correct.toUpperCase();
+  quizResults.push(isCorrect);
+
+  document.querySelectorAll('.quiz-opt').forEach(o => {
+    if (o.textContent[0].toUpperCase() === quizData.correct.toUpperCase()) o.classList.add('correct');
+  });
+  if (!isCorrect) { el.classList.add('wrong'); quizStreak = 0; }
+  else { quizStreak++; showToast(`Correct! +20 XP`, 'success'); }
+
+  document.getElementById('quizExp').style.display = 'block';
+  document.getElementById('quizNextBtn').style.display = 'block';
+  document.getElementById('sideStreak').textContent = quizStreak;
+
   try {
     const r = await fetch(`${BASE}/tutor-answer`, {
       method:'POST', headers: authHeaders(),
       body: JSON.stringify({ answer, correct:quizData.correct, topic:quizData.topic, question:quizData.question })
     });
     const data = await r.json();
-    document.querySelectorAll('.quiz-opt').forEach(o => {
-      if (o.textContent[0].toUpperCase() === quizData.correct.toUpperCase()) o.classList.add('correct');
-    });
-    if (!data.correct) { el.classList.add('wrong'); quizStreak = 0; }
-    else { quizStreak++; showToast(`Correct! +${data.xp_gained} XP`, 'success'); }
     if (data.leveled_up) showToast('Level up! 🎉', 'success');
-    document.getElementById('quizExp').style.display = 'block';
-    document.getElementById('quizNextBtn').style.display = 'block';
-    document.getElementById('sideStreak').textContent = quizStreak;
+    if (data.profile) { profile = data.profile; updateUI(); }
+  } catch(e) {}
+}
+
+// ── UTILS ──
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stud. — AI Tutor</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060b11;
+  --surface: #0d1520;
+  --surface2: #111c2d;
+  --border: rgba(46,127,255,0.12);
+  --border2: rgba(46,127,255,0.22);
+  --accent: #2e7fff;
+  --cyan: #0af0ff;
+  --text: #e8edf5;
+  --muted: #4a5a72;
+  --muted2: #7a8fa8;
+  --success: #00d68f;
+  --danger: #ff4d6a;
+  --warning: #ffb830;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'Syne',sans-serif; height:100vh;
+  overflow:hidden; display:flex; flex-direction:column;
+}
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image: linear-gradient(rgba(46,127,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(46,127,255,0.03) 1px,transparent 1px);
+  background-size:48px 48px; pointer-events:none; z-index:0;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height:56px; padding:0 24px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  background:rgba(6,11,17,0.85); backdrop-filter:blur(12px);
+  position:relative; z-index:10; flex-shrink:0;
+}
+.logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.logo-icon {
+  width:32px; height:32px; border-radius:8px;
+  background:linear-gradient(135deg,var(--accent),var(--cyan));
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:900; color:#fff;
+  box-shadow:0 0 16px rgba(46,127,255,0.4);
+}
+.logo-name { font-size:16px; font-weight:800; }
+.logo-name span { color:var(--cyan); }
+.topbar-center {
+  position:absolute; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; font-family:'JetBrains Mono',monospace;
+  color:var(--muted2);
+}
+.topbar-center::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--success); box-shadow:0 0 8px var(--success);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.level-pill {
+  padding:4px 12px; border-radius:20px; font-size:11px;
+  font-family:'JetBrains Mono',monospace; font-weight:700;
+  background:rgba(46,127,255,0.12); color:var(--accent);
+  border:1px solid rgba(46,127,255,0.2);
+}
+.btn-sm {
+  padding:6px 14px; border-radius:7px; font-family:'Syne',sans-serif;
+  font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;
+  border:1px solid var(--border2); background:transparent; color:var(--muted2);
+}
+.btn-sm:hover { color:var(--accent); border-color:var(--accent); }
+
+/* ── MAIN LAYOUT ── */
+.layout { display:flex; flex:1; overflow:hidden; position:relative; z-index:1; }
+
+/* ── LEFT SIDEBAR ── */
+.sidebar {
+  width:220px; flex-shrink:0; border-right:1px solid var(--border);
+  background:var(--surface); display:flex; flex-direction:column;
+  overflow-y:auto;
+}
+.sidebar-section { padding:16px; border-bottom:1px solid var(--border); }
+.s-label {
+  font-size:9px; font-family:'JetBrains Mono',monospace; color:var(--muted);
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;
+}
+.mode-btn {
+  width:100%; padding:10px 12px; border-radius:8px; cursor:pointer;
+  transition:all 0.15s; font-size:13px; font-weight:600; color:var(--muted2);
+  margin-bottom:4px; display:flex; align-items:center; gap:9px;
+  background:transparent; border:1px solid transparent; text-align:left;
+}
+.mode-btn:hover { background:rgba(46,127,255,0.07); color:var(--text); border-color:var(--border); }
+.mode-btn.active { background:rgba(46,127,255,0.12); color:var(--accent); border-color:rgba(46,127,255,0.2); }
+.mode-icon { font-size:14px; width:18px; text-align:center; }
+
+/* Topics */
+.topic-chip {
+  display:inline-flex; padding:4px 10px; border-radius:6px;
+  font-size:11px; font-weight:600; background:rgba(46,127,255,0.06);
+  border:1px solid var(--border); color:var(--muted2); cursor:pointer;
+  transition:all 0.15s; margin:3px;
+}
+.topic-chip:hover { background:rgba(46,127,255,0.14); color:var(--accent); border-color:rgba(46,127,255,0.3); }
+
+/* XP */
+.xp-bar-wrap { background:rgba(46,127,255,0.08); border-radius:4px; height:6px; overflow:hidden; margin:8px 0; }
+.xp-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--cyan)); border-radius:4px; transition:width 0.6s; }
+.xp-labels { display:flex; justify-content:space-between; font-size:10px; font-family:'JetBrains Mono',monospace; color:var(--muted); }
+
+/* ── CHAT AREA ── */
+.chat-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+.chat-messages {
+  flex:1; overflow-y:auto; padding:24px;
+  display:flex; flex-direction:column; gap:16px;
+}
+.chat-messages::-webkit-scrollbar { width:4px; }
+.chat-messages::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+.msg-row { display:flex; gap:10px; max-width:82%; animation:fadeIn 0.2s ease; }
+.msg-row.user { align-self:flex-end; flex-direction:row-reverse; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+.msg-avatar {
+  width:30px; height:30px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:800; margin-top:2px;
+}
+.msg-avatar.ai { background:linear-gradient(135deg,var(--accent),var(--cyan)); color:#fff; }
+.msg-avatar.user { background:rgba(46,127,255,0.18); color:var(--accent); border:1px solid rgba(46,127,255,0.3); }
+
+.msg-content { display:flex; flex-direction:column; gap:4px; }
+.msg-bubble {
+  padding:12px 15px; border-radius:14px;
+  font-size:13px; line-height:1.7;
+}
+.msg-bubble.ai {
+  background:var(--surface2); border:1px solid var(--border);
+  border-top-left-radius:4px; color:var(--text);
+}
+.msg-bubble.user {
+  background:var(--accent); color:#fff;
+  border-top-right-radius:4px;
+}
+.msg-bubble code {
+  font-family:'JetBrains Mono',monospace;
+  background:rgba(10,240,255,0.1); padding:1px 5px;
+  border-radius:3px; font-size:12px; color:var(--cyan);
+}
+.msg-bubble pre {
+  background:rgba(0,0,0,0.35); border:1px solid rgba(46,127,255,0.15);
+  border-radius:8px; padding:14px; margin:10px 0;
+  overflow-x:auto; font-family:'JetBrains Mono',monospace;
+  font-size:12px; line-height:1.65; color:#c9d4e0;
+}
+.msg-time { font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace; padding:0 2px; }
+
+/* Quick suggestions */
+.suggestions {
+  display:flex; gap:8px; padding:0 24px 12px;
+  overflow-x:auto; flex-shrink:0;
+}
+.suggestions::-webkit-scrollbar { display:none; }
+.suggestion-chip {
+  padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600;
+  border:1px solid var(--border); background:var(--surface2);
+  color:var(--muted2); cursor:pointer; transition:all 0.15s;
+  white-space:nowrap; flex-shrink:0;
+}
+.suggestion-chip:hover { border-color:var(--accent); color:var(--accent); background:rgba(46,127,255,0.07); }
+
+/* ── INPUT AREA ── */
+.chat-input-wrap {
+  padding:16px 24px 20px; border-top:1px solid var(--border);
+  background:rgba(6,11,17,0.5); flex-shrink:0;
+}
+.chat-input-row { display:flex; gap:10px; align-items:flex-end; }
+.chat-input {
+  flex:1; background:var(--surface2); border:1px solid var(--border);
+  border-radius:12px; padding:12px 16px; color:var(--text);
+  font-family:'Syne',sans-serif; font-size:13px; resize:none;
+  outline:none; max-height:140px; transition:border-color 0.2s; line-height:1.55;
+}
+.chat-input:focus { border-color:rgba(46,127,255,0.4); }
+.chat-input::placeholder { color:var(--muted); }
+.send-btn {
+  width:42px; height:42px; border-radius:10px; background:var(--accent);
+  border:none; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; transition:all 0.2s; flex-shrink:0;
+}
+.send-btn:hover { background:#4a8fff; transform:translateY(-1px); box-shadow:0 4px 16px rgba(46,127,255,0.35); }
+.send-btn:disabled { opacity:0.45; cursor:not-allowed; transform:none; box-shadow:none; }
+.send-btn svg { color:#fff; }
+
+/* ── RIGHT PANEL (Lessons / Quiz) ── */
+.right-panel {
+  width:360px; flex-shrink:0; border-left:1px solid var(--border);
+  background:var(--surface); display:none; flex-direction:column;
+  overflow-y:auto;
+}
+.right-panel.open { display:flex; }
+.rp-header {
+  padding:16px 20px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0;
+}
+.rp-title { font-size:14px; font-weight:700; }
+.rp-close {
+  width:26px; height:26px; border-radius:6px; cursor:pointer;
+  background:rgba(255,255,255,0.04); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:var(--muted2); transition:all 0.15s;
+}
+.rp-close:hover { color:var(--text); border-color:var(--border2); }
+.rp-body { padding:16px; flex:1; }
+
+/* Lesson cards */
+.lesson-card {
+  padding:14px; border:1px solid var(--border); border-radius:10px;
+  margin-bottom:10px; cursor:pointer; transition:all 0.2s; background:var(--surface2);
+}
+.lesson-card:hover { border-color:var(--accent); transform:translateX(2px); }
+.lesson-card.completed { border-color:rgba(0,214,143,0.2); }
+.lesson-tag {
+  font-size:9px; font-family:'JetBrains Mono',monospace; letter-spacing:1px;
+  text-transform:uppercase; padding:2px 7px; border-radius:3px;
+  display:inline-block; margin-bottom:6px;
+}
+.lesson-tag.beginner { background:rgba(0,214,143,0.1); color:var(--success); }
+.lesson-tag.intermediate { background:rgba(46,127,255,0.1); color:var(--accent); }
+.lesson-tag.advanced { background:rgba(255,184,48,0.1); color:var(--warning); }
+.lesson-name { font-size:13px; font-weight:700; margin-bottom:3px; }
+.lesson-desc { font-size:11px; color:var(--muted2); }
+
+/* Quiz */
+.quiz-wrap { display:flex; flex-direction:column; gap:14px; }
+.quiz-q { font-size:14px; font-weight:700; line-height:1.55; }
+.quiz-code {
+  background:rgba(0,0,0,0.3); border:1px solid var(--border);
+  border-radius:8px; padding:12px; font-family:'JetBrains Mono',monospace;
+  font-size:11px; line-height:1.6; color:#c9d4e0; overflow-x:auto;
+}
+.quiz-opts { display:flex; flex-direction:column; gap:8px; }
+.quiz-opt {
+  padding:11px 14px; border:1px solid var(--border); border-radius:8px;
+  cursor:pointer; transition:all 0.15s; font-size:13px; font-weight:600;
+  background:var(--surface2);
+}
+.quiz-opt:hover { border-color:var(--accent); background:rgba(46,127,255,0.06); }
+.quiz-opt.correct { border-color:var(--success); background:rgba(0,214,143,0.07); color:var(--success); }
+.quiz-opt.wrong { border-color:var(--danger); background:rgba(255,77,106,0.07); color:var(--danger); }
+.quiz-exp {
+  padding:12px; background:rgba(46,127,255,0.05);
+  border:1px solid rgba(46,127,255,0.12); border-radius:8px;
+  font-size:12px; color:var(--muted2); line-height:1.65; display:none;
+}
+.quiz-score-row { display:flex; gap:16px; }
+.q-score { text-align:center; }
+.q-score-val { font-size:20px; font-weight:800; color:var(--accent); }
+.q-score-lbl { font-size:10px; font-family:'JetBrains Mono',monospace; color:var(--muted2); }
+
+/* Typing animation */
+.typing { display:flex; gap:4px; align-items:center; padding:3px 0; }
+.typing span { width:6px; height:6px; border-radius:50%; background:var(--muted2); animation:bounce 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay:0.2s; }
+.typing span:nth-child(3) { animation-delay:0.4s; }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--surface2); border:1px solid var(--border2);
+  border-radius:10px; padding:12px 18px; font-size:13px; font-weight:600;
+  z-index:999; transform:translateY(60px); opacity:0; transition:all 0.3s;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+}
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { border-color:rgba(0,214,143,0.3); color:var(--success); }
+.toast.error { border-color:rgba(255,77,106,0.3); color:var(--danger); }
+
+/* Lesson viewer */
+.lesson-viewer { display:none; padding:16px; }
+.lesson-viewer.open { display:block; }
+.lv-back { font-size:12px; color:var(--muted2); cursor:pointer; margin-bottom:14px; display:inline-flex; align-items:center; gap:5px; transition:color 0.15s; }
+.lv-back:hover { color:var(--accent); }
+.lv-title { font-size:16px; font-weight:800; margin-bottom:6px; }
+.lv-summary { font-size:12px; color:var(--muted2); margin-bottom:14px; line-height:1.6; }
+.lv-section { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:10px; }
+.lv-section-label { font-size:9px; font-family:'JetBrains Mono',monospace; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+.lv-section-body { font-size:12px; line-height:1.7; color:var(--text); }
+.lv-section-body pre { background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:6px; padding:12px; margin:8px 0; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.6; color:#c9d4e0; overflow-x:auto; }
+.tip-box { background:rgba(10,240,255,0.04); border:1px solid rgba(10,240,255,0.12); border-radius:8px; padding:12px; font-size:12px; color:var(--cyan); margin-top:6px; }
+
+@media (max-width:900px) { .sidebar { display:none; } .right-panel { display:none !important; } }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-icon">S.</div>
+    <span class="logo-name">Stud<span>.</span></span>
+  </a>
+  <div class="topbar-center">AI Tutor — online</div>
+  <div class="topbar-right">
+    <span class="level-pill" id="topLevel">Beginner</span>
+    <button class="btn-sm" onclick="window.location.href='index.html'">← Dashboard</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <!-- Modes -->
+    <div class="sidebar-section">
+      <div class="s-label">Mode</div>
+      <button class="mode-btn active" id="modeChatBtn" onclick="setMode('chat')">
+        <span class="mode-icon">💬</span> Ask Stud
+      </button>
+      <button class="mode-btn" id="modeLessonsBtn" onclick="setMode('lessons')">
+        <span class="mode-icon">📖</span> Lessons
+      </button>
+      <button class="mode-btn" id="modeQuizBtn" onclick="setMode('quiz')">
+        <span class="mode-icon">⚡</span> Quiz
+      </button>
+    </div>
+
+    <!-- Quick topics -->
+    <div class="sidebar-section">
+      <div class="s-label">Ask About</div>
+      <div>
+        <span class="topic-chip" onclick="quickAsk('Explain RemoteEvents')">RemoteEvents</span>
+        <span class="topic-chip" onclick="quickAsk('How do DataStores work?')">DataStores</span>
+        <span class="topic-chip" onclick="quickAsk('What is task.wait()?')">task.wait()</span>
+        <span class="topic-chip" onclick="quickAsk('Explain ModuleScripts')">ModuleScripts</span>
+        <span class="topic-chip" onclick="quickAsk('How do Metatables work?')">Metatables</span>
+        <span class="topic-chip" onclick="quickAsk('What are Coroutines?')">Coroutines</span>
+        <span class="topic-chip" onclick="quickAsk('How do I do OOP in Lua?')">OOP</span>
+        <span class="topic-chip" onclick="quickAsk('Explain Leaderstats')">Leaderstats</span>
+      </div>
+    </div>
+
+    <!-- XP -->
+    <div class="sidebar-section">
+      <div class="s-label">Your XP</div>
+      <div style="font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;" id="sideXP">0</div>
+      <div class="xp-bar-wrap"><div class="xp-bar" id="sideXpBar" style="width:0%"></div></div>
+      <div class="xp-labels">
+        <span id="sideXpCur">0 XP</span>
+        <span id="sideXpNext">100 XP</span>
+      </div>
+    </div>
+
+    <!-- Quiz scores -->
+    <div class="sidebar-section">
+      <div class="s-label">Quiz Stats</div>
+      <div style="display:flex;gap:16px;">
+        <div>
+          <div style="font-size:18px;font-weight:800;color:var(--accent);" id="sideCorrect">0</div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted2);">Correct</div>
+        </div>
+        <div>
+          <div style="font-size:18px;font-weight:800;color:var(--accent);" id="sideTotal">0</div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted2);">Total</div>
+        </div>
+        <div>
+          <div style="font-size:18px;font-weight:800;color:var(--warning);" id="sideStreak">0</div>
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted2);">Streak 🔥</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT AREA -->
+  <div class="chat-area">
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg-row">
+        <div class="msg-avatar ai">S</div>
+        <div class="msg-content">
+          <div class="msg-bubble ai">Hey! I'm <strong>Stud</strong> — your Roblox Lua tutor 🎮<br><br>Ask me anything about scripting. I'll explain it at your level with real code examples. What are you working on?</div>
+          <div class="msg-time">Stud · now</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="suggestions" id="suggestions">
+      <span class="suggestion-chip" onclick="quickAsk('How do RemoteEvents work?')">How do RemoteEvents work?</span>
+      <span class="suggestion-chip" onclick="quickAsk('Fix my script — it keeps erroring')">Fix my script</span>
+      <span class="suggestion-chip" onclick="quickAsk('Explain DataStores with an example')">DataStores explained</span>
+      <span class="suggestion-chip" onclick="quickAsk('How do I make a leaderboard?')">Make a leaderboard</span>
+      <span class="suggestion-chip" onclick="quickAsk('What is the difference between Script and LocalScript?')">Script vs LocalScript</span>
+    </div>
+
+    <div class="chat-input-wrap">
+      <div class="chat-input-row">
+        <textarea
+          class="chat-input" id="chatInput" rows="1"
+          placeholder="Ask Stud anything about Roblox Lua..."
+          onkeydown="handleKey(event)" oninput="autoResize(this)"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMsg()">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel" id="rightPanel">
+    <div class="rp-header">
+      <div class="rp-title" id="rpTitle">Lessons</div>
+      <div class="rp-close" onclick="closePanel()">✕</div>
+    </div>
+    <div class="rp-body" id="rpBody">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE = 'https://studcoding-production.up.railway.app';
+let profile = null;
+let chatHistory = [];
+let quizData = null;
+let quizAnswered = false;
+let quizStreak = 0;
+let currentMode = 'chat';
+
+const LESSONS = [
+  { topic:'Variables and Data Types', level:'beginner', desc:'Store and use data in Lua.' },
+  { topic:'If Statements', level:'beginner', desc:'Control flow with conditions.' },
+  { topic:'Loops', level:'beginner', desc:'Repeat code with for, while, repeat.' },
+  { topic:'Functions', level:'beginner', desc:'Organize code with reusable functions.' },
+  { topic:'Parts and Properties', level:'beginner', desc:'Manipulate Roblox Parts with Lua.' },
+  { topic:'RemoteEvents', level:'intermediate', desc:'Send data between server and client.' },
+  { topic:'ModuleScripts', level:'intermediate', desc:'Share code across scripts.' },
+  { topic:'DataStores', level:'intermediate', desc:'Save and load player data.' },
+  { topic:'Leaderstats', level:'intermediate', desc:'Build a leaderboard for your game.' },
+  { topic:'Character Handling', level:'intermediate', desc:'Control player characters.' },
+  { topic:'Metatables', level:'advanced', desc:'Unlock OOP patterns in Lua.' },
+  { topic:'Coroutines', level:'advanced', desc:'Run code concurrently.' },
+  { topic:'Optimization', level:'advanced', desc:'Make scripts faster and lighter.' },
+  { topic:'OOP in Lua', level:'advanced', desc:'Build reusable objects and classes.' },
+  { topic:'Advanced DataStore Patterns', level:'advanced', desc:'Handle complex save systems.' },
+];
+
+function authHeaders() {
+  const token = localStorage.getItem('stud_token');
+  return { 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` };
+}
+
+// ── INIT ──
+window.onload = async () => {
+  const token = localStorage.getItem('stud_token');
+  if (!token) { window.location.href = '/login.html'; return; }
+  await loadProfile();
+  document.getElementById('chatInput').focus();
+};
+
+async function loadProfile() {
+  try {
+    const r = await fetch(`${BASE}/get-profile`, { headers: authHeaders() });
+    if (r.status === 401) { window.location.href = '/login.html'; return; }
+    profile = await r.json();
+    updateUI();
+  } catch(e) {
+    profile = { level:'Beginner', xp:0, xp_to_next:100, quiz_correct:0, quiz_total:0, lessons_completed:[] };
+  }
+}
+
+function updateUI() {
+  if (!profile) return;
+  const pct = Math.min(100, Math.round((profile.xp / profile.xp_to_next) * 100));
+  document.getElementById('topLevel').textContent = profile.level;
+  document.getElementById('sideXP').textContent = profile.xp;
+  document.getElementById('sideXpBar').style.width = pct + '%';
+  document.getElementById('sideXpCur').textContent = profile.xp + ' XP';
+  document.getElementById('sideXpNext').textContent = profile.xp_to_next + ' XP';
+  document.getElementById('sideCorrect').textContent = profile.quiz_correct || 0;
+  document.getElementById('sideTotal').textContent = profile.quiz_total || 0;
+}
+
+// ── MODE SWITCHING ──
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode' + mode.charAt(0).toUpperCase() + mode.slice(1) + 'Btn').classList.add('active');
+
+  if (mode === 'lessons') {
+    openPanel('Lessons', buildLessonsHTML());
+  } else if (mode === 'quiz') {
+    openPanel('Quiz Mode', buildQuizStartHTML());
+  } else {
+    closePanel();
+    document.getElementById('chatInput').focus();
+  }
+}
+
+function openPanel(title, html) {
+  document.getElementById('rpTitle').textContent = title;
+  document.getElementById('rpBody').innerHTML = html;
+  document.getElementById('rightPanel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('rightPanel').classList.remove('open');
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('modeChatBtn').classList.add('active');
+  currentMode = 'chat';
+}
+
+// ── CHAT ──
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function quickAsk(msg) {
+  closePanel();
+  document.getElementById('chatInput').value = msg;
+  sendMsg();
+}
+
+function appendMsg(role, content) {
+  const wrap = document.getElementById('chatMessages');
+  const row = document.createElement('div');
+  row.className = 'msg-row' + (role === 'user' ? ' user' : '');
+  const now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  const formatted = content
+    .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre>$2</pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+  row.innerHTML = `
+    <div class="msg-avatar ${role}">${role === 'ai' ? 'S' : 'U'}</div>
+    <div class="msg-content">
+      <div class="msg-bubble ${role}">${formatted}</div>
+      <div class="msg-time">${role === 'ai' ? 'Stud' : 'You'} · ${now}</div>
+    </div>`;
+  wrap.appendChild(row);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function showTyping() {
+  const wrap = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.className = 'msg-row'; el.id = 'typing';
+  el.innerHTML = `<div class="msg-avatar ai">S</div><div class="msg-content"><div class="msg-bubble ai"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+  wrap.appendChild(el); wrap.scrollTop = wrap.scrollHeight;
+}
+function removeTyping() { document.getElementById('typing')?.remove(); }
+
+async function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('suggestions').style.display = 'none';
+  appendMsg('user', msg);
+  chatHistory.push({ role:'user', content:msg });
+  showTyping();
+
+  try {
+    const r = await fetch(`${BASE}/tutor-chat`, {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ message:msg, history:chatHistory.slice(-10) })
+    });
+    const data = await r.json();
+    removeTyping();
+    appendMsg('ai', data.reply || 'Something went wrong.');
+    chatHistory.push({ role:'assistant', content:data.reply });
+    if (data.profile) { profile = data.profile; updateUI(); }
+  } catch(e) {
+    removeTyping();
+    appendMsg('ai', 'Could not reach the server. Try again in a moment.');
+  }
+
+  document.getElementById('sendBtn').disabled = false;
+  input.focus();
+}
+
+// ── LESSONS ──
+function buildLessonsHTML() {
+  const completed = profile?.lessons_completed || [];
+  return LESSONS.map(l => `
+    <div class="lesson-card ${completed.includes(l.topic) ? 'completed' : ''}" onclick="loadLesson('${l.topic}')">
+      <div class="lesson-tag ${l.level}">${l.level}</div>
+      <div class="lesson-name">${l.topic}</div>
+      <div class="lesson-desc">${l.desc}</div>
+    </div>`).join('');
+}
+
+async function loadLesson(topic) {
+  document.getElementById('rpBody').innerHTML = `
+    <div class="lesson-viewer open">
+      <div class="lv-back" onclick="openPanel('Lessons', buildLessonsHTML())">← Back</div>
+      <div class="lv-title">Loading lesson...</div>
+      <div style="color:var(--muted2);font-size:12px;margin-top:8px;">Generating for your level...</div>
+    </div>`;
+  try {
+    const r = await fetch(`${BASE}/tutor-lesson`, {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ topic })
+    });
+    const data = await r.json();
+    const l = data.lesson;
+    document.getElementById('rpBody').innerHTML = `
+      <div class="lesson-viewer open">
+        <div class="lv-back" onclick="openPanel('Lessons', buildLessonsHTML())">← All Lessons</div>
+        <div class="lv-title">${l.title || topic}</div>
+        <div class="lv-summary">${l.summary || ''}</div>
+        ${l.concept ? `<div class="lv-section"><div class="lv-section-label">Concept</div><div class="lv-section-body">${l.concept}</div></div>` : ''}
+        ${l.example ? `<div class="lv-section"><div class="lv-section-label">Example</div><div class="lv-section-body"><pre>${escHtml(l.example)}</pre></div></div>` : ''}
+        ${l.explanation ? `<div class="lv-section"><div class="lv-section-label">Explanation</div><div class="lv-section-body">${l.explanation}</div></div>` : ''}
+        ${l.practice ? `<div class="lv-section"><div class="lv-section-label">Practice</div><div class="lv-section-body">${l.practice}</div></div>` : ''}
+        ${l.tip ? `<div class="tip-box">💡 ${l.tip}</div>` : ''}
+        <div style="margin-top:14px;">
+          <button onclick="setMode('quiz')" style="width:100%;padding:10px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Take a Quiz on this →</button>
+        </div>
+      </div>`;
+    if (data.profile) { profile = data.profile; updateUI(); }
+    showToast('Lesson loaded! +15 XP', 'success');
+  } catch(e) {
+    document.getElementById('rpBody').innerHTML = '<div style="color:var(--danger);padding:16px;font-size:13px;">Could not load lesson. Is the server running?</div>';
+  }
+}
+
+// ── QUIZ ──
+let quizQuestions = [];
+let quizIndex = 0;
+let quizResults = [];
+
+function buildQuizStartHTML() {
+  return `
+    <div class="quiz-wrap">
+      <div class="quiz-score-row">
+        <div class="q-score"><div class="q-score-val" id="qCorrect">${profile?.quiz_correct || 0}</div><div class="q-score-lbl">Correct</div></div>
+        <div class="q-score"><div class="q-score-val" id="qTotal">${profile?.quiz_total || 0}</div><div class="q-score-lbl">Total</div></div>
+        <div class="q-score"><div class="q-score-val" id="qStreak">${quizStreak}</div><div class="q-score-lbl">Streak 🔥</div></div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;color:var(--muted2);margin-bottom:8px;">Pick a topic (optional):</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="topic-chip" onclick="startQuiz('')">🎲 Random</span>
+          <span class="topic-chip" onclick="startQuiz('Variables')">Variables</span>
+          <span class="topic-chip" onclick="startQuiz('Loops')">Loops</span>
+          <span class="topic-chip" onclick="startQuiz('Functions')">Functions</span>
+          <span class="topic-chip" onclick="startQuiz('RemoteEvents')">RemoteEvents</span>
+          <span class="topic-chip" onclick="startQuiz('DataStores')">DataStores</span>
+          <span class="topic-chip" onclick="startQuiz('ModuleScripts')">ModuleScripts</span>
+          <span class="topic-chip" onclick="startQuiz('Metatables')">Metatables</span>
+          <span class="topic-chip" onclick="startQuiz('OOP')">OOP</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+async function startQuiz(topic) {
+  quizQuestions = [];
+  quizIndex = 0;
+  quizResults = [];
+  quizAnswered = false;
+
+  document.getElementById('rpBody').innerHTML = '<div style="color:var(--muted2);padding:20px;text-align:center;font-size:13px;">⚡ Generating 10 questions...</div>';
+
+  try {
+    const r = await fetch(`${BASE}/tutor-quiz`, {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ topic })
+    });
+    const data = await r.json();
+    quizQuestions = data.questions || [];
+    if (quizQuestions.length === 0) throw new Error('No questions');
+    renderQuizQuestion();
+  } catch(e) {
+    document.getElementById('rpBody').innerHTML = '<div style="color:var(--danger);padding:20px;font-size:12px;">Could not load quiz. Is the server running?</div>';
+  }
+}
+
+function renderQuizQuestion() {
+  if (quizIndex >= quizQuestions.length) {
+    renderQuizResults();
+    return;
+  }
+  quizAnswered = false;
+  quizData = quizQuestions[quizIndex];
+  const num = quizIndex + 1;
+  const total = quizQuestions.length;
+
+  document.getElementById('rpBody').innerHTML = `
+    <div class="quiz-wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);">Question ${num} of ${total}</div>
+        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted2);">${quizData.topic}</div>
+      </div>
+      <div style="background:rgba(46,127,255,0.08);border-radius:4px;height:4px;margin-bottom:14px;">
+        <div style="height:100%;width:${((num-1)/total)*100}%;background:var(--accent);border-radius:4px;transition:width 0.4s;"></div>
+      </div>
+      <div class="quiz-q">${quizData.question}</div>
+      ${quizData.code ? `<pre class="quiz-code">${escHtml(quizData.code)}</pre>` : ''}
+      <div class="quiz-opts" id="quizOpts">
+        ${quizData.options.map(o => `<div class="quiz-opt" onclick="answerQuiz('${o[0]}', this)">${o}</div>`).join('')}
+      </div>
+      <div class="quiz-exp" id="quizExp">${quizData.explanation}</div>
+      <div id="quizNextBtn" style="display:none;margin-top:4px;">
+        <button onclick="nextQuizQuestion()" style="width:100%;padding:10px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">${quizIndex + 1 < quizQuestions.length ? 'Next Question →' : 'See Results →'}</button>
+      </div>
+    </div>`;
+}
+
+function nextQuizQuestion() {
+  quizIndex++;
+  renderQuizQuestion();
+}
+
+function renderQuizResults() {
+  const correct = quizResults.filter(r => r).length;
+  const total = quizResults.length;
+  const pct = Math.round((correct / total) * 100);
+  const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '📚';
+
+  document.getElementById('rpBody').innerHTML = `
+    <div class="quiz-wrap">
+      <div style="text-align:center;padding:16px 0;">
+        <div style="font-size:40px;margin-bottom:10px;">${emoji}</div>
+        <div style="font-size:24px;font-weight:800;color:var(--accent);">${correct}/${total}</div>
+        <div style="font-size:13px;color:var(--muted2);margin:4px 0 16px;">${pct}% correct</div>
+        ${pct >= 80 ? '<div style="font-size:12px;color:var(--success);">Great work! You know your stuff.</div>' : 
+          pct >= 60 ? '<div style="font-size:12px;color:var(--warning);">Good effort! Keep practicing.</div>' :
+          '<div style="font-size:12px;color:var(--danger);">Keep studying — you\'ve got this!</div>'}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+        ${quizQuestions.map((q, i) => `
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:${quizResults[i] ? 'rgba(0,214,143,0.07)' : 'rgba(255,77,106,0.07)'};border:1px solid ${quizResults[i] ? 'rgba(0,214,143,0.2)' : 'rgba(255,77,106,0.2)'};">
+            <span style="font-size:14px;">${quizResults[i] ? '✓' : '✗'}</span>
+            <span style="font-size:11px;color:var(--text);flex:1;line-height:1.4;">${q.question.substring(0, 60)}${q.question.length > 60 ? '...' : ''}</span>
+          </div>`).join('')}
+      </div>
+      <button onclick="setMode('quiz')" style="width:100%;padding:10px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Try Again →</button>
+    </div>`;
+}
+
+async function answerQuiz(answer, el) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+
+  const isCorrect = answer.toUpperCase() === quizData.correct.toUpperCase();
+  quizResults.push(isCorrect);
+
+  document.querySelectorAll('.quiz-opt').forEach(o => {
+    if (o.textContent[0].toUpperCase() === quizData.correct.toUpperCase()) o.classList.add('correct');
+  });
+  if (!isCorrect) { el.classList.add('wrong'); quizStreak = 0; }
+  else { quizStreak++; showToast(`Correct! +20 XP`, 'success'); }
+
+  document.getElementById('quizExp').style.display = 'block';
+  document.getElementById('quizNextBtn').style.display = 'block';
+  document.getElementById('sideStreak').textContent = quizStreak;
+
+  try {
+    const r = await fetch(`${BASE}/tutor-answer`, {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ answer, correct:quizData.correct, topic:quizData.topic, question:quizData.question })
+    });
+    const data = await r.json();
+    if (data.leveled_up) showToast('Level up! 🎉', 'success');
     if (data.profile) { profile = data.profile; updateUI(); }
   } catch(e) {}
 }
