@@ -690,13 +690,13 @@ def tutor_quiz():
     pd = profile_to_dict(p)
 
     text = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content':
-            f'Generate exactly 10 UNIQUE multiple choice Roblox Lua quiz questions for a {pd["level"]} student'
+            f'Generate exactly 20 UNIQUE multiple choice Roblox Lua quiz questions for a {pd["level"]} student'
             f'{f" specifically about {topic}" if topic else ", covering a wide variety of Roblox Lua topics"}.\n'
             'Rules: Never repeat the same question. Each question must test a DIFFERENT concept. Vary difficulty.\n'
-            'Return ONLY a valid JSON array of 10 objects, no markdown:\n'
+            'Return ONLY a valid JSON array of 20 objects, no markdown:\n'
             '[{"topic":"subtopic","question":"the question","code":"lua code or empty string",'
             '"options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A","explanation":"why A is correct"}]'}],
-        max_tokens=3000)
+        max_tokens=6000)
     try:
         text = clean_json_response(text)
         questions = json.loads(text)
