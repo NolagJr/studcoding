@@ -6,11 +6,11 @@ from email.mime.multipart import MIMEMultipart
 import anthropic
 
 app = Flask(__name__, static_folder='.')
-CORS(app)
+CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5500", "https://nolagjr.github.io"])
 
 # ── CONFIG ──
 SECRET_KEY      = os.environ.get('JWT_SECRET', 'stud-secret-key-change-in-prod')
-ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')   # fallback key
+ANTHROPIC_API_KEY = os.environ.get('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', '')
 DB_PATH         = 'stud.db'
 SMTP_HOST       = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT       = int(os.environ.get('SMTP_PORT', '587'))
