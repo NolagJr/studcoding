@@ -387,12 +387,18 @@ select.field-input:focus { border-color:var(--accent); }
     <a class="nav-item" onclick="showPanel('tutor',this)">
       <span class="nav-icon">◈</span> Ask Stud
     </a>
+    <a class="nav-item" onclick="showPanel('chathistory',this)">
+      <span class="nav-icon">◫</span> Chat History
+    </a>
     <a class="nav-item" onclick="showPanel('lessons',this)">
       <span class="nav-icon">◉</span> Lessons
     </a>
     <a class="nav-item" onclick="showPanel('quiz',this)">
       <span class="nav-icon">◎</span> Quiz
       <span class="nav-badge new">new</span>
+    </a>
+    <a class="nav-item" onclick="showPanel('quizhistory',this)">
+      <span class="nav-icon">◑</span> Quiz History
     </a>
   </div>
 
@@ -615,31 +621,62 @@ select.field-input:focus { border-color:var(--accent); }
 
   <!-- ── QUIZ ── -->
   <div class="panel" id="panel-quiz">
-    <div class="quiz-panel-wrap" id="quizPanelWrap">
-      <!-- Header + score row -->
-      <div>
-        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">// Quiz Mode</div>
-        <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px;">Test Your Knowledge</div>
-        <div style="font-size:13px;color:var(--muted2);">Pick a topic and tackle 10 questions. Earn XP for every correct answer.</div>
-      </div>
-
-      <div class="quiz-score-header">
-        <div class="quiz-score-item"><div class="quiz-score-val" id="quizCorrect">0</div><div class="quiz-score-lbl">Correct</div></div>
-        <div class="quiz-score-item"><div class="quiz-score-val" id="quizTotal">0</div><div class="quiz-score-lbl">Total</div></div>
-        <div class="quiz-score-item"><div class="quiz-score-val" id="quizStreak">0</div><div class="quiz-score-lbl">Streak 🔥</div></div>
-      </div>
-
-      <!-- Topic selector -->
+    <div class="lessons-content" id="quizPanelWrap">
+      <!-- Topic selector (shown when not in a quiz) -->
       <div id="quizTopicSection">
-        <div style="font-size:12px;font-weight:600;color:var(--muted2);margin-bottom:10px;">Pick a topic to start:</div>
-        <div class="quiz-topic-grid" id="quizTopicGrid">
-          <!-- populated by JS -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">// Quiz Mode</div>
+          <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px;">Test Your Knowledge</div>
+          <div style="font-size:13px;color:var(--muted2);">Pick a topic and tackle 10 questions. Earn XP for every correct answer.</div>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;font-family:'JetBrains Mono',monospace;">Green = preloaded (instant start) · Others load in ~15s</div>
+        <div class="lessons-grid" id="quizTopicGrid"></div>
       </div>
 
-      <!-- Question / loading / results rendered here -->
-      <div id="quizMain"></div>
+      <!-- Question / loading / results rendered here (full width) -->
+      <div id="quizMain" style="max-width:700px;"></div>
+    </div>
+  </div>
+
+  <!-- ── QUIZ HISTORY ── -->
+  <div class="panel" id="panel-quizhistory">
+    <div class="lessons-content">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">// Analytics</div>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px;">Quiz History</div>
+        <div style="font-size:13px;color:var(--muted2);">All your past quizzes, scores, and performance trends.</div>
+      </div>
+      <!-- Summary stats -->
+      <div class="stats-row" id="qhStatsRow" style="margin-bottom:20px;display:none;"></div>
+      <!-- History list -->
+      <div id="qhList"><div style="color:var(--muted2);font-size:13px;">No quizzes taken yet. Go take one!</div></div>
+    </div>
+  </div>
+
+  <!-- ── CHAT HISTORY ── -->
+  <div class="panel" id="panel-chathistory">
+    <div class="tutor-layout">
+      <!-- Session list -->
+      <div style="width:260px;border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;">
+        <div style="padding:20px 16px 12px;border-bottom:1px solid var(--border);">
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">// Sessions</div>
+          <div style="font-size:14px;font-weight:700;">Chat History</div>
+        </div>
+        <div id="chatSessionList" style="padding:8px;flex:1;">
+          <div style="color:var(--muted2);font-size:12px;padding:12px 8px;">No past chats saved yet.</div>
+        </div>
+        <div style="padding:12px;border-top:1px solid var(--border);">
+          <button class="btn btn-outline" style="width:100%;font-size:12px;" onclick="clearChatHistory()">Clear All History</button>
+        </div>
+      </div>
+      <!-- Session viewer -->
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <div class="chat-messages" id="chatHistoryViewer">
+          <div style="color:var(--muted2);font-size:13px;text-align:center;padding-top:60px;">← Select a session to view it</div>
+        </div>
+        <div style="padding:14px 20px;border-top:1px solid var(--border);background:var(--surface);font-size:12px;color:var(--muted2);">
+          Viewing past session — <a onclick="showPanel('tutor',null)" style="color:var(--accent);cursor:pointer;">Open live chat →</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -942,6 +979,22 @@ select.field-input:focus { border-color:var(--accent); }
           Get an Anthropic key at <span style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:12px;">console.anthropic.com</span>
         </div>
       </div>
+      <div class="card">
+        <div class="card-title"><span>◈</span> Stud Chat AI</div>
+        <div style="font-size:13px;color:var(--muted2);margin-bottom:16px;line-height:1.6;">Once you've saved your API key above, you can link it to the Ask Stud chat. This means you're talking to your own AI agent — not the default Stud bot.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;">
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Use my API key for Ask Stud</div>
+            <div style="font-size:11px;color:var(--muted2);" id="chatKeyStatus">Requires a saved API key above</div>
+          </div>
+          <label style="position:relative;display:inline-flex;align-items:center;cursor:pointer;flex-shrink:0;">
+            <input type="checkbox" id="useMyChatKey" onchange="toggleChatKey()" style="opacity:0;width:0;height:0;position:absolute;">
+            <div id="toggleTrack" style="width:44px;height:24px;border-radius:12px;background:var(--border2);transition:background 0.2s;position:relative;">
+              <div id="toggleThumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform 0.2s;"></div>
+            </div>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1021,6 +1074,9 @@ window.onload = async () => {
   buildLessonsGrid();
   buildQuizTopicGrid();
   checkServer();
+
+  // Start a fresh chat session
+  currentChatSessionId = 'session_' + Date.now();
 
   // Preload quiz questions in background
   preloadAllTopics();
@@ -1104,6 +1160,7 @@ function showPanel(id, el) {
   if (el) el.classList.add('active');
   const titles = {
     home:'Home', tutor:'Ask Stud', lessons:'Lessons', quiz:'Quiz Mode',
+    quizhistory:'Quiz History', chathistory:'Chat History',
     profile:'Profile & XP', catalog:'Catalog', howto:'How to Use',
     about:'About Stud', feedback:'Feedback', pro:'Pro Features',
     install:'Get Plugin', ai:'Connect AI'
@@ -1112,8 +1169,10 @@ function showPanel(id, el) {
   if (id === 'lessons') buildLessonsGrid();
   if (id === 'tutor') document.getElementById('chatInput').focus();
   if (id === 'install') loadInstallPanel();
-  if (id === 'ai') loadAiPanel();
+  if (id === 'ai') { loadAiPanel(); loadChatKeyToggle(); }
   if (id === 'quiz') buildQuizTopicGrid();
+  if (id === 'quizhistory') loadQuizHistory();
+  if (id === 'chathistory') loadChatHistoryPanel();
 }
 
 // ── CHAT ──
@@ -1150,20 +1209,31 @@ async function sendMessage() {
   const input = document.getElementById('chatInput');
   const msg = input.value.trim();
   if (!msg) return;
+
+  // Start a new session if needed
+  if (!currentChatSessionId) currentChatSessionId = 'session_' + Date.now();
+
   input.value = ''; input.style.height = 'auto';
   document.getElementById('chatSendBtn').disabled = true;
   appendMsg('user', msg);
+  saveChatMessage('user', msg);
   chatHistory.push({ role:'user', content:msg });
   showTyping();
+
+  // Decide whether to use user's own key
+  const useOwnKey = localStorage.getItem('stud_use_my_key') === 'true';
+
   try {
     const r = await fetch(`${BASE}/tutor-chat`, {
       method:'POST', headers: authHeaders(),
-      body: JSON.stringify({ message:msg, history:chatHistory.slice(-10) })
+      body: JSON.stringify({ message:msg, history:chatHistory.slice(-10), use_own_key: useOwnKey })
     });
     const data = await r.json();
     removeTyping();
-    appendMsg('ai', data.reply || 'Something went wrong.');
-    chatHistory.push({ role:'assistant', content:data.reply });
+    const reply = data.reply || 'Something went wrong.';
+    appendMsg('ai', reply);
+    saveChatMessage('ai', reply);
+    chatHistory.push({ role:'assistant', content:reply });
     if (data.profile) { profile = data.profile; updateProfileUI(); }
   } catch(e) {
     removeTyping();
@@ -1248,11 +1318,28 @@ function preloadAllTopics() {
 function buildQuizTopicGrid() {
   const grid = document.getElementById('quizTopicGrid');
   if (!grid) return;
-  grid.innerHTML = QUIZ_TOPICS.map(t => {
+  const QUIZ_TOPIC_META = [
+    { key:'random',        label:'Random Mix',         level:'mixed',        desc:'Random questions across all Roblox Lua topics.' },
+    { key:'variables',     label:'Variables',           level:'beginner',     desc:'Test your knowledge of Lua variables and data types.' },
+    { key:'loops',         label:'Loops',               level:'beginner',     desc:'Practice for, while, and repeat loops in Lua.' },
+    { key:'functions',     label:'Functions',           level:'beginner',     desc:'Functions, parameters, and return values.' },
+    { key:'ifstatements',  label:'If Statements',       level:'beginner',     desc:'Conditionals and branching logic in Lua.' },
+    { key:'parts',         label:'Parts & Properties',  level:'beginner',     desc:'Manipulating Roblox Parts using Lua.' },
+    { key:'remoteevents',  label:'RemoteEvents',        level:'intermediate', desc:'Server-client communication done safely.' },
+    { key:'datastores',    label:'DataStores',          level:'intermediate', desc:'Saving and loading player data persistently.' },
+    { key:'modulescripts', label:'ModuleScripts',       level:'intermediate', desc:'Sharing code across scripts with modules.' },
+    { key:'metatables',    label:'Metatables',          level:'advanced',     desc:'Unlock powerful OOP patterns in Lua.' },
+    { key:'oop',           label:'OOP in Lua',          level:'advanced',     desc:'Build reusable objects and classes.' },
+  ];
+  grid.innerHTML = QUIZ_TOPIC_META.map(t => {
     const loaded = questionBank[t.key] && questionBank[t.key].length > 0;
-    return `<button class="quiz-topic-btn ${loaded ? 'loaded' : ''}" onclick="startQuiz('${t.key}')">
-      ${t.label}${loaded ? ' ✓' : ''}
-    </button>`;
+    const levelLabel = t.level === 'mixed' ? 'Mixed' : t.level.charAt(0).toUpperCase() + t.level.slice(1);
+    const levelClass = t.level === 'mixed' ? 'intermediate' : t.level;
+    return `<div class="lesson-card ${loaded ? 'completed' : ''}" onclick="startQuiz('${t.key}')">
+      <div class="lesson-level ${levelClass}">${levelLabel}</div>
+      <div class="lesson-title">${t.label}</div>
+      <div class="lesson-desc">${t.desc}</div>
+    </div>`;
   }).join('');
 }
 
@@ -1413,9 +1500,153 @@ function renderQuizResults() {
       </div>
     </div>`;
 
+  // Save to quiz history
+  saveQuizResult({ correct, total, pct, topic: quizQuestions[0]?.topic || 'Mixed', date: new Date().toISOString() });
+
   // Refresh topic grid
   buildQuizTopicGrid();
-  document.getElementById('quizTopicSection').style.display = 'none'; // keep hidden, show after Try Another
+  document.getElementById('quizTopicSection').style.display = 'none';
+}
+
+// ── QUIZ HISTORY ──
+function saveQuizResult(result) {
+  const history = JSON.parse(localStorage.getItem('stud_quiz_history') || '[]');
+  history.unshift(result);
+  if (history.length > 50) history.pop();
+  localStorage.setItem('stud_quiz_history', JSON.stringify(history));
+}
+
+function loadQuizHistory() {
+  const history = JSON.parse(localStorage.getItem('stud_quiz_history') || '[]');
+  const statsRow = document.getElementById('qhStatsRow');
+  const list = document.getElementById('qhList');
+
+  if (history.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted2);font-size:13px;padding:20px 0;">No quizzes taken yet. Go take one!</div>';
+    statsRow.style.display = 'none';
+    return;
+  }
+
+  const totalQuizzes = history.length;
+  const totalCorrect = history.reduce((s, r) => s + r.correct, 0);
+  const totalQ = history.reduce((s, r) => s + r.total, 0);
+  const avgPct = Math.round(history.reduce((s, r) => s + r.pct, 0) / totalQuizzes);
+  const bestPct = Math.max(...history.map(r => r.pct));
+
+  statsRow.style.display = 'grid';
+  statsRow.style.gridTemplateColumns = 'repeat(4,1fr)';
+  statsRow.innerHTML = `
+    <div class="stat-card"><div class="stat-card-label">Quizzes Taken</div><div class="stat-card-value blue">${totalQuizzes}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Avg Score</div><div class="stat-card-value blue">${avgPct}%</div></div>
+    <div class="stat-card"><div class="stat-card-label">Best Score</div><div class="stat-card-value blue">${bestPct}%</div></div>
+    <div class="stat-card"><div class="stat-card-label">Total Correct</div><div class="stat-card-value blue">${totalCorrect}/${totalQ}</div></div>`;
+
+  list.innerHTML = history.map((r, i) => {
+    const d = new Date(r.date);
+    const dateStr = d.toLocaleDateString([], {month:'short', day:'numeric'}) + ' · ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const color = r.pct >= 80 ? 'var(--success)' : r.pct >= 60 ? 'var(--warning)' : 'var(--danger)';
+    return `
+      <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="width:52px;height:52px;border-radius:50%;border:3px solid ${color};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:${color};flex-shrink:0;">${r.pct}%</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:3px;">${r.topic || 'Mixed'}</div>
+          <div style="font-size:11px;color:var(--muted2);font-family:'JetBrains Mono',monospace;">${r.correct}/${r.total} correct · ${dateStr}</div>
+        </div>
+        <div style="font-size:20px;">${r.pct >= 80 ? '🎉' : r.pct >= 60 ? '👍' : '📚'}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── CHAT HISTORY ──
+let currentChatSessionId = null;
+
+function saveChatMessage(role, content) {
+  if (!currentChatSessionId) return;
+  const sessions = JSON.parse(localStorage.getItem('stud_chat_sessions') || '{}');
+  if (!sessions[currentChatSessionId]) {
+    sessions[currentChatSessionId] = { id: currentChatSessionId, messages: [], started: new Date().toISOString(), preview: '' };
+  }
+  sessions[currentChatSessionId].messages.push({ role, content, time: new Date().toISOString() });
+  if (role === 'user' && !sessions[currentChatSessionId].preview) {
+    sessions[currentChatSessionId].preview = content.substring(0, 60);
+  }
+  sessions[currentChatSessionId].updated = new Date().toISOString();
+  localStorage.setItem('stud_chat_sessions', JSON.stringify(sessions));
+}
+
+function loadChatHistoryPanel() {
+  const sessions = JSON.parse(localStorage.getItem('stud_chat_sessions') || '{}');
+  const list = document.getElementById('chatSessionList');
+  const keys = Object.keys(sessions).sort((a, b) => new Date(sessions[b].updated||sessions[b].started) - new Date(sessions[a].updated||sessions[a].started));
+
+  if (keys.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted2);font-size:12px;padding:12px 8px;">No past chats saved yet.</div>';
+    return;
+  }
+
+  list.innerHTML = keys.map(k => {
+    const s = sessions[k];
+    const d = new Date(s.updated || s.started);
+    const dateStr = d.toLocaleDateString([], {month:'short', day:'numeric'});
+    const msgCount = s.messages.length;
+    return `
+      <div onclick="viewChatSession('${k}')" style="padding:10px 12px;border-radius:8px;cursor:pointer;border:1px solid transparent;margin-bottom:4px;transition:all 0.15s;" onmouseover="this.style.background='rgba(46,127,255,0.06)';this.style.borderColor='var(--border)'" onmouseout="this.style.background='';this.style.borderColor='transparent'">
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.preview || 'Chat session'}</div>
+        <div style="font-size:10px;color:var(--muted2);font-family:'JetBrains Mono',monospace;">${dateStr} · ${msgCount} messages</div>
+      </div>`;
+  }).join('');
+}
+
+function viewChatSession(sessionId) {
+  const sessions = JSON.parse(localStorage.getItem('stud_chat_sessions') || '{}');
+  const session = sessions[sessionId];
+  if (!session) return;
+
+  const viewer = document.getElementById('chatHistoryViewer');
+  viewer.innerHTML = session.messages.map(m => {
+    const isUser = m.role === 'user';
+    const time = new Date(m.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const formatted = m.content.replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre>$2</pre>').replace(/`([^`]+)`/g, '<code>$1</code>');
+    return `
+      <div class="msg-row${isUser ? ' user' : ''}">
+        <div class="msg-avatar ${isUser ? 'user' : 'ai'}">${isUser ? 'U' : 'S'}</div>
+        <div>
+          <div class="msg-bubble ${isUser ? 'user' : 'ai'}">${formatted}</div>
+          <div class="msg-time">${isUser ? 'You' : 'Stud'} · ${time}</div>
+        </div>
+      </div>`;
+  }).join('');
+  viewer.scrollTop = viewer.scrollHeight;
+}
+
+function clearChatHistory() {
+  if (!confirm('Clear all chat history? This cannot be undone.')) return;
+  localStorage.removeItem('stud_chat_sessions');
+  loadChatHistoryPanel();
+  showToast('Chat history cleared', 'success');
+}
+
+// ── CHAT KEY TOGGLE ──
+function loadChatKeyToggle() {
+  const enabled = localStorage.getItem('stud_use_my_key') === 'true';
+  document.getElementById('useMyChatKey').checked = enabled;
+  updateToggleVisual(enabled);
+  document.getElementById('chatKeyStatus').textContent = enabled ? 'Enabled — using your API key' : 'Requires a saved API key above';
+}
+
+function toggleChatKey() {
+  const enabled = document.getElementById('useMyChatKey').checked;
+  localStorage.setItem('stud_use_my_key', enabled ? 'true' : 'false');
+  updateToggleVisual(enabled);
+  document.getElementById('chatKeyStatus').textContent = enabled ? 'Enabled — using your API key' : 'Disabled — using shared Stud key';
+  showToast(enabled ? 'Now using your API key for chat' : 'Switched back to Stud shared key', 'success');
+}
+
+function updateToggleVisual(enabled) {
+  const track = document.getElementById('toggleTrack');
+  const thumb = document.getElementById('toggleThumb');
+  track.style.background = enabled ? 'var(--accent)' : 'var(--border2)';
+  thumb.style.transform = enabled ? 'translateX(20px)' : 'translateX(0)';
 }
 
 // ── INSTALL PANEL ──
