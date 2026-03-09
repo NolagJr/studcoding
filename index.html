@@ -35,10 +35,7 @@ body {
   height: 100vh;
   overflow: hidden;
   display: flex;
-  opacity: 0;
-  transition: opacity 0.35s ease;
 }
-body.ready { opacity: 1; }
 
 /* BACKGROUND */
 .bg-layer {
@@ -1489,11 +1486,10 @@ function showToast(msg,type='success'){
 function logout(){localStorage.removeItem('stud_session_v3');window.location.href='login.html';}
 
 async function init(){
-  // FIX: Check token synchronously first — never show dashboard to unauthenticated users
-  if(!TOKEN()){window.location.replace('login.html');return;}
+  if(!TOKEN()){window.location.href='login.html';return;}
   try{
     const r=await fetch(BASE+'/get-profile',{headers:{'Authorization':'Bearer '+TOKEN()}});
-    if(r.status===401){window.location.replace('login.html');return;}
+    if(r.status===401){window.location.href='login.html';return;}
     const d=await r.json();
     const name=d.username||d.email||'Coder';
     const initials=name.charAt(0).toUpperCase();
@@ -1509,8 +1505,6 @@ async function init(){
   updateProfileUI();
   buildLessonsGrid();
   buildQuizGrid();
-  // Reveal page only after auth confirmed
-  document.body.classList.add('ready');
 }
 
 init();
