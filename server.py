@@ -11,7 +11,8 @@ CORS(app)
 # ── CONFIG ──
 SECRET_KEY      = os.environ.get('JWT_SECRET', 'stud-secret-key-change-in-prod')
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')   # fallback key
-DB_PATH         = 'stud.db'
+import os
+DB_PATH = os.environ.get('DB_PATH', 'stud.db')
 SMTP_HOST       = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT       = int(os.environ.get('SMTP_PORT', '587'))
 SMTP_USER       = os.environ.get('SMTP_USER', '')
