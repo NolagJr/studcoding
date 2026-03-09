@@ -9,14 +9,14 @@ app = Flask(__name__, static_folder='.')
 CORS(app)
 
 # ── CONFIG ──
-SECRET_KEY      = os.environ.get('JWT_SECRET', 'stud-secret-key-change-in-prod')
-ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')   # fallback key
-import os
-DB_PATH = os.environ.get('DB_PATH', 'stud.db')
-SMTP_HOST       = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
-SMTP_PORT       = int(os.environ.get('SMTP_PORT', '587'))
-SMTP_USER       = os.environ.get('SMTP_USER', '')
-SMTP_PASS       = os.environ.get('SMTP_PASS', '')
+SECRET_KEY        = os.environ.get('JWT_SECRET', 'stud-secret-key-change-in-prod')
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')
+# BUG FIX #2: DB_PATH now reads the environment variable properly
+DB_PATH           = os.environ.get('DB_PATH', 'stud.db')
+SMTP_HOST         = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+SMTP_PORT         = int(os.environ.get('SMTP_PORT', '587'))
+SMTP_USER         = os.environ.get('SMTP_USER', '')
+SMTP_PASS         = os.environ.get('SMTP_PASS', '')
 
 # ── DATABASE ──
 def get_db():
@@ -29,11 +29,11 @@ def init_db():
     c = conn.cursor()
 
     c.execute('''CREATE TABLE IF NOT EXISTS users (
-        id           INTEGER PRIMARY KEY AUTOINCREMENT,
-        username     TEXT UNIQUE NOT NULL,
-        email        TEXT UNIQUE NOT NULL,
+        id            INTEGER PRIMARY KEY AUTOINCREMENT,
+        username      TEXT UNIQUE NOT NULL,
+        email         TEXT UNIQUE NOT NULL,
         password_hash TEXT,
-        created_at   TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at    TEXT DEFAULT CURRENT_TIMESTAMP
     )''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS profiles (
@@ -50,7 +50,6 @@ def init_db():
         FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
 
-    # Plugin keys: SC-XXXXX-XXXXX → email code → session token
     c.execute('''CREATE TABLE IF NOT EXISTS plugin_keys (
         id                  INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id             INTEGER NOT NULL,
@@ -63,19 +62,31 @@ def init_db():
         FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
 
-    # User-supplied AI API keys
+    # BUG FIX #6: Added 'style' column to ai_settings so the dashboard can save it
     c.execute('''CREATE TABLE IF NOT EXISTS ai_settings (
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id    INTEGER UNIQUE NOT NULL,
         provider   TEXT DEFAULT 'anthropic',
         api_key    TEXT DEFAULT '',
         model      TEXT DEFAULT 'claude-opus-4-5',
+        style      TEXT DEFAULT 'friendly',
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
 
+    # Migration: add style column if it doesn't exist yet (for existing DBs)
+    try:
+        c.execute("ALTER TABLE ai_settings ADD COLUMN style TEXT DEFAULT 'friendly'")
+        conn.commit()
+    except Exception:
+        pass  # Column already exists, that's fine
+
     conn.commit()
     conn.close()
+
+# BUG FIX #1 — CRITICAL: Call init_db() at module level so gunicorn runs it.
+# Previously it was only inside if __name__ == '__main__': which gunicorn never reaches.
+init_db()
 
 # ── HELPERS ──
 def hash_password(pw):
@@ -83,10 +94,10 @@ def hash_password(pw):
 
 def make_token(user_id, username, email):
     payload = {
-        'user_id': user_id,
+        'user_id':  user_id,
         'username': username,
-        'email': email,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30)
+        'email':    email,
+        'exp':      datetime.datetime.utcnow() + datetime.timedelta(days=30)
     }
     return jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
@@ -97,7 +108,6 @@ def decode_token(token):
         return None
 
 def get_current_user():
-    """Extract user from JWT in Authorization header."""
     token = request.headers.get('Authorization', '').replace('Bearer ', '')
     return decode_token(token)
 
@@ -111,7 +121,6 @@ def generate_email_code():
     return str(random.randint(100000, 999999))
 
 def ai_complete(user_id=None, system=None, messages=None, max_tokens=1000):
-    """Universal AI completion — uses user's own key/provider if set, else server Anthropic key."""
     if messages is None:
         messages = []
 
@@ -162,7 +171,6 @@ def ai_complete(user_id=None, system=None, messages=None, max_tokens=1000):
         print(f'[AI ERROR] {e}')
         raise
 
-# Keep for backwards compat (review/scan use this directly)
 def get_ai_client(user_id=None):
     api_key = ANTHROPIC_API_KEY
     if user_id:
@@ -182,7 +190,7 @@ def send_email(to_email, subject, html_body):
     try:
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
-        msg['From']    = f'Stud AI <{SMTP_USER}>'
+        msg['From']    = f'StudCoding <{SMTP_USER}>'
         msg['To']      = to_email
         msg.attach(MIMEText(html_body, 'html'))
         s = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
@@ -199,16 +207,16 @@ def plugin_key_email_html(username, code):
     return f"""
     <div style="font-family:'Courier New',monospace;background:#060b11;color:#ddeeff;padding:40px;border-radius:12px;max-width:480px;margin:0 auto;border:1px solid #162336;">
       <div style="margin-bottom:24px;">
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,#2e7fff,#0af0ff);border-radius:8px;display:inline-block;text-align:center;line-height:36px;font-size:16px;font-weight:900;color:white;">S</div>
-        <span style="font-size:18px;font-weight:800;margin-left:10px;">Stud<span style="color:#0af0ff;">.</span></span>
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:8px;display:inline-block;text-align:center;line-height:36px;font-size:16px;font-weight:900;color:white;">S</div>
+        <span style="font-size:18px;font-weight:800;margin-left:10px;">StudCoding</span>
       </div>
       <p style="color:#7a8fa8;font-size:13px;margin-bottom:8px;">Hey {username},</p>
       <p style="font-size:15px;margin-bottom:24px;">Your Roblox Studio plugin verification code:</p>
-      <div style="background:#0d1520;border:1px solid rgba(46,127,255,0.25);border-radius:10px;padding:28px;text-align:center;margin-bottom:24px;">
-        <div style="font-size:42px;font-weight:900;letter-spacing:12px;color:#2e7fff;">{code}</div>
+      <div style="background:#0d1520;border:1px solid rgba(139,92,246,0.25);border-radius:10px;padding:28px;text-align:center;margin-bottom:24px;">
+        <div style="font-size:42px;font-weight:900;letter-spacing:12px;color:#8b5cf6;">{code}</div>
         <div style="font-size:11px;color:#4a5a72;margin-top:10px;">Expires in 10 minutes</div>
       </div>
-      <p style="font-size:12px;color:#4a5a72;line-height:1.6;">Enter this in the Stud plugin inside Roblox Studio to finish connecting.</p>
+      <p style="font-size:12px;color:#4a5a72;line-height:1.6;">Enter this in the StudCoding plugin inside Roblox Studio to finish connecting.</p>
       <p style="font-size:11px;color:#2a3a52;margin-top:16px;">Didn't request this? Ignore this email.</p>
     </div>"""
 
@@ -259,7 +267,6 @@ def profile_to_dict(p):
     }
 
 def clean_json_response(text):
-    """Strip markdown fences from AI JSON responses."""
     text = text.strip()
     if '```' in text:
         parts = text.split('```')
@@ -279,7 +286,7 @@ def static_files(filename):
 
 @app.route('/health')
 def health():
-    return jsonify({'status': 'ok', 'version': '6.1'})
+    return jsonify({'status': 'ok', 'version': '7.1'})
 
 # ════════════════════════════════════════
 # AUTH ROUTES
@@ -349,7 +356,7 @@ def login():
     })
 
 # ════════════════════════════════════════
-# PROFILE  (uses JWT — no more hardcoded user_id=1)
+# PROFILE
 # ════════════════════════════════════════
 
 @app.route('/get-profile')
@@ -365,24 +372,22 @@ def get_profile():
     conn = get_db()
     c = conn.cursor()
 
-    # Attach user info
     c.execute('SELECT username, email FROM users WHERE id=?', (user_id,))
     u = c.fetchone()
     if u:
         result['username'] = u['username']
         result['email']    = u['email']
 
-    # Attach plugin key info
     c.execute('SELECT plugin_key, session_token FROM plugin_keys WHERE user_id=?', (user_id,))
     pk = c.fetchone()
     result['plugin_key']       = pk['plugin_key']    if pk else None
     result['plugin_connected'] = bool(pk and pk['session_token'])
 
-    # Attach AI settings
-    c.execute('SELECT provider, model, api_key FROM ai_settings WHERE user_id=?', (user_id,))
+    c.execute('SELECT provider, model, api_key, style FROM ai_settings WHERE user_id=?', (user_id,))
     ai = c.fetchone()
     result['ai_provider'] = ai['provider'] if ai else None
     result['ai_model']    = ai['model']    if ai else None
+    result['ai_style']    = ai['style']    if ai else 'friendly'
     result['has_ai_key']  = bool(ai and ai['api_key'])
 
     conn.close()
@@ -402,14 +407,12 @@ def plugin_generate_key():
     conn = get_db()
     c = conn.cursor()
 
-    # Return existing key if they have one
     c.execute('SELECT plugin_key FROM plugin_keys WHERE user_id=?', (user_id,))
     existing = c.fetchone()
     if existing:
         conn.close()
         return jsonify({'plugin_key': existing['plugin_key']})
 
-    # Generate a unique key
     while True:
         key = generate_plugin_key()
         c.execute('SELECT id FROM plugin_keys WHERE plugin_key=?', (key,))
@@ -439,7 +442,6 @@ def plugin_get_key():
 
 @app.route('/plugin/connect', methods=['POST'])
 def plugin_connect():
-    """Step 1 — plugin sends SC key → server sends 6-digit email code."""
     data       = request.json or {}
     plugin_key = data.get('plugin_key', '').strip().upper()
 
@@ -454,7 +456,7 @@ def plugin_connect():
     row = c.fetchone()
 
     if not row:
-        return jsonify({'error': 'Invalid plugin key. Get yours from the Stud dashboard.'}), 404
+        return jsonify({'error': 'Invalid plugin key. Get yours from the StudCoding dashboard.'}), 404
 
     code    = generate_email_code()
     expires = (datetime.datetime.utcnow() + datetime.timedelta(minutes=10)).isoformat()
@@ -465,7 +467,7 @@ def plugin_connect():
     conn.close()
 
     send_email(row['email'],
-               f'Stud Plugin Code: {code}',
+               f'StudCoding Plugin Code: {code}',
                plugin_key_email_html(row['username'], code))
 
     email_preview = row['email'][:3] + '***@' + row['email'].split('@')[1]
@@ -477,7 +479,6 @@ def plugin_connect():
 
 @app.route('/plugin/confirm', methods=['POST'])
 def plugin_confirm():
-    """Step 2 — plugin sends 6-digit code → server returns session token."""
     data       = request.json or {}
     plugin_key = data.get('plugin_key',  '').strip().upper()
     email_code = data.get('email_code',  '').strip()
@@ -519,7 +520,6 @@ def plugin_confirm():
 
 @app.route('/plugin/session', methods=['POST'])
 def plugin_session():
-    """Called on Studio startup to check if saved token is still valid."""
     data          = request.json or {}
     session_token = data.get('session_token', '').strip()
 
@@ -544,7 +544,7 @@ def plugin_session():
     return jsonify({'valid': True, 'username': row['username']})
 
 # ════════════════════════════════════════
-# AI SETTINGS  (bring your own API key)
+# AI SETTINGS
 # ════════════════════════════════════════
 
 @app.route('/ai/settings', methods=['GET'])
@@ -555,16 +555,18 @@ def get_ai_settings():
 
     conn = get_db()
     c = conn.cursor()
-    c.execute('SELECT provider, model, api_key FROM ai_settings WHERE user_id=?', (user['user_id'],))
+    c.execute('SELECT provider, model, api_key, style FROM ai_settings WHERE user_id=?', (user['user_id'],))
     row = c.fetchone()
     conn.close()
 
     if not row:
-        return jsonify({'provider': None, 'model': None, 'has_key': False, 'key_preview': None})
+        return jsonify({'provider': 'anthropic', 'model': 'claude-opus-4-5',
+                        'style': 'friendly', 'has_key': False, 'key_preview': None})
 
     key = row['api_key'] or ''
     masked = (key[:8] + '...' + key[-4:]) if len(key) > 12 else ('••••••••' if key else None)
     return jsonify({'provider': row['provider'], 'model': row['model'],
+                    'style': row['style'] or 'friendly',
                     'has_key': bool(key), 'key_preview': masked})
 
 @app.route('/ai/settings', methods=['POST'])
@@ -575,21 +577,30 @@ def save_ai_settings():
 
     data     = request.json or {}
     provider = data.get('provider', 'anthropic')
+    # BUG FIX #6: api_key is now optional — model and style can be saved without it
     api_key  = data.get('api_key',  '').strip()
-    model    = data.get('model',    '')
-
-    if not api_key:
-        return jsonify({'error': 'API key is required.'}), 400
+    model    = data.get('model',    'claude-opus-4-5')
+    style    = data.get('style',    'friendly')
 
     if not model:
         model = 'claude-opus-4-5' if provider == 'anthropic' else 'gpt-4o'
 
     conn = get_db()
     c = conn.cursor()
-    c.execute('''INSERT INTO ai_settings (user_id, provider, api_key, model) VALUES (?,?,?,?)
-                 ON CONFLICT(user_id) DO UPDATE SET provider=excluded.provider,
-                 api_key=excluded.api_key, model=excluded.model''',
-              (user['user_id'], provider, api_key, model))
+
+    if api_key:
+        # Full upsert including api_key
+        c.execute('''INSERT INTO ai_settings (user_id, provider, api_key, model, style) VALUES (?,?,?,?,?)
+                     ON CONFLICT(user_id) DO UPDATE SET provider=excluded.provider,
+                     api_key=excluded.api_key, model=excluded.model, style=excluded.style''',
+                  (user['user_id'], provider, api_key, model, style))
+    else:
+        # Save model/style only — don't overwrite existing api_key
+        c.execute('''INSERT INTO ai_settings (user_id, provider, model, style) VALUES (?,?,?,?)
+                     ON CONFLICT(user_id) DO UPDATE SET provider=excluded.provider,
+                     model=excluded.model, style=excluded.style''',
+                  (user['user_id'], provider, model, style))
+
     conn.commit()
     conn.close()
     return jsonify({'success': True})
@@ -602,28 +613,32 @@ def test_ai():
     try:
         output = ai_complete(
             user_id=user['user_id'],
-            messages=[{'role': 'user', 'content': 'Write one line of Roblox Lua that prints Hello World. Code only.'}],
+            messages=[{'role': 'user', 'content': 'Say "StudCoding AI is online!" and nothing else.'}],
             max_tokens=60
         )
-        return jsonify({'success': True, 'output': output.strip()})
+        # BUG FIX #5: Return 'reply' key so the frontend can find it
+        return jsonify({'success': True, 'reply': output.strip(), 'output': output.strip()})
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 400
+        return jsonify({'success': False, 'error': str(e), 'reply': str(e)}), 400
 
 # ════════════════════════════════════════
-# TUTOR ROUTES  (all use JWT now)
+# TUTOR ROUTES
 # ════════════════════════════════════════
 
 @app.route('/tutor-chat', methods=['POST'])
 def tutor_chat():
     user    = get_current_user()
-    user_id = user['user_id'] if user else 1
+    user_id = user['user_id'] if user else None
 
     data    = request.json or {}
     message = data.get('message', '')
     history = data.get('history', [])
 
-    p  = get_or_create_profile(user_id)
-    pd = profile_to_dict(p)
+    if user_id:
+        p  = get_or_create_profile(user_id)
+        pd = profile_to_dict(p)
+    else:
+        pd = {'level': 'Beginner', 'xp': 0, 'topics_struggling': []}
 
     system = f"""You are Stud, an expert Roblox Lua tutor. Student level: {pd['level']} (XP: {pd['xp']}).
 Adapt explanations to their level. Use real Lua code examples. Be encouraging but concise.
@@ -633,86 +648,127 @@ Struggling topics: {pd['topics_struggling']}."""
     messages = history[-10:] + [{'role': 'user', 'content': message}]
     reply = ai_complete(user_id=user_id, system=system, messages=messages, max_tokens=800)
 
-    conn = get_db()
-    c = conn.cursor()
-    c.execute('UPDATE profiles SET xp=xp+5 WHERE user_id=?', (user_id,))
-    conn.commit()
-    conn.close()
+    if user_id:
+        conn = get_db()
+        c = conn.cursor()
+        c.execute('UPDATE profiles SET xp=xp+5 WHERE user_id=?', (user_id,))
+        conn.commit()
+        conn.close()
+        p2 = get_or_create_profile(user_id)
+        return jsonify({'reply': reply, 'profile': profile_to_dict(p2)})
 
-    p2 = get_or_create_profile(user_id)
-    return jsonify({'reply': reply, 'profile': profile_to_dict(p2)})
+    return jsonify({'reply': reply})
 
 @app.route('/tutor-lesson', methods=['POST'])
 def tutor_lesson():
     user    = get_current_user()
-    user_id = user['user_id'] if user else 1
+    user_id = user['user_id'] if user else None
 
     data  = request.json or {}
     topic = data.get('topic', '')
 
-    p  = get_or_create_profile(user_id)
-    pd = profile_to_dict(p)
+    if user_id:
+        p  = get_or_create_profile(user_id)
+        pd = profile_to_dict(p)
+    else:
+        pd = {'level': 'Beginner'}
 
+    # BUG FIX #4: Return 'content' as a formatted string so index.html can render it.
+    # Previously returned a JSON object which broke the .split() call in the frontend.
     text = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content':
-            f'Create a Roblox Lua lesson on "{topic}" for a {pd["level"]} student.\n'
-            'Return ONLY valid JSON (no markdown):\n'
-            '{"title":"...","summary":"one sentence","concept":"2-3 sentences",'
-            '"example":"lua code only","explanation":"what the code does",'
-            '"practice":"one exercise","tip":"one pro tip"}'}], max_tokens=1000)
-    try:
-        lesson = json.loads(text)
-    except:
-        lesson = {'title': topic, 'concept': text, 'summary': f'Learn about {topic}'}
+        f'''Create a detailed Roblox Lua lesson on "{topic}" for a {pd["level"]} student.
+Format the response as readable text with sections separated by blank lines.
+Use this structure:
 
-    conn = get_db()
-    c = conn.cursor()
-    c.execute('SELECT lessons_completed FROM profiles WHERE user_id=?', (user_id,))
-    row = c.fetchone()
-    completed = json.loads(row[0] or '[]')
-    if topic not in completed:
-        completed.append(topic)
-    c.execute('UPDATE profiles SET lessons_completed=?, xp=xp+15 WHERE user_id=?',
-              (json.dumps(completed), user_id))
-    conn.commit()
-    conn.close()
+# {topic}
 
-    p2 = get_or_create_profile(user_id)
-    return jsonify({'lesson': lesson, 'profile': profile_to_dict(p2)})
+## What Is It?
+[2-3 sentence overview]
+
+## Core Concept
+[Explain the concept clearly]
+
+## Code Example
+```lua
+[working Lua code example]
+```
+
+## How It Works
+[Line-by-line explanation of the code]
+
+## Practice Exercise
+[One hands-on exercise for the student]
+
+## Pro Tip
+[One advanced tip]
+
+Write clearly for a {pd["level"]} level student. Use real Roblox APIs.'''}],
+        max_tokens=1200)
+
+    if user_id:
+        conn = get_db()
+        c = conn.cursor()
+        c.execute('SELECT lessons_completed FROM profiles WHERE user_id=?', (user_id,))
+        row = c.fetchone()
+        completed = json.loads(row[0] or '[]')
+        if topic not in completed:
+            completed.append(topic)
+        c.execute('UPDATE profiles SET lessons_completed=?, xp=xp+15 WHERE user_id=?',
+                  (json.dumps(completed), user_id))
+        conn.commit()
+        conn.close()
+        p2 = get_or_create_profile(user_id)
+        return jsonify({'content': text, 'profile': profile_to_dict(p2)})
+
+    return jsonify({'content': text})
 
 @app.route('/tutor-quiz', methods=['POST'])
 def tutor_quiz():
     user    = get_current_user()
-    user_id = user['user_id'] if user else 1
+    user_id = user['user_id'] if user else None
 
     data  = request.json or {}
     topic = data.get('topic', '')
 
-    p  = get_or_create_profile(user_id)
-    pd = profile_to_dict(p)
+    if user_id:
+        p  = get_or_create_profile(user_id)
+        pd = profile_to_dict(p)
+    else:
+        pd = {'level': 'Beginner'}
 
     text = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content':
-            f'Generate exactly 20 UNIQUE multiple choice Roblox Lua quiz questions for a {pd["level"]} student'
-            f'{f" specifically about {topic}" if topic else ", covering a wide variety of Roblox Lua topics"}.\n'
-            'Rules: Never repeat the same question. Each question must test a DIFFERENT concept. Vary difficulty.\n'
-            'Return ONLY a valid JSON array of 20 objects, no markdown:\n'
-            '[{"topic":"subtopic","question":"the question","code":"lua code or empty string",'
-            '"options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A","explanation":"why A is correct"}]'}],
+        f'Generate exactly 20 UNIQUE multiple choice Roblox Lua quiz questions for a {pd["level"]} student'
+        f'{f" specifically about {topic}" if topic else ", covering a wide variety of Roblox Lua topics"}.\n'
+        'Rules: Never repeat the same question. Each question must test a DIFFERENT concept. Vary difficulty.\n'
+        # BUG FIX #3: Return correct_index (0-3) instead of a letter so the frontend answerQ() works correctly
+        'Return ONLY a valid JSON array of 20 objects, no markdown:\n'
+        '[{"topic":"subtopic","question":"the question","code":"lua code or empty string",'
+        '"options":["option text A","option text B","option text C","option text D"],'
+        '"correct_index":0,"explanation":"why this answer is correct"}]\n'
+        'correct_index must be 0, 1, 2, or 3 (the index of the correct option in the options array).'}],
         max_tokens=6000)
     try:
         text = clean_json_response(text)
         questions = json.loads(text)
         if not isinstance(questions, list):
             raise ValueError('not a list')
+        # Normalise: if AI returned 'correct' letter instead of correct_index, convert it
+        for q in questions:
+            if 'correct_index' not in q and 'correct' in q:
+                letter = str(q['correct']).strip().upper()
+                q['correct_index'] = ord(letter[0]) - ord('A') if letter else 0
     except:
-        questions = [{'topic': topic or 'Lua Basics', 'question': 'Error generating questions. Try again.',
-                'code': '', 'options': ['A. Retry'], 'correct': 'A', 'explanation': ''}]
+        questions = [{'topic': topic or 'Lua Basics',
+                      'question': 'Error generating questions. Please try again.',
+                      'code': '', 'options': ['Try again', 'Try again', 'Try again', 'Try again'],
+                      'correct_index': 0, 'explanation': 'Please retry the quiz.'}]
 
     return jsonify({'questions': questions})
 
 @app.route('/tutor-answer', methods=['POST'])
 def tutor_answer():
     user    = get_current_user()
-    user_id = user['user_id'] if user else 1
+    user_id = user['user_id'] if user else None
 
     data    = request.json or {}
     answer  = data.get('answer',  '')
@@ -720,6 +776,9 @@ def tutor_answer():
     topic   = data.get('topic',   '')
 
     is_correct = bool(answer and correct and answer[0].upper() == correct.upper())
+
+    if not user_id:
+        return jsonify({'correct': is_correct, 'xp_gained': 0, 'leveled_up': False})
 
     conn = get_db()
     c = conn.cursor()
@@ -761,11 +820,21 @@ def tutor_answer():
     })
 
 # ════════════════════════════════════════
+# FEEDBACK
+# ════════════════════════════════════════
+
+@app.route('/feedback', methods=['POST'])
+def feedback():
+    # Just log it for now — no table needed
+    data = request.json or {}
+    print(f'[FEEDBACK] Rating: {data.get("rating")} | {data.get("text", "")[:200]}')
+    return jsonify({'success': True})
+
+# ════════════════════════════════════════
 # PLUGIN SCRIPT ENDPOINTS
 # ════════════════════════════════════════
 
 def get_user_id_from_session(data):
-    """Get user_id from plugin session token if provided."""
     session_token = data.get('session_token', '')
     if not session_token:
         return None
@@ -789,8 +858,7 @@ def fix_script():
     workspace_context = data.get('workspace_context', data.get('gameContext', ''))
     errors            = data.get('errors', '')
     attempt           = data.get('attempt', 1)
-
-    user_id = get_user_id_from_session(data)
+    user_id           = get_user_id_from_session(data)
 
     prompt = f"""You are an expert Roblox Lua developer. Fix this script.
 
@@ -831,8 +899,7 @@ def write_script():
     workspace_context = data.get('workspace_context', '')
     errors            = data.get('errors', '')
     attempt           = data.get('attempt', 1)
-
-    user_id = get_user_id_from_session(data)
+    user_id           = get_user_id_from_session(data)
 
     is_local    = service in ['StarterPlayerScripts', 'StarterGui', 'StarterCharacterScripts']
     script_type = 'LocalScript' if is_local else 'Script'
@@ -863,7 +930,7 @@ Return ONLY valid JSON:
 
 @app.route('/review', methods=['POST'])
 def review():
-    data = request.json or {}
+    data              = request.json or {}
     fixed_script      = data.get('fixed_script', '')
     issue             = data.get('issue', '')
     workspace_context = data.get('workspace_context', '')
@@ -930,8 +997,7 @@ def reset_memory():
     return jsonify({'success': True})
 
 if __name__ == '__main__':
-    init_db()
-    port = int(os.environ.get('PORT', 5000))
+    port  = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
-    print(f'Stud server v7.0 — port {port}')
+    print(f'StudCoding server v7.1 — port {port}')
     app.run(host='0.0.0.0', port=port, debug=debug)
