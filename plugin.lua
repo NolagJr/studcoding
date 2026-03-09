@@ -1831,7 +1831,7 @@ end
 -- ═══════════════════════════════
 local function loadMemory()
 	local ok, result = pcall(function()
-		return HttpService:GetAsync("http://127.0.0.1:5000/get-memory")
+		return HttpService:GetAsync(BASE_URL .. "/get-memory")
 	end)
 	if ok then
 		local mem = HttpService:JSONDecode(result)
