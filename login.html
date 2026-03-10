@@ -111,10 +111,10 @@
 </div>
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
-if (localStorage.getItem('stud_token')) window.location.href = 'index.html';
+if (localStorage.getItem('stud_session_v3')) window.location.href = 'index.html';
 const params = new URLSearchParams(window.location.search);
 if (params.get('error')) showError(decodeURIComponent(params.get('error')));
-if (params.get('token')) { localStorage.setItem('stud_token', params.get('token')); window.location.href = 'index.html'; }
+if (params.get('token')) { localStorage.setItem('stud_session_v3', params.get('token')); window.location.href = 'index.html'; }
 function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('show'); document.getElementById('successBox').classList.remove('show'); }
 function showSuccess(msg) { const b = document.getElementById('successBox'); b.textContent = msg; b.classList.add('show'); document.getElementById('errorBox').classList.remove('show'); }
 function setLoading(on) { const btn = document.getElementById('loginBtn'); btn.disabled = on; btn.textContent = on ? 'Signing in...' : 'Sign In'; }
@@ -129,7 +129,7 @@ async function doLogin() {
     const res = await fetch(`${BASE}/auth/login`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
-    localStorage.setItem('stud_token', data.token);
+    localStorage.setItem('stud_session_v3', data.token);
     localStorage.setItem('stud_user', JSON.stringify(data.user));
     showSuccess('Signed in! Redirecting...');
     setTimeout(() => window.location.href = 'index.html', 600);

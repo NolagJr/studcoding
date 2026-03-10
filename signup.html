@@ -72,11 +72,7 @@
     color: var(--danger); margin-bottom: 16px; display: none;
   }
   .error-box.show { display: block; }
-
-  /* success screen */
-  .success-screen {
-    display: none; text-align: center;
-  }
+  .success-screen { display: none; text-align: center; }
   .success-screen.show { display: block; }
   .success-icon {
     width: 60px; height: 60px; background: rgba(0,229,160,.15);
@@ -86,14 +82,9 @@
   }
   .success-screen h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
   .success-screen p { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
-
   .steps-list {
-    text-align: left;
-    background: #0a1220;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 20px;
+    text-align: left; background: #0a1220; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; margin-bottom: 20px;
   }
   .step {
     display: flex; gap: 12px; align-items: flex-start;
@@ -107,7 +98,6 @@
   }
   .step-text { color: var(--text); line-height: 1.5; }
   .step-text b { color: var(--cyan); }
-
   .go-btn {
     display: block; width: 100%; padding: 14px;
     background: var(--success); color: #050c0a;
@@ -116,7 +106,6 @@
     text-decoration: none; transition: all .15s;
   }
   .go-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
-
   .divider {
     display: flex; align-items: center; gap: 12px;
     margin: 20px 0; color: var(--muted); font-size: 11px;
@@ -125,8 +114,6 @@
   .footer-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
   .footer-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
   .footer-link a:hover { text-decoration: underline; }
-
-  .form-section { }
 </style>
 </head>
 <body>
@@ -190,7 +177,7 @@
 
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
-if (localStorage.getItem('stud_token')) window.location.href = 'index.html';
+if (localStorage.getItem('stud_session_v3')) window.location.href = 'index.html';
 function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('show'); }
 function clearError() { document.getElementById('errorBox').classList.remove('show'); }
 function setLoading(on) { const btn = document.getElementById('signupBtn'); btn.disabled = on; btn.textContent = on ? 'Creating account...' : 'Create Account'; }
@@ -208,7 +195,7 @@ async function doSignup() {
     const res = await fetch(`${BASE}/auth/signup`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username, email, password}) });
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
-    localStorage.setItem('stud_token', data.token);
+    localStorage.setItem('stud_session_v3', data.token);
     localStorage.setItem('stud_user', JSON.stringify(data.user));
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
