@@ -11,7 +11,6 @@ CORS(app)
 # ── CONFIG ──
 SECRET_KEY        = os.environ.get('JWT_SECRET', 'stud-secret-key-change-in-prod')
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')
-# BUG FIX #2: DB_PATH now reads the environment variable properly
 DB_PATH           = os.environ.get('DB_PATH', 'stud.db')
 SMTP_HOST         = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT         = int(os.environ.get('SMTP_PORT', '587'))
@@ -62,30 +61,42 @@ def init_db():
         FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
 
-    # BUG FIX #6: Added 'style' column to ai_settings so the dashboard can save it
     c.execute('''CREATE TABLE IF NOT EXISTS ai_settings (
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id    INTEGER UNIQUE NOT NULL,
         provider   TEXT DEFAULT 'anthropic',
         api_key    TEXT DEFAULT '',
-        model      TEXT DEFAULT 'claude-opus-4-5',
+        model      TEXT DEFAULT 'claude-sonnet-4-6',
         style      TEXT DEFAULT 'friendly',
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
 
-    # Migration: add style column if it doesn't exist yet (for existing DBs)
-    try:
-        c.execute("ALTER TABLE ai_settings ADD COLUMN style TEXT DEFAULT 'friendly'")
-        conn.commit()
-    except Exception:
-        pass  # Column already exists, that's fine
+    # ── FIX: game_memory stored in DB, not a flat file (survives deploys) ──
+    c.execute('''CREATE TABLE IF NOT EXISTS game_memory (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id      INTEGER,
+        summary      TEXT DEFAULT '',
+        context      TEXT DEFAULT '',
+        approved     INTEGER DEFAULT 0,
+        updated_at   TEXT DEFAULT CURRENT_TIMESTAMP
+    )''')
+
+    # Migrations for existing DBs
+    for migration in [
+        "ALTER TABLE ai_settings ADD COLUMN style TEXT DEFAULT 'friendly'",
+        "ALTER TABLE plugin_keys ADD COLUMN session_expires TEXT",
+    ]:
+        try:
+            c.execute(migration)
+            conn.commit()
+        except Exception:
+            pass
 
     conn.commit()
     conn.close()
 
-# BUG FIX #1 — CRITICAL: Call init_db() at module level so gunicorn runs it.
-# Previously it was only inside if __name__ == '__main__': which gunicorn never reaches.
+# Called at module level so gunicorn runs it
 init_db()
 
 # ── HELPERS ──
@@ -159,7 +170,7 @@ def ai_complete(user_id=None, system=None, messages=None, max_tokens=1000):
         else:
             client = anthropic.Anthropic(api_key=api_key)
             kwargs = {
-                'model':      model or 'claude-opus-4-5',
+                'model':      model or 'claude-sonnet-4-6',
                 'max_tokens': max_tokens,
                 'messages':   messages
             }
@@ -171,21 +182,9 @@ def ai_complete(user_id=None, system=None, messages=None, max_tokens=1000):
         print(f'[AI ERROR] {e}')
         raise
 
-def get_ai_client(user_id=None):
-    api_key = ANTHROPIC_API_KEY
-    if user_id:
-        conn = get_db()
-        c = conn.cursor()
-        c.execute('SELECT api_key, provider FROM ai_settings WHERE user_id=?', (user_id,))
-        row = c.fetchone()
-        conn.close()
-        if row and row['api_key'] and row['provider'] == 'anthropic':
-            api_key = row['api_key']
-    return anthropic.Anthropic(api_key=api_key)
-
 def send_email(to_email, subject, html_body):
     if not SMTP_USER or not SMTP_PASS:
-        print(f'[EMAIL SKIPPED] To: {to_email} | Subject: {subject}')
+        print(f'[EMAIL SKIPPED — DEV MODE] To: {to_email} | Code is in dev_code field')
         return True
     try:
         msg = MIMEMultipart('alternative')
@@ -207,17 +206,17 @@ def plugin_key_email_html(username, code):
     return f"""
     <div style="font-family:'Courier New',monospace;background:#060b11;color:#ddeeff;padding:40px;border-radius:12px;max-width:480px;margin:0 auto;border:1px solid #162336;">
       <div style="margin-bottom:24px;">
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:8px;display:inline-block;text-align:center;line-height:36px;font-size:16px;font-weight:900;color:white;">S</div>
-        <span style="font-size:18px;font-weight:800;margin-left:10px;">StudCoding</span>
+        <div style="width:40px;height:40px;background:linear-gradient(135deg,#4f8eff,#30d5ff);border-radius:10px;display:inline-block;text-align:center;line-height:40px;font-size:18px;font-weight:900;color:white;">S.</div>
+        <span style="font-size:18px;font-weight:800;margin-left:10px;vertical-align:middle;">StudCoding</span>
       </div>
       <p style="color:#7a8fa8;font-size:13px;margin-bottom:8px;">Hey {username},</p>
       <p style="font-size:15px;margin-bottom:24px;">Your Roblox Studio plugin verification code:</p>
-      <div style="background:#0d1520;border:1px solid rgba(139,92,246,0.25);border-radius:10px;padding:28px;text-align:center;margin-bottom:24px;">
-        <div style="font-size:42px;font-weight:900;letter-spacing:12px;color:#8b5cf6;">{code}</div>
-        <div style="font-size:11px;color:#4a5a72;margin-top:10px;">Expires in 10 minutes</div>
+      <div style="background:#0d1520;border:1px solid rgba(79,142,255,0.3);border-radius:12px;padding:32px;text-align:center;margin-bottom:24px;">
+        <div style="font-size:48px;font-weight:900;letter-spacing:14px;color:#4f8eff;font-family:monospace;">{code}</div>
+        <div style="font-size:11px;color:#4a5a72;margin-top:12px;">Expires in 10 minutes</div>
       </div>
-      <p style="font-size:12px;color:#4a5a72;line-height:1.6;">Enter this in the StudCoding plugin inside Roblox Studio to finish connecting.</p>
-      <p style="font-size:11px;color:#2a3a52;margin-top:16px;">Didn't request this? Ignore this email.</p>
+      <p style="font-size:12px;color:#4a5a72;line-height:1.6;">Enter this in the StudCoding plugin inside Roblox Studio to finish connecting. Once verified, you'll stay connected permanently.</p>
+      <p style="font-size:11px;color:#2a3a52;margin-top:16px;">Didn't request this? You can safely ignore this email.</p>
     </div>"""
 
 # ── LEVEL SYSTEM ──
@@ -286,7 +285,7 @@ def static_files(filename):
 
 @app.route('/health')
 def health():
-    return jsonify({'status': 'ok', 'version': '7.1'})
+    return jsonify({'status': 'ok', 'version': '8.0'})
 
 # ════════════════════════════════════════
 # AUTH ROUTES
@@ -466,14 +465,17 @@ def plugin_connect():
     conn.commit()
     conn.close()
 
-    send_email(row['email'],
-               f'StudCoding Plugin Code: {code}',
-               plugin_key_email_html(row['username'], code))
+    send_email(
+        row['email'],
+        f'StudCoding Plugin Code: {code}',
+        plugin_key_email_html(row['username'], code)
+    )
 
     email_preview = row['email'][:3] + '***@' + row['email'].split('@')[1]
     return jsonify({
         'success':       True,
         'email_preview': email_preview,
+        # Show code in dev mode (when SMTP not configured) so you can still test
         'dev_code':      code if not (SMTP_USER and SMTP_PASS) else None
     })
 
@@ -494,9 +496,11 @@ def plugin_confirm():
     row = c.fetchone()
 
     if not row:
+        conn.close()
         return jsonify({'error': 'Invalid plugin key.'}), 404
     if not row['email_code']:
-        return jsonify({'error': 'No code pending. Start again.'}), 400
+        conn.close()
+        return jsonify({'error': 'No code pending. Click Connect again.'}), 400
 
     expires = datetime.datetime.fromisoformat(row['email_code_expires'])
     if datetime.datetime.utcnow() > expires:
@@ -507,15 +511,19 @@ def plugin_confirm():
         conn.close()
         return jsonify({'error': 'Wrong code. Check your email.'}), 400
 
+    # ── KEY FIX: Session never expires (100 years) ──
+    # Once a user completes both auth steps, they stay connected permanently.
     session_token   = secrets.token_hex(32)
-    session_expires = (datetime.datetime.utcnow() + datetime.timedelta(days=30)).isoformat()
+    session_expires = (datetime.datetime.utcnow() + datetime.timedelta(days=36500)).isoformat()
 
     c.execute('''UPDATE plugin_keys
-                 SET session_token=?, session_expires=?, email_code=NULL
-                 WHERE plugin_key=?''', (session_token, session_expires, plugin_key))
+                 SET session_token=?, session_expires=?, email_code=NULL, email_code_expires=NULL
+                 WHERE plugin_key=?''',
+              (session_token, session_expires, plugin_key))
     conn.commit()
     conn.close()
 
+    print(f'[AUTH] ✓ {row["username"]} permanently connected via plugin key')
     return jsonify({'success': True, 'session_token': session_token, 'username': row['username']})
 
 @app.route('/plugin/session', methods=['POST'])
@@ -537,9 +545,13 @@ def plugin_session():
     if not row:
         return jsonify({'valid': False})
 
-    expires = datetime.datetime.fromisoformat(row['session_expires'])
-    if datetime.datetime.utcnow() > expires:
-        return jsonify({'valid': False, 'reason': 'expired'})
+    # Handles both old 30-day tokens and new permanent tokens gracefully
+    try:
+        expires = datetime.datetime.fromisoformat(row['session_expires'])
+        if datetime.datetime.utcnow() > expires:
+            return jsonify({'valid': False, 'reason': 'expired'})
+    except Exception:
+        return jsonify({'valid': False, 'reason': 'invalid_date'})
 
     return jsonify({'valid': True, 'username': row['username']})
 
@@ -560,7 +572,7 @@ def get_ai_settings():
     conn.close()
 
     if not row:
-        return jsonify({'provider': 'anthropic', 'model': 'claude-opus-4-5',
+        return jsonify({'provider': 'anthropic', 'model': 'claude-sonnet-4-6',
                         'style': 'friendly', 'has_key': False, 'key_preview': None})
 
     key = row['api_key'] or ''
@@ -577,25 +589,22 @@ def save_ai_settings():
 
     data     = request.json or {}
     provider = data.get('provider', 'anthropic')
-    # BUG FIX #6: api_key is now optional — model and style can be saved without it
     api_key  = data.get('api_key',  '').strip()
-    model    = data.get('model',    'claude-opus-4-5')
+    model    = data.get('model',    'claude-sonnet-4-6')
     style    = data.get('style',    'friendly')
 
     if not model:
-        model = 'claude-opus-4-5' if provider == 'anthropic' else 'gpt-4o'
+        model = 'claude-sonnet-4-6' if provider == 'anthropic' else 'gpt-4o'
 
     conn = get_db()
     c = conn.cursor()
 
     if api_key:
-        # Full upsert including api_key
         c.execute('''INSERT INTO ai_settings (user_id, provider, api_key, model, style) VALUES (?,?,?,?,?)
                      ON CONFLICT(user_id) DO UPDATE SET provider=excluded.provider,
                      api_key=excluded.api_key, model=excluded.model, style=excluded.style''',
                   (user['user_id'], provider, api_key, model, style))
     else:
-        # Save model/style only — don't overwrite existing api_key
         c.execute('''INSERT INTO ai_settings (user_id, provider, model, style) VALUES (?,?,?,?)
                      ON CONFLICT(user_id) DO UPDATE SET provider=excluded.provider,
                      model=excluded.model, style=excluded.style''',
@@ -616,7 +625,6 @@ def test_ai():
             messages=[{'role': 'user', 'content': 'Say "StudCoding AI is online!" and nothing else.'}],
             max_tokens=60
         )
-        # BUG FIX #5: Return 'reply' key so the frontend can find it
         return jsonify({'success': True, 'reply': output.strip(), 'output': output.strip()})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e), 'reply': str(e)}), 400
@@ -673,8 +681,6 @@ def tutor_lesson():
     else:
         pd = {'level': 'Beginner'}
 
-    # BUG FIX #4: Return 'content' as a formatted string so index.html can render it.
-    # Previously returned a JSON object which broke the .split() call in the frontend.
     text = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content':
         f'''Create a detailed Roblox Lua lesson on "{topic}" for a {pd["level"]} student.
 Format the response as readable text with sections separated by blank lines.
@@ -740,7 +746,6 @@ def tutor_quiz():
         f'Generate exactly 20 UNIQUE multiple choice Roblox Lua quiz questions for a {pd["level"]} student'
         f'{f" specifically about {topic}" if topic else ", covering a wide variety of Roblox Lua topics"}.\n'
         'Rules: Never repeat the same question. Each question must test a DIFFERENT concept. Vary difficulty.\n'
-        # BUG FIX #3: Return correct_index (0-3) instead of a letter so the frontend answerQ() works correctly
         'Return ONLY a valid JSON array of 20 objects, no markdown:\n'
         '[{"topic":"subtopic","question":"the question","code":"lua code or empty string",'
         '"options":["option text A","option text B","option text C","option text D"],'
@@ -752,7 +757,6 @@ def tutor_quiz():
         questions = json.loads(text)
         if not isinstance(questions, list):
             raise ValueError('not a list')
-        # Normalise: if AI returned 'correct' letter instead of correct_index, convert it
         for q in questions:
             if 'correct_index' not in q and 'correct' in q:
                 letter = str(q['correct']).strip().upper()
@@ -825,7 +829,6 @@ def tutor_answer():
 
 @app.route('/feedback', methods=['POST'])
 def feedback():
-    # Just log it for now — no table needed
     data = request.json or {}
     print(f'[FEEDBACK] Rating: {data.get("rating")} | {data.get("text", "")[:200]}')
     return jsonify({'success': True})
@@ -845,8 +848,11 @@ def get_user_id_from_session(data):
     conn.close()
     if not row:
         return None
-    expires = datetime.datetime.fromisoformat(row['session_expires'])
-    if datetime.datetime.utcnow() > expires:
+    try:
+        expires = datetime.datetime.fromisoformat(row['session_expires'])
+        if datetime.datetime.utcnow() > expires:
+            return None
+    except Exception:
         return None
     return row['user_id']
 
@@ -875,7 +881,7 @@ Return ONLY valid JSON:
 
     text = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content': prompt}], max_tokens=2000)
     try:
-        result = json.loads(text)
+        result = json.loads(clean_json_response(text))
         if 'fixed_script' not in result:
             result = {'fixed_script': text, 'explanation': ''}
     except:
@@ -943,17 +949,29 @@ def review():
         '{"score": 8, "passed": true, "errors": "none or list issues"}\n'
         'Score 1-10. passed=true if score >= 8.'}], max_tokens=200)
     try:
-        result = json.loads(text)
+        result = json.loads(clean_json_response(text))
     except:
         result = {'score': 7, 'passed': False, 'errors': 'Parse error'}
 
     return jsonify(result)
 
+# ════════════════════════════════════════
+# GAME MEMORY  (stored in SQLite, not a flat file)
+# ════════════════════════════════════════
+
+def get_memory_user_id(data=None):
+    """Get user_id from session token, fallback to global row (id=1) for anonymous."""
+    if data:
+        uid = get_user_id_from_session(data)
+        if uid:
+            return uid
+    return None
+
 @app.route('/scan', methods=['POST'])
 def scan():
     data              = request.json or {}
     workspace_context = data.get('workspace_context', '')
-    user_id           = get_user_id_from_session(data)
+    user_id           = get_memory_user_id(data)
 
     summary = ai_complete(user_id=user_id, messages=[{'role': 'user', 'content':
         f'Analyze this Roblox game workspace. Summarize: game type, main systems, '
@@ -961,43 +979,79 @@ def scan():
         max_tokens=400)
     summary = summary.strip()
 
-    with open('game_memory.json', 'w') as f:
-        json.dump({'summary': summary, 'context': workspace_context, 'approved': False}, f)
+    conn = get_db()
+    c = conn.cursor()
+    # Upsert: one memory row per user_id (or NULL for anonymous)
+    c.execute('SELECT id FROM game_memory WHERE user_id IS ?', (user_id,))
+    existing = c.fetchone()
+    if existing:
+        c.execute('UPDATE game_memory SET summary=?, context=?, approved=0, updated_at=CURRENT_TIMESTAMP WHERE user_id IS ?',
+                  (summary, workspace_context[:5000], user_id))
+    else:
+        c.execute('INSERT INTO game_memory (user_id, summary, context, approved) VALUES (?,?,?,0)',
+                  (user_id, summary, workspace_context[:5000]))
+    conn.commit()
+    conn.close()
 
     return jsonify({'summary': summary})
 
 @app.route('/get-memory', methods=['GET'])
 def get_memory():
-    try:
-        with open('game_memory.json', 'r') as f:
-            data = json.load(f)
-        return jsonify({'game_summary': data.get('summary', ''), 'approved': data.get('approved', False)})
-    except:
-        return jsonify({'game_summary': '', 'approved': False})
+    # Support both GET (plugin) and look up by session token in header or query
+    session_token = request.args.get('session_token') or request.headers.get('X-Session-Token', '')
+    user_id = None
+    if session_token:
+        conn = get_db()
+        c = conn.cursor()
+        c.execute('SELECT user_id FROM plugin_keys WHERE session_token=?', (session_token,))
+        row = c.fetchone()
+        conn.close()
+        if row:
+            user_id = row['user_id']
+
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT summary, approved FROM game_memory WHERE user_id IS ? ORDER BY id DESC LIMIT 1', (user_id,))
+    row = c.fetchone()
+    conn.close()
+
+    if row:
+        return jsonify({'game_summary': row['summary'], 'approved': bool(row['approved'])})
+    return jsonify({'game_summary': '', 'approved': False})
 
 @app.route('/approve', methods=['POST'])
 def approve():
-    try:
-        with open('game_memory.json', 'r') as f:
-            data = json.load(f)
-        data['approved'] = True
-        with open('game_memory.json', 'w') as f:
-            json.dump(data, f)
-        return jsonify({'success': True})
-    except:
+    data    = request.json or {}
+    user_id = get_memory_user_id(data)
+
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('UPDATE game_memory SET approved=1 WHERE user_id IS ?', (user_id,))
+    if c.rowcount == 0:
+        conn.close()
         return jsonify({'error': 'No memory to approve'}), 400
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
 
 @app.route('/reset-memory', methods=['POST'])
 def reset_memory():
-    try:
-        with open('game_memory.json', 'w') as f:
-            json.dump({'summary': '', 'context': '', 'approved': False}, f)
-    except:
-        pass
+    data    = request.json or {}
+    user_id = get_memory_user_id(data)
+
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('DELETE FROM game_memory WHERE user_id IS ?', (user_id,))
+    conn.commit()
+    conn.close()
     return jsonify({'success': True})
+
+# ════════════════════════════════════════
+# MAIN
+# ════════════════════════════════════════
 
 if __name__ == '__main__':
     port  = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') == 'development'
-    print(f'StudCoding server v7.1 — port {port}')
+    print(f'StudCoding server v8.0 — port {port}')
     app.run(host='0.0.0.0', port=port, debug=debug)
