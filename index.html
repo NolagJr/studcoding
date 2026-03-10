@@ -55,7 +55,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .user-avatar{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#6366f1);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 14px rgba(124,58,237,0.4);}
 .user-name{font-size:13px;font-weight:600;}
 .user-plan{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:1px;}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1;min-width:0;opacity:0;animation:mainIn 0.5s 1.6s ease forwards;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1;min-width:0;animation:mainIn 0.5s 1.6s ease both;}
 @keyframes mainIn{to{opacity:1}}
 .topbar{height:60px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(5,3,14,0.7);backdrop-filter:blur(24px);flex-shrink:0;z-index:10;}
 .topbar-title{font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.4px;}
@@ -346,6 +346,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 </div>
 <div class="toast" id="toast"></div>
 <script>
+window.onerror=function(msg,src,line){document.getElementById('toast').textContent='JS Error: '+msg+' (line '+line+')';document.getElementById('toast').className='toast error show';return false;};
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
 const TOKEN = () => localStorage.getItem('stud_session_v3');
 const LESSONS = [
@@ -383,7 +384,7 @@ function $(id){return document.getElementById(id);}
 function setText(id,v){const e=$(id);if(e)e.textContent=v;}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function escA(s){return String(s).replace(/"/g,'&quot;');}
-setTimeout(()=>{const s=$('splash');if(s)s.classList.add('done');},1900);
+setTimeout(()=>{const s=$('splash');if(s)s.classList.add('done');},600);
 function showPanel(name){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
