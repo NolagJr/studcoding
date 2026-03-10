@@ -1,1 +1,1 @@
-web: pip install flask flask-cors PyJWT anthropic openai gunicorn && python server.py
+web: pip install flask flask-cors pyjwt anthropic openai gunicorn && gunicorn --workers=2 --bind=0.0.0.0:$PORT server:app
