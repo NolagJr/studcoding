@@ -455,7 +455,7 @@ def plugin_connect():
     row = c.fetchone()
 
     if not row:
-        return jsonify({'error': 'Invalid plugin key. Get yours from the StudCoding dashboard.'}), 404
+        return jsonify({'error': 'Invalid plugin key. Get yours from the StudCoding dashboard.'})
 
     code    = generate_email_code()
     expires = (datetime.datetime.utcnow() + datetime.timedelta(minutes=10)).isoformat()
@@ -497,7 +497,7 @@ def plugin_confirm():
 
     if not row:
         conn.close()
-        return jsonify({'error': 'Invalid plugin key.'}), 404
+        return jsonify({'error': 'Invalid plugin key.'})
     if not row['email_code']:
         conn.close()
         return jsonify({'error': 'No code pending. Click Connect again.'}), 400
