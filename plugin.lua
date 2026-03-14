@@ -35,66 +35,66 @@ end
 -- ══════════════════════════════════════════════════════════════
 local themes = {
 	dark = {
-		bg         = Color3.fromRGB(4,   7,  14),
-		surface    = Color3.fromRGB(8,  13,  24),
-		surface2   = Color3.fromRGB(11, 17,  30),
-		surface3   = Color3.fromRGB(15, 23,  42),
-		surfaceHov = Color3.fromRGB(18, 28,  52),
-		border     = Color3.fromRGB(22, 35,  60),
-		border2    = Color3.fromRGB(38, 58,  96),
-		accent     = Color3.fromRGB(79, 142, 255),
-		accentHov  = Color3.fromRGB(99, 160, 255),
-		accentDim  = Color3.fromRGB(30,  68, 160),
-		cyan       = Color3.fromRGB(48, 213, 255),
-		cyanDim    = Color3.fromRGB(20, 100, 140),
-		purple     = Color3.fromRGB(167, 139, 250),
-		purpleDim  = Color3.fromRGB(80,  58, 160),
-		gold       = Color3.fromRGB(251, 191,  36),
-		goldDim    = Color3.fromRGB(110,  75,   5),
-		success    = Color3.fromRGB( 52, 211, 153),
-		successDim = Color3.fromRGB( 10,  70,  45),
-		danger     = Color3.fromRGB(248, 113, 113),
-		dangerDim  = Color3.fromRGB( 90,  20,  20),
-		warning    = Color3.fromRGB(251, 191,  36),
-		text       = Color3.fromRGB(220, 230, 248),
-		textDim    = Color3.fromRGB(140, 158, 190),
-		muted      = Color3.fromRGB( 72,  88, 116),
-		faint      = Color3.fromRGB( 28,  40,  64),
+		bg         = Color3.fromRGB( 10,  10,  13),
+		surface    = Color3.fromRGB( 16,  16,  21),
+		surface2   = Color3.fromRGB( 22,  22,  29),
+		surface3   = Color3.fromRGB( 30,  30,  39),
+		surfaceHov = Color3.fromRGB( 38,  38,  50),
+		border     = Color3.fromRGB( 44,  44,  58),
+		border2    = Color3.fromRGB( 62,  62,  82),
+		accent     = Color3.fromRGB( 99, 102, 241),
+		accentHov  = Color3.fromRGB(118, 121, 255),
+		accentDim  = Color3.fromRGB( 26,  27,  76),
+		cyan       = Color3.fromRGB( 99, 102, 241),
+		cyanDim    = Color3.fromRGB( 26,  27,  76),
+		purple     = Color3.fromRGB(139,  92, 246),
+		purpleDim  = Color3.fromRGB( 44,  28,  90),
+		gold       = Color3.fromRGB(245, 158,  11),
+		goldDim    = Color3.fromRGB( 72,  42,   8),
+		success    = Color3.fromRGB( 34, 197,  94),
+		successDim = Color3.fromRGB(  8,  56,  22),
+		danger     = Color3.fromRGB(239,  68,  68),
+		dangerDim  = Color3.fromRGB( 76,  16,  16),
+		warning    = Color3.fromRGB(245, 158,  11),
+		text       = Color3.fromRGB(240, 240, 248),
+		textDim    = Color3.fromRGB(148, 148, 172),
+		muted      = Color3.fromRGB( 84,  84, 108),
+		faint      = Color3.fromRGB( 16,  16,  21),
 		white      = Color3.fromRGB(255, 255, 255),
-		black      = Color3.fromRGB(  4,   7,  14),
-		green      = Color3.fromRGB( 52, 211, 153),
-		grid       = Color3.fromRGB( 10,  16,  28),
+		black      = Color3.fromRGB( 10,  10,  13),
+		green      = Color3.fromRGB( 34, 197,  94),
+		grid       = Color3.fromRGB( 20,  20,  26),
 	},
 	light = {
-		bg         = Color3.fromRGB(246, 248, 252),
+		bg         = Color3.fromRGB(250, 250, 252),
 		surface    = Color3.fromRGB(255, 255, 255),
-		surface2   = Color3.fromRGB(240, 244, 250),
-		surface3   = Color3.fromRGB(230, 236, 246),
-		surfaceHov = Color3.fromRGB(220, 228, 242),
-		border     = Color3.fromRGB(206, 216, 232),
-		border2    = Color3.fromRGB(160, 176, 210),
-		accent     = Color3.fromRGB( 59, 130, 246),
-		accentHov  = Color3.fromRGB( 37, 100, 220),
-		accentDim  = Color3.fromRGB(196, 219, 255),
-		cyan       = Color3.fromRGB(  6, 182, 212),
-		cyanDim    = Color3.fromRGB(207, 244, 252),
+		surface2   = Color3.fromRGB(244, 244, 248),
+		surface3   = Color3.fromRGB(236, 236, 244),
+		surfaceHov = Color3.fromRGB(226, 226, 238),
+		border     = Color3.fromRGB(210, 210, 226),
+		border2    = Color3.fromRGB(178, 178, 208),
+		accent     = Color3.fromRGB( 79,  82, 221),
+		accentHov  = Color3.fromRGB( 62,  65, 194),
+		accentDim  = Color3.fromRGB(224, 224, 254),
+		cyan       = Color3.fromRGB( 79,  82, 221),
+		cyanDim    = Color3.fromRGB(224, 224, 254),
 		purple     = Color3.fromRGB(124,  58, 237),
 		purpleDim  = Color3.fromRGB(237, 233, 254),
-		gold       = Color3.fromRGB(217, 119,   6),
-		goldDim    = Color3.fromRGB(254, 243, 199),
+		gold       = Color3.fromRGB(180, 100,   8),
+		goldDim    = Color3.fromRGB(254, 240, 196),
 		success    = Color3.fromRGB( 16, 185, 129),
 		successDim = Color3.fromRGB(209, 250, 229),
 		danger     = Color3.fromRGB(220,  38,  38),
 		dangerDim  = Color3.fromRGB(254, 226, 226),
-		warning    = Color3.fromRGB(217, 119,   6),
-		text       = Color3.fromRGB( 15,  23,  42),
-		textDim    = Color3.fromRGB( 71,  85, 105),
-		muted      = Color3.fromRGB(148, 163, 184),
-		faint      = Color3.fromRGB(226, 232, 240),
-		white      = Color3.fromRGB( 15,  23,  42),
+		warning    = Color3.fromRGB(180, 100,   8),
+		text       = Color3.fromRGB( 12,  12,  18),
+		textDim    = Color3.fromRGB( 72,  72,  96),
+		muted      = Color3.fromRGB(144, 144, 172),
+		faint      = Color3.fromRGB(248, 248, 252),
+		white      = Color3.fromRGB( 12,  12,  18),
 		black      = Color3.fromRGB(255, 255, 255),
 		green      = Color3.fromRGB( 16, 185, 129),
-		grid       = Color3.fromRGB(226, 232, 240),
+		grid       = Color3.fromRGB(232, 232, 240),
 	}
 }
 
@@ -110,6 +110,16 @@ root.BackgroundColor3 = C.bg
 root.BorderSizePixel  = 0
 root.ClipsDescendants = true
 root.Parent = widget
+
+-- Rich depth gradient background
+local rootGrad = Instance.new("UIGradient")
+rootGrad.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0,   Color3.fromRGB(14,  10,  26)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(10,  10,  13)),
+	ColorSequenceKeypoint.new(1,   Color3.fromRGB(10,  12,  20)),
+})
+rootGrad.Rotation = 135
+rootGrad.Parent   = root
 
 -- ══════════════════════════════════════════════════════════════
 -- CONSTANTS
@@ -132,7 +142,7 @@ for i = 0, 55 do
 	h.Position         = UDim2.new(0,0,0, i * gridSize)
 	h.BackgroundColor3 = C.grid
 	h.BorderSizePixel  = 0
-	h.BackgroundTransparency = 0.4
+	h.BackgroundTransparency = 1
 	h.ZIndex = 1
 	h.Parent = root
 	table.insert(gridLines, h)
@@ -142,17 +152,17 @@ for i = 0, 55 do
 	v.Position         = UDim2.new(0, i * gridSize, 0, 0)
 	v.BackgroundColor3 = C.grid
 	v.BorderSizePixel  = 0
-	v.BackgroundTransparency = 0.4
+	v.BackgroundTransparency = 1
 	v.ZIndex = 1
 	v.Parent = root
 	table.insert(gridLines, v)
 end
 
--- Radial glow at top
+-- Radial glow at top (hidden)
 local topGlow = Instance.new("Frame")
 topGlow.Size = UDim2.new(1,0,0,120)
 topGlow.BackgroundColor3 = C.accent
-topGlow.BackgroundTransparency = 0.94
+topGlow.BackgroundTransparency = 1
 topGlow.BorderSizePixel = 0
 topGlow.ZIndex = 2
 topGlow.Parent = root
@@ -169,6 +179,32 @@ topGlowGrad.Rotation = 90
 topGlowGrad.Parent   = topGlow
 
 -- ══════════════════════════════════════════════════════════════
+-- UI HELPERS (moved up to reduce local count in auth section)
+-- ══════════════════════════════════════════════════════════════
+local function addPadding(p, top, bottom, left, right)
+	local pad = Instance.new("UIPadding")
+	pad.PaddingTop    = UDim.new(0, top    or 0)
+	pad.PaddingBottom = UDim.new(0, bottom or 0)
+	pad.PaddingLeft   = UDim.new(0, left   or 0)
+	pad.PaddingRight  = UDim.new(0, right  or 0)
+	pad.Parent = p
+end
+
+local function addCorner(parent, radius)
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, radius or 8)
+	c.Parent = parent
+end
+
+local function addStroke(parent, color, thickness)
+	local s = Instance.new("UIStroke")
+	s.Color     = color or C.border
+	s.Thickness = thickness or 1
+	s.Parent    = parent
+	return s
+end
+
+-- ══════════════════════════════════════════════════════════════
 -- AUTH SCREEN  — PREMIUM FLOATING CARD
 -- ══════════════════════════════════════════════════════════════
 local authScreen = Instance.new("Frame")
@@ -179,13 +215,13 @@ authScreen.ZIndex   = 100
 authScreen.Visible  = true
 authScreen.Parent   = root
 
--- Auth grid overlay
+-- Auth grid overlay (hidden)
 for i = 0, 28 do
 	local ah = Instance.new("Frame")
 	ah.Size = UDim2.new(1,0,0,1)
 	ah.Position = UDim2.new(0,0,0, i*28)
 	ah.BackgroundColor3 = C.grid
-	ah.BackgroundTransparency = 0.6
+	ah.BackgroundTransparency = 1
 	ah.BorderSizePixel = 0
 	ah.ZIndex = 100
 	ah.Parent = authScreen
@@ -200,9 +236,9 @@ authTopBar.ZIndex = 101
 authTopBar.Parent = authScreen
 local authBarGrad = Instance.new("UIGradient")
 authBarGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, C.accent),
-	ColorSequenceKeypoint.new(0.5, C.cyan),
-	ColorSequenceKeypoint.new(1, C.purple),
+	ColorSequenceKeypoint.new(0,   Color3.fromRGB( 99, 102, 241)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(139,  92, 246)),
+	ColorSequenceKeypoint.new(1,   Color3.fromRGB( 99, 102, 241)),
 })
 authBarGrad.Parent = authTopBar
 
@@ -215,9 +251,7 @@ authCardBorder.BackgroundColor3 = C.border2
 authCardBorder.BorderSizePixel  = 0
 authCardBorder.ZIndex = 101
 authCardBorder.Parent = authScreen
-local authCardBorderCorner = Instance.new("UICorner")
-authCardBorderCorner.CornerRadius = UDim.new(0, 16)
-authCardBorderCorner.Parent = authCardBorder
+addCorner(authCardBorder, 16)
 
 -- Inner card
 local authCard = Instance.new("Frame")
@@ -228,15 +262,8 @@ authCard.BackgroundColor3 = C.surface
 authCard.BorderSizePixel  = 0
 authCard.ZIndex = 102
 authCard.Parent = authCardBorder
-local authCardCorner = Instance.new("UICorner")
-authCardCorner.CornerRadius = UDim.new(0, 15)
-authCardCorner.Parent = authCard
-local authCardPad = Instance.new("UIPadding")
-authCardPad.PaddingTop    = UDim.new(0, 28)
-authCardPad.PaddingBottom = UDim.new(0, 28)
-authCardPad.PaddingLeft   = UDim.new(0, 20)
-authCardPad.PaddingRight  = UDim.new(0, 20)
-authCardPad.Parent = authCard
+addCorner(authCard, 15)
+addPadding(authCard, 28, 28, 20, 20)
 
 local authCardLayout = Instance.new("UIListLayout")
 authCardLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -251,13 +278,11 @@ authLogoWrap.BorderSizePixel  = 0
 authLogoWrap.LayoutOrder = 1
 authLogoWrap.ZIndex = 103
 authLogoWrap.Parent = authCard
-local authLogoCorner = Instance.new("UICorner")
-authLogoCorner.CornerRadius = UDim.new(0, 12)
-authLogoCorner.Parent = authLogoWrap
+addCorner(authLogoWrap, 12)
 local authLogoGrad = Instance.new("UIGradient")
 authLogoGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, C.accent),
-	ColorSequenceKeypoint.new(1, C.cyan),
+	ColorSequenceKeypoint.new(0, Color3.fromRGB( 99, 102, 241)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(139,  92, 246)),
 })
 authLogoGrad.Rotation = 135
 authLogoGrad.Parent   = authLogoWrap
@@ -265,9 +290,9 @@ authLogoGrad.Parent   = authLogoWrap
 local authLogoTxt = Instance.new("TextLabel")
 authLogoTxt.Size = UDim2.new(1,0,1,0)
 authLogoTxt.BackgroundTransparency = 1
-authLogoTxt.Text     = "S."
+authLogoTxt.Text     = "SC"
 authLogoTxt.TextColor3 = Color3.new(1,1,1)
-authLogoTxt.TextSize   = 20
+authLogoTxt.TextSize   = 15
 authLogoTxt.Font       = Enum.Font.GothamBold
 authLogoTxt.ZIndex     = 104
 authLogoTxt.Parent     = authLogoWrap
@@ -335,15 +360,13 @@ stepNum1.Position = UDim2.new(0,0,0,1)
 stepNum1.BackgroundColor3 = C.accentDim
 stepNum1.BorderSizePixel  = 0
 stepNum1.Parent = stepLabel1
-local stepNum1Corner = Instance.new("UICorner")
-stepNum1Corner.CornerRadius = UDim.new(1,0)
-stepNum1Corner.Parent = stepNum1
+addCorner(stepNum1, 99)
 local stepNum1Txt = Instance.new("TextLabel")
 stepNum1Txt.Size = UDim2.new(1,0,1,0)
 stepNum1Txt.BackgroundTransparency = 1
 stepNum1Txt.Text = "1"
 stepNum1Txt.TextColor3 = C.accent
-stepNum1Txt.TextSize   = 10
+stepNum1Txt.TextSize   = 12
 stepNum1Txt.Font       = Enum.Font.GothamBold
 stepNum1Txt.Parent     = stepNum1
 
@@ -353,7 +376,7 @@ stepTxt1.Position = UDim2.new(0,28,0,0)
 stepTxt1.BackgroundTransparency = 1
 stepTxt1.Text = "Enter your Plugin Key"
 stepTxt1.TextColor3 = C.textDim
-stepTxt1.TextSize   = 11
+stepTxt1.TextSize   = 12
 stepTxt1.Font       = Enum.Font.GothamBold
 stepTxt1.TextXAlignment = Enum.TextXAlignment.Left
 stepTxt1.Parent = stepLabel1
@@ -366,9 +389,7 @@ actWrap.BorderSizePixel  = 0
 actWrap.LayoutOrder = 2
 actWrap.ZIndex = 104
 actWrap.Parent = screen1
-local actCorner = Instance.new("UICorner")
-actCorner.CornerRadius = UDim.new(0,8)
-actCorner.Parent = actWrap
+addCorner(actWrap, 8)
 local actStroke = Instance.new("UIStroke")
 actStroke.Color     = C.border2
 actStroke.Thickness = 1.5
@@ -397,13 +418,11 @@ keyIcon.BackgroundColor3 = C.border
 keyIcon.BorderSizePixel  = 0
 keyIcon.Text     = "#"
 keyIcon.TextColor3 = C.muted
-keyIcon.TextSize   = 11
+keyIcon.TextSize   = 12
 keyIcon.Font       = Enum.Font.GothamBold
 keyIcon.ZIndex     = 105
 keyIcon.Parent     = actWrap
-local keyIconCorner = Instance.new("UICorner")
-keyIconCorner.CornerRadius = UDim.new(0,6)
-keyIconCorner.Parent = keyIcon
+addCorner(keyIcon, 6)
 
 actCodeInput.Focused:Connect(function()
 	TweenService:Create(actStroke, TweenInfo.new(0.18), {Color = C.accent}):Play()
@@ -431,15 +450,8 @@ authError1.Visible   = false
 authError1.LayoutOrder = 3
 authError1.ZIndex = 104
 authError1.Parent = screen1
-local ae1Corner = Instance.new("UICorner")
-ae1Corner.CornerRadius = UDim.new(0,6)
-ae1Corner.Parent = authError1
-local ae1Pad = Instance.new("UIPadding")
-ae1Pad.PaddingTop    = UDim.new(0,6)
-ae1Pad.PaddingBottom = UDim.new(0,6)
-ae1Pad.PaddingLeft   = UDim.new(0,10)
-ae1Pad.PaddingRight  = UDim.new(0,10)
-ae1Pad.Parent = authError1
+addCorner(authError1, 6)
+addPadding(authError1, 6, 6, 10, 10)
 
 -- CONNECT button with gradient
 local verifyBtn = Instance.new("TextButton")
@@ -454,13 +466,11 @@ verifyBtn.AutoButtonColor = false
 verifyBtn.LayoutOrder = 4
 verifyBtn.ZIndex = 104
 verifyBtn.Parent = screen1
-local verifyCorner = Instance.new("UICorner")
-verifyCorner.CornerRadius = UDim.new(0,8)
-verifyCorner.Parent = verifyBtn
+addCorner(verifyBtn, 8)
 local verifyGrad = Instance.new("UIGradient")
 verifyGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, C.accent),
-	ColorSequenceKeypoint.new(1, C.cyan),
+	ColorSequenceKeypoint.new(0, Color3.fromRGB( 99, 102, 241)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(139,  92, 246)),
 })
 verifyGrad.Rotation = 135
 verifyGrad.Parent = verifyBtn
@@ -484,7 +494,7 @@ authNote1.Size = UDim2.new(1,0,0,28)
 authNote1.BackgroundTransparency = 1
 authNote1.Text     = "Get your key at studcoding.app → Dashboard → Install Plugin"
 authNote1.TextColor3 = C.muted
-authNote1.TextSize   = 10
+authNote1.TextSize   = 11
 authNote1.Font       = Enum.Font.Gotham
 authNote1.TextXAlignment = Enum.TextXAlignment.Center
 authNote1.LayoutOrder = 5
@@ -518,13 +528,13 @@ stepNum2.Position = UDim2.new(0,0,0,1)
 stepNum2.BackgroundColor3 = C.successDim
 stepNum2.BorderSizePixel  = 0
 stepNum2.Parent = stepLabel2
-local sn2c = Instance.new("UICorner"); sn2c.CornerRadius = UDim.new(1,0); sn2c.Parent = stepNum2
+addCorner(stepNum2, 99)
 local sn2t = Instance.new("TextLabel")
 sn2t.Size = UDim2.new(1,0,1,0)
 sn2t.BackgroundTransparency = 1
 sn2t.Text = "2"
 sn2t.TextColor3 = C.success
-sn2t.TextSize   = 10
+sn2t.TextSize   = 12
 sn2t.Font       = Enum.Font.GothamBold
 sn2t.Parent     = stepNum2
 
@@ -534,7 +544,7 @@ stepTxt2.Position = UDim2.new(0,28,0,0)
 stepTxt2.BackgroundTransparency = 1
 stepTxt2.Text = "Check your email"
 stepTxt2.TextColor3 = C.textDim
-stepTxt2.TextSize   = 11
+stepTxt2.TextSize   = 12
 stepTxt2.Font       = Enum.Font.GothamBold
 stepTxt2.TextXAlignment = Enum.TextXAlignment.Left
 stepTxt2.Parent = stepLabel2
@@ -562,11 +572,8 @@ devHint.Visible = false
 devHint.LayoutOrder = 3
 devHint.ZIndex = 103
 devHint.Parent = screen2
-local dhCorner = Instance.new("UICorner"); dhCorner.CornerRadius = UDim.new(0,6); dhCorner.Parent = devHint
-local dhPad = Instance.new("UIPadding")
-dhPad.PaddingTop = UDim.new(0,6); dhPad.PaddingBottom = UDim.new(0,6)
-dhPad.PaddingLeft = UDim.new(0,10); dhPad.PaddingRight = UDim.new(0,10)
-dhPad.Parent = devHint
+addCorner(devHint, 6)
+addPadding(devHint, 6, 6, 10, 10)
 
 local devHintTxt = Instance.new("TextLabel")
 devHintTxt.Size = UDim2.new(1,0,0,0)
@@ -588,7 +595,7 @@ emailWrap.BorderSizePixel  = 0
 emailWrap.LayoutOrder = 4
 emailWrap.ZIndex = 104
 emailWrap.Parent = screen2
-local ewCorner = Instance.new("UICorner"); ewCorner.CornerRadius = UDim.new(0,8); ewCorner.Parent = emailWrap
+addCorner(emailWrap, 8)
 local emailStroke = Instance.new("UIStroke")
 emailStroke.Color     = C.border2
 emailStroke.Thickness = 1.5
@@ -633,16 +640,13 @@ authError2.Visible   = false
 authError2.LayoutOrder = 5
 authError2.ZIndex = 104
 authError2.Parent = screen2
-local ae2c = Instance.new("UICorner"); ae2c.CornerRadius = UDim.new(0,6); ae2c.Parent = authError2
-local ae2p = Instance.new("UIPadding")
-ae2p.PaddingTop = UDim.new(0,6); ae2p.PaddingBottom = UDim.new(0,6)
-ae2p.PaddingLeft = UDim.new(0,10); ae2p.PaddingRight = UDim.new(0,10)
-ae2p.Parent = authError2
+addCorner(authError2, 6)
+addPadding(authError2, 6, 6, 10, 10)
 
 local unlockBtn = Instance.new("TextButton")
 unlockBtn.Size = UDim2.new(1,0,0,44)
 unlockBtn.BackgroundColor3 = C.success
-unlockBtn.TextColor3 = Color3.fromRGB(5, 30, 20)
+unlockBtn.TextColor3 = Color3.new(1,1,1)
 unlockBtn.Text     = "Unlock Plugin  →"
 unlockBtn.TextSize  = 13
 unlockBtn.Font      = Enum.Font.GothamBold
@@ -651,11 +655,11 @@ unlockBtn.AutoButtonColor = false
 unlockBtn.LayoutOrder = 6
 unlockBtn.ZIndex = 104
 unlockBtn.Parent = screen2
-local unlockCorner = Instance.new("UICorner"); unlockCorner.CornerRadius = UDim.new(0,8); unlockCorner.Parent = unlockBtn
+addCorner(unlockBtn, 8)
 local unlockGrad = Instance.new("UIGradient")
 unlockGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, C.success),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 230, 180)),
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(34, 197,  94)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(16, 185, 129)),
 })
 unlockGrad.Rotation = 135
 unlockGrad.Parent = unlockBtn
@@ -679,7 +683,7 @@ backBtn.Size = UDim2.new(1,0,0,28)
 backBtn.BackgroundTransparency = 1
 backBtn.TextColor3 = C.muted
 backBtn.Text     = "← Go Back"
-backBtn.TextSize  = 11
+backBtn.TextSize  = 12
 backBtn.Font      = Enum.Font.GothamBold
 backBtn.BorderSizePixel = 0
 backBtn.AutoButtonColor = false
@@ -837,6 +841,16 @@ scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
 scroll.ZIndex = 3
 scroll.Parent = root
 
+-- Panel crossfade overlay (sits above content, briefly flashes on tab switch)
+local panelOverlay = Instance.new("Frame")
+panelOverlay.Size = UDim2.new(1,0,1,0)
+panelOverlay.BackgroundColor3 = C.bg
+panelOverlay.BackgroundTransparency = 1
+panelOverlay.BorderSizePixel = 0
+panelOverlay.ZIndex = 50
+panelOverlay.Active = false
+panelOverlay.Parent = root
+
 local mainLayout = Instance.new("UIListLayout")
 mainLayout.SortOrder = Enum.SortOrder.LayoutOrder
 mainLayout.Padding    = UDim.new(0,0)
@@ -899,30 +913,8 @@ local function applyTheme()
 end
 
 -- ══════════════════════════════════════════════════════════════
--- HELPERS
+-- HELPERS (addPadding, addCorner, addStroke defined earlier)
 -- ══════════════════════════════════════════════════════════════
-local function addPadding(p, top, bottom, left, right)
-	local pad = Instance.new("UIPadding")
-	pad.PaddingTop    = UDim.new(0, top    or 0)
-	pad.PaddingBottom = UDim.new(0, bottom or 0)
-	pad.PaddingLeft   = UDim.new(0, left   or 0)
-	pad.PaddingRight  = UDim.new(0, right  or 0)
-	pad.Parent = p
-end
-
-local function addCorner(parent, radius)
-	local c = Instance.new("UICorner")
-	c.CornerRadius = UDim.new(0, radius or 8)
-	c.Parent = parent
-end
-
-local function addStroke(parent, color, thickness)
-	local s = Instance.new("UIStroke")
-	s.Color     = color or C.border
-	s.Thickness = thickness or 1
-	s.Parent    = parent
-	return s
-end
 
 local function makeSection(order, pt, pb)
 	local f = Instance.new("Frame")
@@ -961,7 +953,7 @@ local function makeSectionLabel(text, colorKey, parent, order)
 	lbl.BackgroundTransparency = 1
 	lbl.Text     = text
 	lbl.TextColor3 = C[colorKey]
-	lbl.TextSize   = 10
+	lbl.TextSize   = 11
 	lbl.Font       = Enum.Font.GothamBold
 	lbl.TextXAlignment = Enum.TextXAlignment.Left
 	lbl.Parent = row
@@ -981,6 +973,18 @@ local function makeInput(placeholder, height, parent, order, multiline)
 	local stroke = addStroke(wrap, C.border2, 1.5)
 	reg(wrap,   "BackgroundColor3", "surface2")
 	reg(stroke, "Color",            "border2")
+
+	-- Glass top-shine
+	local inputShine = Instance.new("Frame")
+	inputShine.Size = UDim2.new(1,-8,0,1)
+	inputShine.Position = UDim2.new(0,4,0,2)
+	inputShine.BackgroundColor3 = Color3.fromRGB(255,255,255)
+	inputShine.BackgroundTransparency = 0.82
+	inputShine.BorderSizePixel = 0
+	inputShine.ZIndex = wrap.ZIndex + 1
+	inputShine.Active = false
+	inputShine.Parent = wrap
+	addCorner(inputShine, 2)
 
 	local box = Instance.new("TextBox")
 	box.Size = UDim2.new(1,-20,1,-12)
@@ -1029,6 +1033,25 @@ local function makeBtn(text, colorKey, parent, order, height, isOutline)
 	if not isOutline then reg(btn, "BackgroundColor3", colorKey) end
 	reg(btn, "TextColor3", isOutline and colorKey or "white")
 
+	-- Glass top-shine highlight
+	local topShine = Instance.new("Frame")
+	topShine.Size = UDim2.new(1,-6,0,1)
+	topShine.Position = UDim2.new(0,3,0,2)
+	topShine.BackgroundColor3 = Color3.fromRGB(255,255,255)
+	topShine.BackgroundTransparency = isOutline and 0.82 or 0.72
+	topShine.BorderSizePixel = 0
+	topShine.ZIndex = btn.ZIndex + 1
+	topShine.Active = false
+	topShine.Parent = btn
+	addCorner(topShine, 2)
+
+	-- Glow stroke (animates on hover)
+	local glowStroke = Instance.new("UIStroke")
+	glowStroke.Color = isOutline and C[colorKey] or Color3.fromRGB(255,255,255)
+	glowStroke.Thickness = 0
+	glowStroke.Transparency = isOutline and 0.4 or 0.7
+	glowStroke.Parent = btn
+
 	if isOutline then
 		local s = addStroke(btn, C[colorKey], 1.5)
 		reg(s, "Color", colorKey)
@@ -1037,26 +1060,28 @@ local function makeBtn(text, colorKey, parent, order, height, isOutline)
 	btn.MouseEnter:Connect(function()
 		local col = C[colorKey]
 		if isOutline then
-			TweenService:Create(btn, TweenInfo.new(0.12), {BackgroundColor3 = C.surface3}):Play()
+			TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = C.surface3}):Play()
 		else
-			TweenService:Create(btn, TweenInfo.new(0.12), {
+			TweenService:Create(btn, TweenInfo.new(0.15), {
 				BackgroundColor3 = Color3.new(
-					math.min(col.R+0.07,1), math.min(col.G+0.07,1), math.min(col.B+0.07,1)
+					math.min(col.R+0.08,1), math.min(col.G+0.08,1), math.min(col.B+0.08,1)
 				)
 			}):Play()
 		end
+		TweenService:Create(glowStroke, TweenInfo.new(0.15), {Thickness = 1.5}):Play()
 	end)
 	btn.MouseLeave:Connect(function()
-		TweenService:Create(btn, TweenInfo.new(0.12), {
+		TweenService:Create(btn, TweenInfo.new(0.15), {
 			BackgroundColor3 = isOutline and C.surface2 or C[colorKey]
 		}):Play()
+		TweenService:Create(glowStroke, TweenInfo.new(0.2), {Thickness = 0}):Play()
 	end)
 	btn.MouseButton1Down:Connect(function()
 		playClick()
-		TweenService:Create(btn, TweenInfo.new(0.06), {Size = UDim2.new(1,0,0,h-2)}):Play()
+		TweenService:Create(btn, TweenInfo.new(0.07, Enum.EasingStyle.Quad), {Size = UDim2.new(1,0,0,h-3)}):Play()
 	end)
 	btn.MouseButton1Up:Connect(function()
-		TweenService:Create(btn, TweenInfo.new(0.1), {Size = UDim2.new(1,0,0,h)}):Play()
+		TweenService:Create(btn, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,h)}):Play()
 	end)
 	return btn
 end
@@ -1233,6 +1258,10 @@ end
 -- ══════════════════════════════════════════════════════════════
 -- PREMIUM HEADER
 -- ══════════════════════════════════════════════════════════════
+local brand, pulseBrandRunning, pulseBrand
+local statusPill, statusStroke, statusDot, statusTxt
+local themeToggle
+do
 local headerBg = Instance.new("Frame")
 headerBg.Size = UDim2.new(1,0,0,84)
 headerBg.BackgroundColor3 = C.surface
@@ -1258,9 +1287,9 @@ accentBar.BorderSizePixel  = 0
 accentBar.Parent = headerBg
 local accentBarGrad = Instance.new("UIGradient")
 accentBarGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0,   C.accent),
-	ColorSequenceKeypoint.new(0.5, C.cyan),
-	ColorSequenceKeypoint.new(1,   C.purple),
+	ColorSequenceKeypoint.new(0,   Color3.fromRGB( 99, 102, 241)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(139,  92, 246)),
+	ColorSequenceKeypoint.new(1,   Color3.fromRGB( 99, 102, 241)),
 })
 accentBarGrad.Parent = accentBar
 
@@ -1280,8 +1309,8 @@ logoMark.Parent = headerPad
 addCorner(logoMark, 10)
 local logoGrad = Instance.new("UIGradient")
 logoGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, C.accent),
-	ColorSequenceKeypoint.new(1, C.cyan),
+	ColorSequenceKeypoint.new(0, Color3.fromRGB( 99, 102, 241)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(139,  92, 246)),
 })
 logoGrad.Rotation = 135
 logoGrad.Parent   = logoMark
@@ -1289,14 +1318,14 @@ logoGrad.Parent   = logoMark
 local logoTxt = Instance.new("TextLabel")
 logoTxt.Size = UDim2.new(1,0,1,0)
 logoTxt.BackgroundTransparency = 1
-logoTxt.Text     = "S."
+logoTxt.Text     = "SC"
 logoTxt.TextColor3 = Color3.new(1,1,1)
-logoTxt.TextSize   = 16
+logoTxt.TextSize   = 13
 logoTxt.Font       = Enum.Font.GothamBold
 logoTxt.Parent     = logoMark
 
 -- Brand text
-local brand = Instance.new("TextLabel")
+brand = Instance.new("TextLabel")
 brand.Size = UDim2.new(0,130,0,20)
 brand.Position = UDim2.new(0,48,0,18)
 brand.BackgroundTransparency = 1
@@ -1320,9 +1349,9 @@ reg(vBadge, "BackgroundColor3", "accentDim")
 local vBadgeTxt = Instance.new("TextLabel")
 vBadgeTxt.Size = UDim2.new(1,0,1,0)
 vBadgeTxt.BackgroundTransparency = 1
-vBadgeTxt.Text     = "v15"
+vBadgeTxt.Text     = "v16"
 vBadgeTxt.TextColor3 = C.accent
-vBadgeTxt.TextSize   = 8
+vBadgeTxt.TextSize   = 10
 vBadgeTxt.Font       = Enum.Font.GothamBold
 vBadgeTxt.Parent     = vBadge
 reg(vBadgeTxt, "TextColor3", "accent")
@@ -1333,15 +1362,15 @@ tagline.Position = UDim2.new(0,48,0,40)
 tagline.BackgroundTransparency = 1
 tagline.Text     = "Your game. Perfected by AI."
 tagline.TextColor3 = C.muted
-tagline.TextSize   = 10
+tagline.TextSize   = 11
 tagline.Font       = Enum.Font.Gotham
 tagline.TextXAlignment = Enum.TextXAlignment.Left
 tagline.Parent = headerPad
 reg(tagline, "TextColor3", "muted")
 
 -- Pulsing brand animation
-local pulseBrandRunning = false
-local function pulseBrand()
+pulseBrandRunning = false
+pulseBrand = function()
 	if pulseBrandRunning then return end
 	pulseBrandRunning = true
 	while pulseBrandRunning do
@@ -1356,13 +1385,13 @@ local function pulseBrand()
 end
 
 -- Theme toggle (pill style)
-local themeToggle = Instance.new("TextButton")
+themeToggle = Instance.new("TextButton")
 themeToggle.Size = UDim2.new(0,40,0,20)
 themeToggle.Position = UDim2.new(1,-148,0.5,-10)
 themeToggle.BackgroundColor3 = C.surface3
 themeToggle.TextColor3 = C.muted
 themeToggle.Text     = "Light"
-themeToggle.TextSize  = 9
+themeToggle.TextSize  = 11
 themeToggle.Font      = Enum.Font.GothamBold
 themeToggle.BorderSizePixel = 0
 themeToggle.AutoButtonColor = false
@@ -1387,7 +1416,7 @@ signOutBtn.Position = UDim2.new(1,-100,0.5,-10)
 signOutBtn.BackgroundTransparency = 1
 signOutBtn.TextColor3 = C.muted
 signOutBtn.Text     = "sign out"
-signOutBtn.TextSize  = 9
+signOutBtn.TextSize  = 11
 signOutBtn.Font      = Enum.Font.GothamBold
 signOutBtn.BorderSizePixel = 0
 signOutBtn.AutoButtonColor = false
@@ -1415,16 +1444,16 @@ signOutBtn.MouseButton1Click:Connect(function()
 end)
 
 -- Status pill
-local statusPill = Instance.new("Frame")
+statusPill = Instance.new("Frame")
 statusPill.Size = UDim2.new(0,60,0,20)
 statusPill.Position = UDim2.new(1,-44,0.5,-10)
 statusPill.BackgroundColor3 = C.successDim
 statusPill.BorderSizePixel  = 0
 statusPill.Parent = headerPad
 addCorner(statusPill, 99)
-local statusStroke = addStroke(statusPill, C.success, 1)
+statusStroke = addStroke(statusPill, C.success, 1)
 
-local statusDot = Instance.new("Frame")
+statusDot = Instance.new("Frame")
 statusDot.Size = UDim2.new(0,6,0,6)
 statusDot.Position = UDim2.new(0,8,0.5,-3)
 statusDot.BackgroundColor3 = C.success
@@ -1432,15 +1461,17 @@ statusDot.BorderSizePixel  = 0
 statusDot.Parent = statusPill
 addCorner(statusDot, 99)
 
-local statusTxt = Instance.new("TextLabel")
+statusTxt = Instance.new("TextLabel")
 statusTxt.Size = UDim2.new(1,-18,1,0)
 statusTxt.Position = UDim2.new(0,16,0,0)
 statusTxt.BackgroundTransparency = 1
 statusTxt.Text     = "ONLINE"
 statusTxt.TextColor3 = C.success
-statusTxt.TextSize   = 8
+statusTxt.TextSize   = 10
 statusTxt.Font       = Enum.Font.GothamBold
 statusTxt.Parent     = statusPill
+
+end -- header do block
 
 local function pulseStatusDot()
 	while true do
@@ -1458,8 +1489,9 @@ end
 -- ══════════════════════════════════════════════════════════════
 -- NAV TABS — PILL STYLE
 -- ══════════════════════════════════════════════════════════════
+local navFix, navWrite, navInsights
+do
 local navSection = makeSection(2, 10, 0)
-
 local navRow = Instance.new("Frame")
 navRow.Size = UDim2.new(1,0,0,36)
 navRow.BackgroundColor3 = C.surface2
@@ -1481,7 +1513,7 @@ local function makeNavBtn(text, order)
 	btn.BackgroundTransparency = 1
 	btn.TextColor3 = C.muted
 	btn.Text     = text
-	btn.TextSize  = 11
+	btn.TextSize  = 12
 	btn.Font      = Enum.Font.GothamBold
 	btn.BorderSizePixel = 0
 	btn.AutoButtonColor = false
@@ -1493,9 +1525,10 @@ local function makeNavBtn(text, order)
 	return btn
 end
 
-local navFix      = makeNavBtn("⚡ Fix",     1)
-local navWrite    = makeNavBtn("✦ Write",   2)
-local navInsights = makeNavBtn("◈ Insights", 3)
+navFix      = makeNavBtn("⚡ Fix",     1)
+navWrite    = makeNavBtn("✦ Write",   2)
+navInsights = makeNavBtn("◈ Insights", 3)
+end -- nav do block
 
 makeDivider(3)
 
@@ -1626,8 +1659,8 @@ local watchBtn = makeBtn("▶  Run + Watch for Errors",  "green",   fixPanel, 7,
 -- Gradient on fixBtn
 local fixBtnGrad = Instance.new("UIGradient")
 fixBtnGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, C.accent),
-	ColorSequenceKeypoint.new(1, C.cyan),
+	ColorSequenceKeypoint.new(0, Color3.fromRGB( 99, 102, 241)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(139,  92, 246)),
 })
 fixBtnGrad.Rotation = 135
 fixBtnGrad.Parent = fixBtn
@@ -1660,7 +1693,7 @@ local stopWatchBtn = makeBtn("■  Stop Watching", "danger", fixPanel, 9, 32)
 stopWatchBtn.Visible  = false
 stopWatchBtn.TextSize = 11
 
-local clearFixBtn = makeBtn("Clear", "surface2", fixPanel, 10, 28, true)
+local clearFixBtn = makeBtn("Clear", "textDim", fixPanel, 10, 28, true)
 clearFixBtn.TextSize = 11
 
 -- ══════════════════════════════════════════════════════════════
@@ -1713,8 +1746,8 @@ reg(writeAttemptsTxt, "TextColor3", "warning")
 local writeBtn = makeBtn("✦  Write Script", "purple", writePanel, 9, 42)
 local writeBtnGrad = Instance.new("UIGradient")
 writeBtnGrad.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, C.purple),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 170, 255)),
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(139,  92, 246)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(167, 139, 250)),
 })
 writeBtnGrad.Rotation = 135
 writeBtnGrad.Parent = writeBtn
@@ -1827,7 +1860,7 @@ lastInsHeader.Position = UDim2.new(0,12,0,8)
 lastInsHeader.BackgroundTransparency = 1
 lastInsHeader.Text     = "LAST FIX"
 lastInsHeader.TextColor3 = C.gold
-lastInsHeader.TextSize   = 9
+lastInsHeader.TextSize   = 11
 lastInsHeader.Font       = Enum.Font.GothamBold
 lastInsHeader.TextXAlignment = Enum.TextXAlignment.Left
 lastInsHeader.Parent = lastInsightCard
@@ -1839,7 +1872,7 @@ lastInsScript.Position = UDim2.new(0,12,0,26)
 lastInsScript.BackgroundTransparency = 1
 lastInsScript.Text     = ""
 lastInsScript.TextColor3 = C.cyan
-lastInsScript.TextSize   = 10
+lastInsScript.TextSize   = 12
 lastInsScript.Font       = Enum.Font.GothamBold
 lastInsScript.TextXAlignment = Enum.TextXAlignment.Left
 lastInsScript.Parent = lastInsightCard
@@ -1928,7 +1961,7 @@ logHeaderTxt.Position = UDim2.new(0,10,0,0)
 logHeaderTxt.BackgroundTransparency = 1
 logHeaderTxt.Text     = "ACTIVITY"
 logHeaderTxt.TextColor3 = C.muted
-logHeaderTxt.TextSize   = 9
+logHeaderTxt.TextSize   = 11
 logHeaderTxt.Font       = Enum.Font.GothamBold
 logHeaderTxt.TextXAlignment = Enum.TextXAlignment.Left
 logHeaderTxt.Parent = logHeaderRow
@@ -2074,7 +2107,7 @@ local function addInsight(scriptName, explanation)
 	cardNum.BackgroundTransparency = 1
 	cardNum.Text     = "FIX #" .. insightCount .. "  ·  " .. scriptName
 	cardNum.TextColor3 = C.gold
-	cardNum.TextSize   = 9
+	cardNum.TextSize   = 11
 	cardNum.Font       = Enum.Font.GothamBold
 	cardNum.TextXAlignment = Enum.TextXAlignment.Left
 	cardNum.Parent = card
@@ -2198,10 +2231,15 @@ end
 -- NAV SWITCHING
 -- ══════════════════════════════════════════════════════════════
 local function showPanel(panel)
-	fixPanel.Visible      = false
-	writePanel.Visible    = false
-	insightsPanel.Visible = false
-	panel.Visible         = true
+	panelOverlay.BackgroundTransparency = 1
+	TweenService:Create(panelOverlay, TweenInfo.new(0.09, Enum.EasingStyle.Quad), {BackgroundTransparency = 0.45}):Play()
+	task.delay(0.1, function()
+		fixPanel.Visible      = false
+		writePanel.Visible    = false
+		insightsPanel.Visible = false
+		panel.Visible         = true
+		TweenService:Create(panelOverlay, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
+	end)
 end
 
 local function setNavActive(btn, colorKey)
@@ -2300,7 +2338,7 @@ local function runFixLoop(target, issue)
 
 	while attempt < MAX_ATTEMPTS and not passed do
 		attempt += 1
-		attemptsCard.Size = UDim2.new(1,0,0,32)
+		TweenService:Create(attemptsCard, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,32)}):Play()
 		attemptsTxt.Text  = "Attempt " .. attempt .. " / " .. MAX_ATTEMPTS .. "  →  analyzing..."
 		attemptsTxt.TextColor3 = C.warning
 		addLog("── Attempt " .. attempt .. " ──", C.muted)
@@ -2378,13 +2416,13 @@ local function runFixLoop(target, issue)
 	end
 
 	if passed then
-		attemptsCard.Size = UDim2.new(1,0,0,32)
+		TweenService:Create(attemptsCard, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,32)}):Play()
 		attemptsTxt.Text  = "✓  Fixed in " .. attempt .. " attempt" .. (attempt > 1 and "s" or "")
 		attemptsTxt.TextColor3 = C.success
 		addLog("Script is ready!", C.success)
 		addLog("See Insights tab for explanation", C.gold)
 	else
-		attemptsCard.Size = UDim2.new(1,0,0,32)
+		TweenService:Create(attemptsCard, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,32)}):Play()
 		attemptsTxt.Text  = "⚠  Max attempts — best fix applied"
 		attemptsTxt.TextColor3 = C.warning
 		addLog("Max attempts reached", C.warning)
@@ -2414,7 +2452,7 @@ local function runWriteLoop(scriptName, service, description)
 
 	while attempt < MAX_ATTEMPTS and not passed do
 		attempt += 1
-		writeAttemptsCard.Size = UDim2.new(1,0,0,32)
+		TweenService:Create(writeAttemptsCard, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,32)}):Play()
 		writeAttemptsTxt.Text  = "Attempt " .. attempt .. " / " .. MAX_ATTEMPTS .. "  →  writing..."
 		writeAttemptsTxt.TextColor3 = C.warning
 		addLog("── Write Attempt " .. attempt .. " ──", C.muted)
@@ -2499,7 +2537,7 @@ local function runWriteLoop(scriptName, service, description)
 		end)
 
 		if ok then
-			writeAttemptsCard.Size = UDim2.new(1,0,0,32)
+			TweenService:Create(writeAttemptsCard, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,32)}):Play()
 			writeAttemptsTxt.Text  = "✓  Created in " .. service
 			writeAttemptsTxt.TextColor3 = C.success
 			addLog("Script created: " .. scriptName .. " → " .. service, C.success)
@@ -2565,12 +2603,14 @@ end)
 -- ══════════════════════════════════════════════════════════════
 clearFixBtn.MouseButton1Click:Connect(function()
 	scriptBox.Text = ""; issueBox.Text = ""
-	attemptsCard.Size = UDim2.new(1,0,0,0); attemptsTxt.Text = ""
+	TweenService:Create(attemptsCard, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,0)}):Play()
+	attemptsTxt.Text = ""
 	addLog("Cleared", C.muted)
 end)
 clearWriteBtn.MouseButton1Click:Connect(function()
 	writeNameBox.Text = ""; descBox.Text = ""
-	writeAttemptsCard.Size = UDim2.new(1,0,0,0); writeAttemptsTxt.Text = ""
+	TweenService:Create(writeAttemptsCard, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,0)}):Play()
+	writeAttemptsTxt.Text = ""
 	addLog("Cleared", C.muted)
 end)
 
@@ -2600,7 +2640,7 @@ scanBtn.MouseButton1Click:Connect(function()
 				sumTxt.Text = data.summary
 				local lineCount = 1
 				for _ in data.summary:gmatch("\n") do lineCount += 1 end
-				sumCard.Size = UDim2.new(1,0,0, lineCount * 15 + 20)
+				TweenService:Create(sumCard, TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0, lineCount * 15 + 20)}):Play()
 				approveRow.Visible = true
 				addLog("Summary ready — review below", C.warning)
 			end
@@ -2630,14 +2670,14 @@ approveBtn.MouseButton1Click:Connect(function()
 		memCard.BackgroundColor3 = C.successDim
 		memStroke.Color = C.success
 		approveRow.Visible = false
-		sumCard.Size = UDim2.new(1,0,0,0)
+		TweenService:Create(sumCard, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,0)}):Play()
 		addLog("Game memory saved ✓", C.success)
 	end
 end)
 
 rejectBtn.MouseButton1Click:Connect(function()
 	approveRow.Visible = false
-	sumCard.Size = UDim2.new(1,0,0,0)
+	TweenService:Create(sumCard, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,0)}):Play()
 	sumTxt.Text  = ""
 	addLog("Summary rejected", C.muted)
 end)
@@ -2651,7 +2691,7 @@ watchBtn.MouseButton1Click:Connect(function()
 	if scriptName == "" then addLog("Enter the script name to watch", C.danger); return end
 
 	isWatching = true
-	watchCard.Size = UDim2.new(1,0,0,32)
+	TweenService:Create(watchCard, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,32)}):Play()
 	watchTxt.Text  = "▶  Watching: " .. scriptName
 	stopWatchBtn.Visible = true
 	addLog("Watch mode ON — run your game now", C.success)
@@ -2685,7 +2725,8 @@ end)
 stopWatchBtn.MouseButton1Click:Connect(function()
 	if watchConnection then watchConnection:Disconnect(); watchConnection = nil end
 	isWatching = false
-	watchCard.Size = UDim2.new(1,0,0,0); watchTxt.Text = ""
+	TweenService:Create(watchCard, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1,0,0,0)}):Play()
+	watchTxt.Text = ""
 	stopWatchBtn.Visible = false
 	addLog("Watch mode OFF", C.muted)
 end)
@@ -2723,6 +2764,14 @@ button.Click:Connect(function()
 	widget.Enabled = not widget.Enabled
 end)
 
+-- Entrance animation: scroll slides up when plugin opens
+widget:GetPropertyChangedSignal("Enabled"):Connect(function()
+	if widget.Enabled then
+		scroll.Position = UDim2.new(0,0,0,18)
+		TweenService:Create(scroll, TweenInfo.new(0.38, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0,0,0,0)}):Play()
+	end
+end)
+
 -- ══════════════════════════════════════════════════════════════
 -- STARTUP
 -- ══════════════════════════════════════════════════════════════
@@ -2750,6 +2799,6 @@ task.spawn(function()
 	loadMemory()
 
 	-- Welcome log
-	addLog("StudCoding v15 ready ✓", C.accent)
+	addLog("StudCoding v16 ready ✓", C.accent)
 	addLog("Scan workspace to enable AI context", C.muted)
 end)

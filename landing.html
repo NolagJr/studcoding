@@ -8,46 +8,52 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #05060f;
-  --surface: #0b0d1c;
-  --surface2: #111428;
-  --border: rgba(99,102,241,0.14);
-  --border2: rgba(99,102,241,0.28);
+  --bg: #07081a;
+  --surface: #0e1030;
+  --surface2: #131535;
+  --border: rgba(110,115,255,0.18);
+  --border2: rgba(110,115,255,0.32);
   --accent: #6366f1;
   --accent2: #818cf8;
-  --glow: rgba(99,102,241,0.35);
-  --text: #f2f3ff;
-  --muted: #44476a;
-  --muted2: #8588a8;
+  --accent3: #a5b4fc;
+  --glow: rgba(99,102,241,0.45);
+  --text: #f0f1ff;
+  --muted: #5c5f88;
+  --muted2: #9698bc;
   --success: #34d399;
   --danger: #fb7185;
   --warning: #fbbf24;
-  --code: #0a0b1a;
+  --code: #090a1e;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(99,102,241,0.12),transparent 70%);pointer-events:none;z-index:0;}
 
 /* NOISE + ORBS */
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.6;}
 .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(120px);}
-.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,0.18),transparent 70%);top:-200px;left:-100px;}
-.orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,0.12),transparent 70%);bottom:-100px;right:-100px;}
-.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(34,211,238,0.08),transparent 70%);top:40%;left:50%;transform:translateX(-50%);}
+.orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(99,102,241,0.22),transparent 68%);top:-260px;left:-160px;animation:orbFloat1 22s ease-in-out infinite;}
+.orb-2{width:550px;height:550px;background:radial-gradient(circle,rgba(139,92,246,0.16),transparent 68%);bottom:-120px;right:-120px;animation:orbFloat2 28s ease-in-out infinite;}
+.orb-3{width:380px;height:380px;background:radial-gradient(circle,rgba(34,211,238,0.09),transparent 68%);top:38%;left:50%;transform:translateX(-50%);animation:orbFloat3 20s ease-in-out infinite;}
+@keyframes orbFloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
+@keyframes orbFloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(-25px,30px)}}
+@keyframes orbFloat3{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-30px)}}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,6,15,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.nav-logo-mark{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;color:#fff;box-shadow:0 0 20px var(--glow);}
-.nav-logo-text{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
-.nav-links{display:flex;gap:36px;list-style:none;}
-.nav-links a{color:var(--muted2);font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;}
-.nav-links a:hover{color:var(--text);}
-.nav-ctas{display:flex;gap:10px;align-items:center;}
-.btn-ghost{padding:8px 20px;border:1px solid var(--border2);border-radius:8px;background:transparent;color:var(--muted2);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;text-decoration:none;transition:all 0.2s;cursor:pointer;}
-.btn-ghost:hover{color:var(--text);border-color:var(--accent);}
-.btn-cta{padding:9px 22px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;box-shadow:0 0 0 0 var(--glow);}
-.btn-cta:hover{background:#818cf8;transform:translateY(-1px);box-shadow:0 4px 24px var(--glow);}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;padding:0 52px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,8,26,0.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(110,115,255,0.1);}
+.nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;}
+.nav-logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#818cf8);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;color:#fff;box-shadow:0 0 22px rgba(99,102,241,0.55);}
+.nav-logo-text{font-family:'Bricolage Grotesque',sans-serif;font-size:19px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+.nav-links{display:flex;gap:6px;list-style:none;}
+.nav-links a{color:var(--muted2);font-size:14px;font-weight:500;text-decoration:none;transition:all 0.2s;padding:7px 14px;border-radius:8px;}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+.nav-ctas{display:flex;gap:8px;align-items:center;}
+.btn-ghost{padding:8px 18px;border:1px solid rgba(110,115,255,0.25);border-radius:8px;background:transparent;color:var(--muted2);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;text-decoration:none;transition:all 0.2s;cursor:pointer;}
+.btn-ghost:hover{color:var(--text);border-color:var(--accent);background:rgba(99,102,241,0.06);}
+.btn-cta{padding:9px 20px;border:none;border-radius:8px;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;box-shadow:0 2px 18px rgba(99,102,241,0.35);display:inline-flex;align-items:center;gap:6px;}
+.btn-cta:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(99,102,241,0.55);filter:brightness(1.08);}
+.btn-cta::after{content:'→';font-size:14px;}
 
 /* HERO */
 .hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:120px 48px 80px;gap:60px;max-width:1320px;margin:0 auto;}
@@ -126,9 +132,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;padding:0 48px;d
 
 /* FEATURES */
 .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.feature-card{padding:28px;border:1px solid var(--border);border-radius:16px;background:var(--surface);transition:all 0.35s cubic-bezier(0.22,1,0.36,1);position:relative;overflow:hidden;}
-.feature-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 0% 0%,rgba(99,102,241,0.08),transparent 60%);opacity:0;transition:opacity 0.35s;}
-.feature-card:hover{border-color:var(--border2);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.feature-card{padding:28px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(135deg,var(--surface),rgba(14,16,48,0.6));transition:all 0.35s cubic-bezier(0.22,1,0.36,1);position:relative;overflow:hidden;backdrop-filter:blur(4px);}
+.feature-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 0% 0%,rgba(99,102,241,0.1),transparent 60%);opacity:0;transition:opacity 0.35s;}
+.feature-card:hover{border-color:var(--border2);transform:translateY(-7px);box-shadow:0 24px 70px rgba(0,0,0,0.45),0 0 0 1px rgba(99,102,241,0.12);}
 .feature-card:hover::before{opacity:1;}
 .fi{width:46px;height:46px;border-radius:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:18px;transition:box-shadow 0.3s;}
 .feature-card:hover .fi{box-shadow:0 0 20px rgba(99,102,241,0.25);}
@@ -224,6 +230,20 @@ footer{position:relative;z-index:1;padding:28px 48px;border-top:1px solid var(--
 /* SCANNING ANIMATION */
 .scanning-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(99,102,241,0.06) 50%,transparent 100%);background-size:100% 40px;animation:scanLine 2s linear infinite;pointer-events:none;display:none;}
 .scanning-overlay.active{display:block;}
+
+/* COOKIE BANNER */
+#cookieBanner{position:fixed;bottom:28px;right:28px;z-index:9000;max-width:380px;width:calc(100% - 56px);transform:translateY(140%);opacity:0;transition:transform 0.45s cubic-bezier(0.22,1,0.36,1),opacity 0.45s ease;pointer-events:none;}
+#cookieBanner.show{transform:translateY(0);opacity:1;pointer-events:all;}
+#cookieBannerInner{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:22px 22px 18px;box-shadow:0 24px 80px rgba(0,0,0,0.55),0 0 0 1px rgba(99,102,241,0.08);}
+#cookieText{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;}
+#cookieIcon{font-size:22px;flex-shrink:0;margin-top:2px;}
+#cookieText strong{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;margin-bottom:5px;}
+#cookieText p{font-size:12.5px;color:var(--muted2);line-height:1.6;margin:0;}
+#cookieBtns{display:flex;gap:10px;}
+#cookieReject{flex:1;padding:10px;border:1px solid var(--border2);border-radius:9px;background:transparent;color:var(--muted2);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+#cookieReject:hover{color:var(--text);border-color:var(--accent);}
+#cookieAccept{flex:1;padding:10px;border:none;border-radius:9px;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(99,102,241,0.3);}
+#cookieAccept:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
 @media(max-width:1100px){.hero{flex-direction:column;padding-top:100px;}.hero-right{max-width:100%;width:100%;}.features-grid{grid-template-columns:1fr 1fr;}.tutor-layout{grid-template-columns:1fr;gap:40px;}}
 @media(max-width:768px){nav{padding:0 20px;}.nav-links{display:none;}.stats-bar{grid-template-columns:1fr 1fr;}.features-grid{grid-template-columns:1fr;}.steps-grid{grid-template-columns:1fr 1fr;}.steps-line{display:none;}.section{padding:60px 24px;}.cw-body{grid-template-columns:1fr;}.cw-col:first-child{border-right:none;border-bottom:1px solid rgba(255,255,255,0.05);}}
@@ -436,6 +456,23 @@ BuyEvent.OnServerEvent:<span style="color:#34d399">Connect</span>(<span style="c
   </div>
 </footer>
 
+<!-- COOKIE BANNER -->
+<div id="cookieBanner">
+  <div id="cookieBannerInner">
+    <div id="cookieText">
+      <span id="cookieIcon">🍪</span>
+      <div>
+        <strong>We use cookies</strong>
+        <p>We use cookies to enhance your experience, analyze site traffic, and for marketing purposes. <a href="#" style="color:var(--accent2);text-decoration:none;">Cookie Policy</a></p>
+      </div>
+    </div>
+    <div id="cookieBtns">
+      <button id="cookieReject">Reject all</button>
+      <button id="cookieAccept">Accept all</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
@@ -625,6 +662,24 @@ revealEls.forEach(el => io.observe(el));
 function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// COOKIE CONSENT
+(function(){
+  const key = 'sc_cookie_consent';
+  const banner = document.getElementById('cookieBanner');
+  if (!banner) return;
+  if (!localStorage.getItem(key)) {
+    setTimeout(() => banner.classList.add('show'), 1200);
+  }
+  document.getElementById('cookieAccept').addEventListener('click', () => {
+    localStorage.setItem(key, 'accepted');
+    banner.classList.remove('show');
+  });
+  document.getElementById('cookieReject').addEventListener('click', () => {
+    localStorage.setItem(key, 'rejected');
+    banner.classList.remove('show');
+  });
+})();
 </script>
 </body>
 </html>
