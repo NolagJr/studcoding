@@ -42,8 +42,26 @@ nav{
   transition:background .3s;
 }
 .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;}
-.nav-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#ff7a2e,#ff9e5e);display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:15px;color:#fff;box-shadow:0 0 22px rgba(255,122,46,.5);}
-.nav-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.3px;}
+.nav-mark{
+  width:38px;height:38px;border-radius:11px;
+  background:linear-gradient(135deg,#ff6a00,#ff9a3c);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 26px rgba(255,106,0,.6),0 0 0 1px rgba(255,154,60,.35);
+  flex-shrink:0;transition:box-shadow .3s;
+}
+.nav-mark:hover{box-shadow:0 0 44px rgba(255,106,0,.8),0 0 0 1px rgba(255,154,60,.5);}
+.nav-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:18px;letter-spacing:-.4px;color:#fff;}
+.nav-name-accent{
+  background:linear-gradient(90deg,var(--orange),var(--orange-hi));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.nav-pro-btn{
+  padding:8px 16px;border-radius:9px;
+  background:rgba(255,196,48,.1);border:1px solid rgba(255,196,48,.3);
+  color:#ffc430;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
+  text-decoration:none;transition:all .18s;
+}
+.nav-pro-btn:hover{background:rgba(255,196,48,.18);border-color:rgba(255,196,48,.55);transform:translateY(-1px);}
 .nav-links{display:flex;gap:2px;list-style:none;}
 .nav-links a{color:var(--muted);font-size:14px;font-weight:500;text-decoration:none;padding:8px 15px;border-radius:8px;transition:all .18s;}
 .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06);}
@@ -320,8 +338,13 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
 <!-- NAV -->
 <nav id="topnav">
   <a href="/" class="nav-logo">
-    <div class="nav-mark">SC</div>
-    <span class="nav-name">StudCoding</span>
+    <div class="nav-mark">
+      <!-- Stud logo: lightning bolt through code brackets -->
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 3L2 11H9.5L7 19L20 9H12L15 3H6Z" fill="white" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="nav-name">Stud<span class="nav-name-accent">Coding</span></span>
   </a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
@@ -330,7 +353,8 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
     <li><a href="#pro">Pro</a></li>
   </ul>
   <div class="nav-ctas">
-    <a href="login.html" class="nav-ghost">Sign in</a>
+    <a href="#pro" class="nav-pro-btn">⚡ Upgrade to Pro</a>
+    <a href="login.html" class="nav-ghost">Log in</a>
     <a href="signup.html" class="nav-cta">
       Get started free
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -345,13 +369,13 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
     Live in Roblox Studio · Free to start
   </div>
   <h1 class="hero-h">
-    <span class="line1">Your game.</span>
+    <span class="line1">Stop debugging.</span>
     <span style="display:block;">
       <span class="word-rotate-wrap" id="wordRotate">
-        <span class="word active">Fixed by AI.</span>
-        <span class="word">Written by AI.</span>
-        <span class="word">Reviewed by AI.</span>
-        <span class="word">Perfected by AI.</span>
+        <span class="word active">Start shipping.</span>
+        <span class="word">AI fixes it.</span>
+        <span class="word">Write anything.</span>
+        <span class="word">Never stuck.</span>
       </span>
     </span>
   </h1>
