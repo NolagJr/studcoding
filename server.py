@@ -287,6 +287,45 @@ def static_files(filename):
 def health():
     return jsonify({'status': 'ok', 'version': '8.0'})
 
+@app.route('/admin/delete-all-users', methods=['POST'])
+def admin_delete_all_users():
+    data = request.json or {}
+    secret = data.get('secret', '')
+    if secret != 'stud-admin-2024':
+        return jsonify({'error': 'Unauthorized'})
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('DELETE FROM plugin_keys')
+    c.execute('DELETE FROM profiles')
+    c.execute('DELETE FROM users')
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'message': 'All users deleted'})
+
+@app.route('/admin/delete-user', methods=['POST'])
+def admin_delete_user():
+    data = request.json or {}
+    email = data.get('email', '').strip().lower()
+    secret = data.get('secret', '')
+    if secret != 'stud-admin-2024':
+        return jsonify({'error': 'Unauthorized'})
+    if not email:
+        return jsonify({'error': 'Email required'})
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT id FROM users WHERE email=?', (email,))
+    user = c.fetchone()
+    if not user:
+        conn.close()
+        return jsonify({'error': 'User not found'})
+    user_id = user['id']
+    c.execute('DELETE FROM plugin_keys WHERE user_id=?', (user_id,))
+    c.execute('DELETE FROM profiles WHERE user_id=?', (user_id,))
+    c.execute('DELETE FROM users WHERE id=?', (user_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'deleted': email})
+
 # ════════════════════════════════════════
 # AUTH ROUTES
 # ════════════════════════════════════════
