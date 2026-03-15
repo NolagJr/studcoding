@@ -1752,7 +1752,7 @@ writeBtnGrad.Color = ColorSequence.new({
 writeBtnGrad.Rotation = 135
 writeBtnGrad.Parent = writeBtn
 
-local clearWriteBtn = makeBtn("Clear", "surface2", writePanel, 10, 28, true)
+local clearWriteBtn = makeBtn("Clear", "textDim", writePanel, 10, 28, true)
 clearWriteBtn.TextSize = 11
 
 -- ══════════════════════════════════════════════════════════════
@@ -1915,7 +1915,7 @@ allFixesLayout.SortOrder = Enum.SortOrder.LayoutOrder
 allFixesLayout.Padding   = UDim.new(0,6)
 allFixesLayout.Parent    = allFixesContainer
 
-local clearInsightsBtn = makeBtn("Clear All Insights", "surface2", insightsPanel, 6, 28, true)
+local clearInsightsBtn = makeBtn("Clear All Insights", "textDim", insightsPanel, 6, 28, true)
 clearInsightsBtn.TextSize = 11
 
 makeDivider(7)
