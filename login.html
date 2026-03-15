@@ -3,139 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign In — Stud</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Sign In — StudCoding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #060b11; --surface: #0d1520; --border: #162336;
-    --accent: #2e7fff; --cyan: #0af0ff; --success: #00e5a0;
-    --danger: #ff4567; --text: #dce8ff; --muted: #4a6080;
-  }
-  body {
-    background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif;
-    min-height: 100vh; display: flex; align-items: center;
-    justify-content: center; padding: 24px;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: linear-gradient(rgba(46,127,255,.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(46,127,255,.04) 1px, transparent 1px);
-    background-size: 40px 40px; pointer-events: none; z-index: 0;
-  }
-  .glow {
-    position: fixed; width: 600px; height: 600px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(46,127,255,.12) 0%, transparent 70%);
-    top: -200px; left: 50%; transform: translateX(-50%);
-    pointer-events: none; z-index: 0;
-  }
-  .card {
-    position: relative; z-index: 1; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 20px;
-    padding: 40px 36px; width: 100%; max-width: 420px;
-  }
-  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
-  .logo-mark {
-    width: 36px; height: 36px; background: var(--accent); border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 800; color: #fff;
-  }
-  .logo-text { font-size: 18px; font-weight: 800; }
-  .logo-text span { color: var(--cyan); }
-  h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-  .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-  .field { margin-bottom: 16px; }
-  label {
-    display: block; font-size: 10px; font-weight: 700;
-    letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;
-  }
-  input {
-    width: 100%; background: #0a1220; border: 1px solid var(--border);
-    border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace;
-    font-size: 13px; padding: 12px 14px; outline: none; transition: border-color .15s;
-  }
-  input:focus { border-color: var(--accent); }
-  input::placeholder { color: var(--muted); }
-  .btn {
-    width: 100%; padding: 14px; border-radius: 10px; border: none;
-    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
-    cursor: pointer; transition: all .15s; margin-top: 8px;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover:not(:disabled) { background: #4a8fff; transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-  .error-box {
-    background: rgba(255,69,103,.1); border: 1px solid rgba(255,69,103,.3);
-    border-radius: 8px; padding: 10px 14px; font-size: 12px;
-    color: var(--danger); margin-bottom: 16px; display: none;
-  }
-  .error-box.show { display: block; }
-  .success-box {
-    background: rgba(0,229,160,.1); border: 1px solid rgba(0,229,160,.3);
-    border-radius: 8px; padding: 10px 14px; font-size: 12px;
-    color: var(--success); margin-bottom: 16px; display: none;
-  }
-  .success-box.show { display: block; }
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 20px 0; color: var(--muted); font-size: 11px;
-  }
-  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .footer-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
-  .footer-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
-  .footer-link a:hover { text-decoration: underline; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09090f;--surface:#0f1018;--surface2:#141520;--border:#1e2030;--border2:#2a2d45;
+  --orange:#ff7a2e;--orange-hi:#ff9555;--orange-dim:rgba(255,122,46,.12);
+  --text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);
+  --success:#22d37f;--danger:#ff5470;
+}
+html,body{height:100%;min-height:100vh;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;overflow:hidden;
+}
+
+/* Background */
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,122,46,.028) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,122,46,.028) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+.bg-orb1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(255,122,46,.14) 0%,transparent 60%);top:-300px;right:-200px;filter:blur(80px);animation:drift1 20s ease-in-out infinite;}
+.bg-orb2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(120,80,255,.1) 0%,transparent 60%);bottom:-200px;left:-100px;filter:blur(100px);animation:drift2 26s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+
+/* Card */
+.card{
+  position:relative;z-index:1;
+  width:100%;max-width:420px;
+  background:rgba(15,16,24,.96);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  padding:44px 40px;
+  box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.08);
+  animation:cardIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Logo */
+.logo{display:flex;align-items:center;gap:11px;margin-bottom:36px;}
+.logo-mark{
+  width:38px;height:38px;border-radius:11px;
+  background:linear-gradient(135deg,#ff7a2e,#ff9555);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:16px;color:#fff;
+  box-shadow:0 0 24px rgba(255,122,46,.45);
+}
+.logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.3px;}
+
+/* Heading */
+h1{font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.subtitle{font-size:14px;color:var(--sub);margin-bottom:30px;}
+
+/* Alerts */
+.alert{
+  border-radius:10px;padding:12px 15px;font-size:13px;
+  margin-bottom:18px;display:none;font-weight:500;
+}
+.alert.show{display:block;}
+.alert-error{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
+.alert-success{background:rgba(34,211,127,.1);border:1px solid rgba(34,211,127,.3);color:var(--success);}
+
+/* Fields */
+.field{margin-bottom:18px;}
+.field-label{
+  display:block;font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+}
+.field-input{
+  width:100%;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:11px;
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;
+  padding:14px 16px;outline:none;transition:all .2s;
+}
+.field-input:focus{border-color:var(--orange);background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.1);}
+.field-input::placeholder{color:var(--muted);}
+
+/* Button */
+.btn-main{
+  width:100%;padding:15px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,var(--orange),var(--orange-hi));
+  color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;
+  cursor:pointer;transition:all .2s;margin-top:4px;
+  box-shadow:0 6px 28px rgba(255,122,46,.38);
+}
+.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.52);}
+.btn-main:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Divider */
+.divider{display:flex;align-items:center;gap:14px;margin:22px 0;color:var(--muted);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border2);}
+
+/* Footer */
+.footer-txt{text-align:center;font-size:13.5px;color:var(--sub);}
+.footer-txt a{color:var(--orange);font-weight:600;text-decoration:none;}
+.footer-txt a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
-<div class="glow"></div>
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="bg-orb1"></div>
+  <div class="bg-orb2"></div>
+</div>
+
 <div class="card">
   <div class="logo">
-    <div class="logo-mark">S.</div>
-    <div class="logo-text">Stud<span>Coding</span></div>
+    <div class="logo-mark">SC</div>
+    <span class="logo-name">StudCoding</span>
   </div>
   <h1>Welcome back</h1>
-  <p class="subtitle">Sign in to your Stud account</p>
-  <div class="error-box" id="errorBox"></div>
-  <div class="success-box" id="successBox"></div>
+  <p class="subtitle">Sign in to your account to continue</p>
+
+  <div class="alert alert-error" id="alertErr"></div>
+  <div class="alert alert-success" id="alertOk"></div>
+
   <div class="field">
-    <label>Email</label>
-    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+    <label class="field-label">Email</label>
+    <input class="field-input" type="email" id="email" placeholder="you@example.com" autocomplete="email">
   </div>
   <div class="field">
-    <label>Password</label>
-    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    <label class="field-label">Password</label>
+    <input class="field-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
   </div>
-  <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">Sign In</button>
+  <button class="btn-main" id="loginBtn" onclick="doLogin()">Sign In →</button>
   <div class="divider">or</div>
-  <div class="footer-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
+  <p class="footer-txt">Don't have an account? <a href="signup.html">Sign up free</a></p>
 </div>
+
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
+
+// Redirect if already logged in
 if (localStorage.getItem('stud_session_v3')) window.location.href = 'index.html';
+
+// Handle token in URL (OAuth redirect)
 const params = new URLSearchParams(window.location.search);
-if (params.get('error')) showError(decodeURIComponent(params.get('error')));
-if (params.get('token')) { localStorage.setItem('stud_session_v3', params.get('token')); window.location.href = 'index.html'; }
-function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('show'); document.getElementById('successBox').classList.remove('show'); }
-function showSuccess(msg) { const b = document.getElementById('successBox'); b.textContent = msg; b.classList.add('show'); document.getElementById('errorBox').classList.remove('show'); }
-function setLoading(on) { const btn = document.getElementById('loginBtn'); btn.disabled = on; btn.textContent = on ? 'Signing in...' : 'Sign In'; }
+if (params.get('token')) {
+  localStorage.setItem('stud_session_v3', params.get('token'));
+  window.location.href = 'index.html';
+}
+
+function showErr(msg) {
+  const e = document.getElementById('alertErr');
+  e.textContent = msg; e.classList.add('show');
+  document.getElementById('alertOk').classList.remove('show');
+}
+function showOk(msg) {
+  const e = document.getElementById('alertOk');
+  e.textContent = msg; e.classList.add('show');
+  document.getElementById('alertErr').classList.remove('show');
+}
+function setLoading(on) {
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = on;
+  btn.textContent = on ? 'Signing in...' : 'Sign In →';
+}
+
 async function doLogin() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
-  if (!email) return showError('Enter your email.');
-  if (!email.includes('@')) return showError('Enter a valid email address.');
-  if (!password) return showError('Enter your password.');
+  if (!email) return showErr('Please enter your email.');
+  if (!email.includes('@')) return showErr('Enter a valid email address.');
+  if (!password) return showErr('Please enter your password.');
   setLoading(true);
   try {
-    const res = await fetch(`${BASE}/auth/login`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
+    const res = await fetch(`${BASE}/auth/login`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email, password})
+    });
     const data = await res.json();
-    if (data.error) { showError(data.error); return; }
+    if (data.error) { showErr(data.error); return; }
     localStorage.setItem('stud_session_v3', data.token);
-    localStorage.setItem('stud_user', JSON.stringify(data.user));
-    showSuccess('Signed in! Redirecting...');
-    setTimeout(() => window.location.href = 'index.html', 600);
-  } catch(e) { showError('Wrong email or password.'); }
-  finally { setLoading(false); }
+    if (data.user) localStorage.setItem('stud_user', JSON.stringify(data.user));
+    showOk('Signed in! Redirecting...');
+    setTimeout(() => window.location.href = 'index.html', 500);
+  } catch(e) {
+    showErr('Wrong email or password. Please try again.');
+  } finally {
+    setLoading(false);
+  }
 }
+
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 </script>
 </body>

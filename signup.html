@@ -3,204 +3,171 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up — Stud</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Sign Up — StudCoding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #060b11; --surface: #0d1520; --border: #162336;
-    --accent: #2e7fff; --cyan: #0af0ff; --success: #00e5a0;
-    --danger: #ff4567; --text: #dce8ff; --muted: #4a6080;
-    --purple: #8c50ff;
-  }
-  body {
-    background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif;
-    min-height: 100vh; display: flex; align-items: center;
-    justify-content: center; padding: 24px;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: linear-gradient(rgba(46,127,255,.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(46,127,255,.04) 1px, transparent 1px);
-    background-size: 40px 40px; pointer-events: none; z-index: 0;
-  }
-  .glow {
-    position: fixed; width: 600px; height: 600px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(140,80,255,.1) 0%, transparent 70%);
-    top: -200px; left: 50%; transform: translateX(-50%);
-    pointer-events: none; z-index: 0;
-  }
-  .card {
-    position: relative; z-index: 1; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 20px;
-    padding: 40px 36px; width: 100%; max-width: 440px;
-  }
-  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
-  .logo-mark {
-    width: 36px; height: 36px; background: var(--accent); border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 800; color: #fff;
-  }
-  .logo-text { font-size: 18px; font-weight: 800; }
-  .logo-text span { color: var(--cyan); }
-  h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-  .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-  .field { margin-bottom: 14px; }
-  label {
-    display: block; font-size: 10px; font-weight: 700;
-    letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;
-  }
-  input {
-    width: 100%; background: #0a1220; border: 1px solid var(--border);
-    border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace;
-    font-size: 13px; padding: 12px 14px; outline: none; transition: border-color .15s;
-  }
-  input:focus { border-color: var(--accent); }
-  input::placeholder { color: var(--muted); }
-  .hint { font-size: 10px; color: var(--muted); margin-top: 4px; }
-  .btn {
-    width: 100%; padding: 14px; border-radius: 10px; border: none;
-    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
-    cursor: pointer; transition: all .15s; margin-top: 8px;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover:not(:disabled) { background: #4a8fff; transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-  .error-box {
-    background: rgba(255,69,103,.1); border: 1px solid rgba(255,69,103,.3);
-    border-radius: 8px; padding: 10px 14px; font-size: 12px;
-    color: var(--danger); margin-bottom: 16px; display: none;
-  }
-  .error-box.show { display: block; }
-  .success-screen { display: none; text-align: center; }
-  .success-screen.show { display: block; }
-  .success-icon {
-    width: 60px; height: 60px; background: rgba(0,229,160,.15);
-    border: 2px solid var(--success); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; margin: 0 auto 20px;
-  }
-  .success-screen h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-  .success-screen p { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
-  .steps-list {
-    text-align: left; background: #0a1220; border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px; margin-bottom: 20px;
-  }
-  .step {
-    display: flex; gap: 12px; align-items: flex-start;
-    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px;
-  }
-  .step:last-child { border-bottom: none; }
-  .step-num {
-    min-width: 22px; height: 22px; background: var(--accent); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 800; color: #fff; margin-top: 1px;
-  }
-  .step-text { color: var(--text); line-height: 1.5; }
-  .step-text b { color: var(--cyan); }
-  .go-btn {
-    display: block; width: 100%; padding: 14px;
-    background: var(--success); color: #050c0a;
-    border: none; border-radius: 10px; font-family: 'Syne', sans-serif;
-    font-size: 14px; font-weight: 800; cursor: pointer;
-    text-decoration: none; transition: all .15s;
-  }
-  .go-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 20px 0; color: var(--muted); font-size: 11px;
-  }
-  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .footer-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
-  .footer-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
-  .footer-link a:hover { text-decoration: underline; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#09090f;--surface:#0f1018;--surface2:#141520;--border:#1e2030;--border2:#2a2d45;
+  --orange:#ff7a2e;--orange-hi:#ff9555;
+  --text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);
+  --success:#22d37f;--danger:#ff5470;
+}
+html,body{height:100%;min-height:100vh;}
+body{
+  background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,122,46,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,122,46,.025) 1px,transparent 1px);background-size:44px 44px;}
+.bg-orb1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(255,122,46,.13) 0%,transparent 60%);top:-250px;left:-150px;filter:blur(90px);animation:drift1 22s ease-in-out infinite;}
+.bg-orb2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(80,100,255,.1) 0%,transparent 60%);bottom:-150px;right:-100px;filter:blur(100px);animation:drift2 28s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-30px)}}
+
+.card{
+  position:relative;z-index:1;width:100%;max-width:440px;
+  background:rgba(15,16,24,.97);border:1px solid var(--border2);border-radius:24px;
+  padding:44px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.08);
+  animation:cardIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.logo{display:flex;align-items:center;gap:11px;margin-bottom:36px;}
+.logo-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#ff7a2e,#ff9555);display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:16px;color:#fff;box-shadow:0 0 24px rgba(255,122,46,.45);}
+.logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.3px;}
+
+h1{font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.subtitle{font-size:14px;color:var(--sub);margin-bottom:30px;}
+
+.alert{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:18px;display:none;font-weight:500;}
+.alert.show{display:block;}
+.alert-error{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
+
+.field{margin-bottom:16px;}
+.field-label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.field-hint{font-size:11px;color:var(--muted);margin-top:5px;}
+.field-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;padding:14px 16px;outline:none;transition:all .2s;}
+.field-input:focus{border-color:var(--orange);background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.1);}
+.field-input::placeholder{color:var(--muted);}
+
+.btn-main{width:100%;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:4px;box-shadow:0 6px 28px rgba(255,122,46,.38);}
+.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.52);}
+.btn-main:disabled{opacity:.5;cursor:not-allowed;}
+
+.divider{display:flex;align-items:center;gap:14px;margin:22px 0;color:var(--muted);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border2);}
+.footer-txt{text-align:center;font-size:13.5px;color:var(--sub);}
+.footer-txt a{color:var(--orange);font-weight:600;text-decoration:none;}
+.footer-txt a:hover{text-decoration:underline;}
+
+/* Success screen */
+.success{display:none;text-align:center;}
+.success.show{display:block;}
+.success-icon{width:72px;height:72px;border-radius:50%;background:rgba(34,211,127,.12);border:2px solid rgba(34,211,127,.4);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 22px;animation:pop .4s cubic-bezier(.22,1,.36,1);}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success h2{font-family:'Cabinet Grotesk',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;}
+.success p{font-size:14px;color:var(--sub);margin-bottom:24px;line-height:1.7;}
+.steps-box{text-align:left;background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:20px;margin-bottom:22px;}
+.step{display:flex;gap:13px;align-items:flex-start;padding:10px 0;}
+.step+.step{border-top:1px solid var(--border);}
+.step-n{width:24px;height:24px;min-width:24px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange-hi));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;margin-top:1px;}
+.step-txt{font-size:13.5px;line-height:1.6;color:var(--sub);}
+.step-txt b{color:var(--orange);}
+.btn-go{display:block;width:100%;padding:15px;background:var(--success);color:#05150d;border:none;border-radius:11px;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .2s;text-align:center;}
+.btn-go:hover{transform:translateY(-2px);filter:brightness(1.1);}
 </style>
 </head>
 <body>
-<div class="glow"></div>
+<div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div></div>
+
 <div class="card">
   <div class="logo">
-    <div class="logo-mark">S.</div>
-    <div class="logo-text">Stud<span>Coding</span></div>
+    <div class="logo-mark">SC</div>
+    <span class="logo-name">StudCoding</span>
   </div>
 
-  <!-- FORM -->
-  <div class="form-section" id="formSection">
+  <!-- Form -->
+  <div id="formSection">
     <h1>Create account</h1>
-    <p class="subtitle">Start building smarter with AI</p>
-    <div class="error-box" id="errorBox"></div>
+    <p class="subtitle">Build smarter Roblox games with AI</p>
+    <div class="alert alert-error" id="alertErr"></div>
     <div class="field">
-      <label>Username</label>
-      <input type="text" id="username" placeholder="cooldevname" autocomplete="username">
-      <div class="hint">Min 3 characters</div>
+      <label class="field-label">Username</label>
+      <input class="field-input" type="text" id="username" placeholder="cooldevname" autocomplete="username">
+      <div class="field-hint">Minimum 3 characters</div>
     </div>
     <div class="field">
-      <label>Email</label>
-      <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+      <label class="field-label">Email</label>
+      <input class="field-input" type="email" id="email" placeholder="you@example.com" autocomplete="email">
     </div>
     <div class="field">
-      <label>Password</label>
-      <input type="password" id="password" placeholder="••••••••" autocomplete="new-password">
-      <div class="hint">Min 8 characters</div>
+      <label class="field-label">Password</label>
+      <input class="field-input" type="password" id="password" placeholder="••••••••" autocomplete="new-password">
+      <div class="field-hint">Minimum 8 characters</div>
     </div>
-    <button class="btn btn-primary" id="signupBtn" onclick="doSignup()">Create Account</button>
+    <button class="btn-main" id="signupBtn" onclick="doSignup()">Create Account →</button>
     <div class="divider">or</div>
-    <div class="footer-link">Already have an account? <a href="login.html">Sign In</a></div>
+    <p class="footer-txt">Already have an account? <a href="login.html">Sign in</a></p>
   </div>
 
-  <!-- SUCCESS -->
-  <div class="success-screen" id="successScreen">
+  <!-- Success -->
+  <div class="success" id="successSection">
     <div class="success-icon">🎉</div>
     <h2>You're in!</h2>
-    <p>Account created. Now connect the Roblox Studio plugin to start building with AI.</p>
-    <div class="steps-list">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">Go to your <b>Dashboard</b> and click <b>Install Plugin</b></div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">Copy your unique <b>Plugin Key</b> (SC-XXXXX-XXXXX)</div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">Install the plugin from <b>Roblox Marketplace</b></div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-text">Paste the key in Studio → check email for <b>6-digit code</b> → done!</div>
-      </div>
+    <p>Account created. Connect the Roblox Studio plugin to start building with AI.</p>
+    <div class="steps-box">
+      <div class="step"><div class="step-n">1</div><div class="step-txt">Go to <b>Dashboard → Plugin Setup</b> and generate your key</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-txt">Copy your <b>SC-XXXXX-XXXXX</b> plugin key</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-txt">Install from the <b>Roblox Creator Store</b> and paste your key in Studio</div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-txt">Enter the <b>6-digit email code</b> — you're connected!</div></div>
     </div>
-    <a href="index.html" class="go-btn">Go to Dashboard →</a>
+    <a href="index.html" class="btn-go">Go to Dashboard →</a>
   </div>
 </div>
 
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
 if (localStorage.getItem('stud_session_v3')) window.location.href = 'index.html';
-function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('show'); }
-function clearError() { document.getElementById('errorBox').classList.remove('show'); }
-function setLoading(on) { const btn = document.getElementById('signupBtn'); btn.disabled = on; btn.textContent = on ? 'Creating account...' : 'Create Account'; }
+
+function showErr(msg) {
+  const e = document.getElementById('alertErr');
+  e.textContent = msg; e.classList.add('show');
+}
+function clearErr() { document.getElementById('alertErr').classList.remove('show'); }
+function setLoading(on) {
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = on; btn.textContent = on ? 'Creating account...' : 'Create Account →';
+}
+
 async function doSignup() {
-  clearError();
+  clearErr();
   const username = document.getElementById('username').value.trim();
-  const email    = document.getElementById('email').value.trim().toLowerCase();
+  const email = document.getElementById('email').value.trim().toLowerCase();
   const password = document.getElementById('password').value;
-  if (!username) return showError('Enter a username.');
-  if (username.length < 3) return showError('Username must be at least 3 characters.');
-  if (!email || !email.includes('@')) return showError('Enter a valid email address.');
-  if (!password || password.length < 8) return showError('Password must be at least 8 characters.');
+  if (!username) return showErr('Please enter a username.');
+  if (username.length < 3) return showErr('Username must be at least 3 characters.');
+  if (!email || !email.includes('@')) return showErr('Enter a valid email address.');
+  if (!password || password.length < 8) return showErr('Password must be at least 8 characters.');
   setLoading(true);
   try {
-    const res = await fetch(`${BASE}/auth/signup`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username, email, password}) });
+    const res = await fetch(`${BASE}/auth/signup`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, email, password})
+    });
     const data = await res.json();
-    if (data.error) { showError(data.error); return; }
+    if (data.error) { showErr(data.error); return; }
     localStorage.setItem('stud_session_v3', data.token);
-    localStorage.setItem('stud_user', JSON.stringify(data.user));
+    if (data.user) localStorage.setItem('stud_user', JSON.stringify(data.user));
     document.getElementById('formSection').style.display = 'none';
-    document.getElementById('successScreen').classList.add('show');
-  } catch(e) { showError('This email is already in use.'); }
-  finally { setLoading(false); }
+    document.getElementById('successSection').classList.add('show');
+  } catch(e) {
+    showErr('This email may already be in use. Try signing in instead.');
+  } finally {
+    setLoading(false);
+  }
 }
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
 </script>
