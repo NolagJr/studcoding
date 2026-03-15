@@ -143,13 +143,13 @@ h1{font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:800;lette
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
 
 // Redirect if already logged in
-if (localStorage.getItem('stud_session_v3')) window.location.href = 'index.html';
+if (localStorage.getItem('stud_session_v3')) window.location.href = 'dashboard.html';
 
 // Handle token in URL (OAuth redirect)
 const params = new URLSearchParams(window.location.search);
 if (params.get('token')) {
   localStorage.setItem('stud_session_v3', params.get('token'));
-  window.location.href = 'index.html';
+  window.location.href = 'dashboard.html';
 }
 
 function showErr(msg) {
@@ -186,7 +186,7 @@ async function doLogin() {
     localStorage.setItem('stud_session_v3', data.token);
     if (data.user) localStorage.setItem('stud_user', JSON.stringify(data.user));
     showOk('Signed in! Redirecting...');
-    setTimeout(() => window.location.href = 'index.html', 500);
+    setTimeout(() => window.location.href = 'dashboard.html', 500);
   } catch(e) {
     showErr('Could not connect to server. Please try again.');
   } finally {
