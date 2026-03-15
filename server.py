@@ -323,9 +323,9 @@ def signup():
             'user':  {'id': user_id, 'username': username, 'email': email}
         })
     except sqlite3.IntegrityError as e:
-        if 'username' in str(e):
-            return jsonify({'error': 'Username already taken.'})
-        return jsonify({'error': 'Email already registered.'})
+        if 'username' in str(e).lower():
+            return jsonify({'error': 'That username is already taken. Try a different one.'})
+        return jsonify({'error': 'That email is already registered. Try logging in instead.', 'suggest_login': True})
     finally:
         conn.close()
 

@@ -133,7 +133,7 @@ if (localStorage.getItem('stud_session_v3')) window.location.href = 'index.html'
 
 function showErr(msg) {
   const e = document.getElementById('alertErr');
-  e.textContent = msg; e.classList.add('show');
+  e.innerHTML = msg; e.classList.add('show');
 }
 function clearErr() { document.getElementById('alertErr').classList.remove('show'); }
 function setLoading(on) {
@@ -158,7 +158,14 @@ async function doSignup() {
       body: JSON.stringify({username, email, password})
     });
     const data = await res.json();
-    if (!res.ok || data.error) { showErr(data.error || 'Signup failed. Please try again.'); return; }
+    if (data.error) {
+      if (data.suggest_login) {
+        showErr(data.error + ' <a href="login.html" style="color:var(--orange);font-weight:700;">Log in →</a>');
+      } else {
+        showErr(data.error);
+      }
+      return;
+    }
     localStorage.setItem('stud_session_v3', data.token);
     if (data.user) localStorage.setItem('stud_user', JSON.stringify(data.user));
     document.getElementById('formSection').style.display = 'none';
