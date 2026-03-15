@@ -158,13 +158,13 @@ async function doSignup() {
       body: JSON.stringify({username, email, password})
     });
     const data = await res.json();
-    if (data.error) { showErr(data.error); return; }
+    if (!res.ok || data.error) { showErr(data.error || 'Signup failed. Please try again.'); return; }
     localStorage.setItem('stud_session_v3', data.token);
     if (data.user) localStorage.setItem('stud_user', JSON.stringify(data.user));
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('successSection').classList.add('show');
   } catch(e) {
-    showErr('This email may already be in use. Try signing in instead.');
+    showErr('Could not connect to server. Please try again.');
   } finally {
     setLoading(false);
   }

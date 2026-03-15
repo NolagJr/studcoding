@@ -182,13 +182,13 @@ async function doLogin() {
       body: JSON.stringify({email, password})
     });
     const data = await res.json();
-    if (data.error) { showErr(data.error); return; }
+    if (!res.ok || data.error) { showErr(data.error || 'Wrong email or password.'); return; }
     localStorage.setItem('stud_session_v3', data.token);
     if (data.user) localStorage.setItem('stud_user', JSON.stringify(data.user));
     showOk('Signed in! Redirecting...');
     setTimeout(() => window.location.href = 'index.html', 500);
   } catch(e) {
-    showErr('Wrong email or password. Please try again.');
+    showErr('Could not connect to server. Please try again.');
   } finally {
     setLoading(false);
   }

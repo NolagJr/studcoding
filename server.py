@@ -299,13 +299,13 @@ def signup():
     password = data.get('password', '')
 
     if not username or not email or not password:
-        return jsonify({'error': 'All fields are required.'}), 400
+        return jsonify({'error': 'All fields are required.'})
     if len(username) < 3:
-        return jsonify({'error': 'Username must be at least 3 characters.'}), 400
+        return jsonify({'error': 'Username must be at least 3 characters.'})
     if len(password) < 8:
-        return jsonify({'error': 'Password must be at least 8 characters.'}), 400
+        return jsonify({'error': 'Password must be at least 8 characters.'})
     if '@' not in email:
-        return jsonify({'error': 'Enter a valid email address.'}), 400
+        return jsonify({'error': 'Enter a valid email address.'})
 
     conn = get_db()
     try:
@@ -324,8 +324,8 @@ def signup():
         })
     except sqlite3.IntegrityError as e:
         if 'username' in str(e):
-            return jsonify({'error': 'Username already taken.'}), 409
-        return jsonify({'error': 'Email already registered.'}), 409
+            return jsonify({'error': 'Username already taken.'})
+        return jsonify({'error': 'Email already registered.'})
     finally:
         conn.close()
 
@@ -336,7 +336,7 @@ def login():
     password = data.get('password', '')
 
     if not email or not password:
-        return jsonify({'error': 'Email and password are required.'}), 400
+        return jsonify({'error': 'Email and password are required.'})
 
     conn = get_db()
     c = conn.cursor()
@@ -346,7 +346,7 @@ def login():
     conn.close()
 
     if not user:
-        return jsonify({'error': 'Invalid email or password.'}), 401
+        return jsonify({'error': 'Invalid email or password.'})
 
     token = make_token(user['id'], user['username'], user['email'])
     return jsonify({
