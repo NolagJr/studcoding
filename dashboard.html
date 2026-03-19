@@ -32,6 +32,56 @@
   --discord:  #5865F2;
   --radius:   10px;
 }
+
+/* ══ BACKGROUND CANVAS ═══════════════════════ */
+#bg-canvas{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.bg-grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,107,43,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,43,0.03) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 70% at 50% 0%, black 20%, transparent 80%);
+}
+.bg-orb{
+  position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;
+}
+.bg-orb-1{
+  width:600px;height:600px;
+  background:radial-gradient(circle, rgba(255,107,43,0.10) 0%, transparent 65%);
+  top:-200px;left:-100px;
+  animation:orb1move 18s ease-in-out infinite;
+}
+.bg-orb-2{
+  width:500px;height:500px;
+  background:radial-gradient(circle, rgba(96,165,250,0.07) 0%, transparent 65%);
+  bottom:-150px;right:-100px;filter:blur(100px);
+  animation:orb2move 24s ease-in-out infinite;
+}
+.bg-orb-3{
+  width:400px;height:400px;
+  background:radial-gradient(circle, rgba(34,197,94,0.05) 0%, transparent 65%);
+  top:40%;left:55%;filter:blur(110px);
+  animation:orb3move 20s ease-in-out infinite;
+}
+@keyframes orb1move{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,40px)}66%{transform:translate(-20px,20px)}}
+@keyframes orb2move{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-40px)}}
+@keyframes orb3move{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+
+/* floating particles */
+.bg-particle{
+  position:absolute;border-radius:50%;
+  background:rgba(255,107,43,0.15);
+  animation:particleFloat linear infinite;
+}
+@keyframes particleFloat{
+  0%{transform:translateY(100vh) translateX(0) scale(0);opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:0.6;}
+  100%{transform:translateY(-100px) translateX(var(--drift)) scale(1);opacity:0;}
+}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;background:var(--bg);}
 body{font-family:'Sora',sans-serif;color:var(--text);}
@@ -40,7 +90,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
 
 /* ══ LAYOUT ══════════════════════════════════ */
-#app{display:flex;flex-direction:column;height:100vh;}
+#app{display:flex;flex-direction:column;height:100vh;position:relative;z-index:1;}
 
 /* ══ TOP NAV ══════════════════════════════════ */
 #topnav{
@@ -677,6 +727,31 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 </style>
 </head>
 <body>
+<div id="bg-canvas">
+  <div class="bg-grid-lines"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+</div>
+
+<!-- Avatar zoom modal -->
+<div id="ava-zoom-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;gap:20px;" onclick="closeAvaModal(event)">
+  <div style="background:#161616;border:1px solid #2E2E2E;border-radius:16px;padding:28px;max-width:400px;width:90%;text-align:center;" onclick="event.stopPropagation()">
+    <div style="font-size:14px;font-weight:700;color:#F2F2F2;margin-bottom:18px;">Adjust Profile Picture</div>
+    <div style="position:relative;width:160px;height:160px;border-radius:50%;overflow:hidden;margin:0 auto 20px;border:2px solid #FF6B2B;cursor:grab;" id="ava-crop-container">
+      <img id="ava-zoom-img" src="" style="position:absolute;transform-origin:center;cursor:grab;user-select:none;max-width:none;" draggable="false">
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <span style="font-size:11px;color:#808080;">Zoom</span>
+      <input type="range" id="ava-zoom-range" min="100" max="300" value="100" style="flex:1;accent-color:#FF6B2B;" oninput="updateAvaZoom(this.value)">
+      <span style="font-size:11px;color:#808080;" id="ava-zoom-val">100%</span>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="closeAvaModal()" style="padding:8px 16px;border-radius:8px;border:1px solid #2E2E2E;background:transparent;color:#808080;font-family:'Sora',sans-serif;font-size:12px;cursor:pointer;">Cancel</button>
+      <button onclick="confirmAva()" style="padding:8px 18px;border-radius:8px;background:#FF6B2B;color:#fff;font-family:'Sora',sans-serif;font-size:12px;font-weight:700;border:none;cursor:pointer;">Apply</button>
+    </div>
+  </div>
+</div>
 <div id="app">
 
 <!-- ── TOP NAV ─────────────────────────────── -->
@@ -1089,7 +1164,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
         </div>
       </div>
       <div class="field-wrap">
-        <label class="field-label">Display Name</label>
+        <label class="field-label">Display Name <span style="font-size:10px;color:var(--faint);font-weight:400;text-transform:none;letter-spacing:0;">— once every 60 days</span></label>
         <input type="text" class="field-input" id="edit-name" placeholder="Your display name">
       </div>
       <div class="field-wrap">
@@ -1198,7 +1273,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
         <div class="future-card-badge" style="background:var(--greendim);color:var(--green);">MY GAME</div>
         <div class="future-card-icon" style="background:var(--greendim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
         <div class="future-card-title">My Game Feature</div>
-        <div class="future-card-desc">Link your Roblox game directly. Coraic learns your entire codebase and gives context-aware fixes for your specific game.</div>
+        <div class="future-card-desc">Tell Coraic what game you want to build. It writes every script needed — server, client, modules — adds parts, UI placeholders, RemoteEvents, and DataStore setup all at once. Full games from a single description, injected directly into Studio.</div>
       </div>
     </div>
     <div class="future-cta">
@@ -1229,6 +1304,8 @@ let selectedLLM = localStorage.getItem('preferredLLM') || 'openai';
 let lastUsernameChange = localStorage.getItem('lastUsernameChange') || null;
 
 function authH(){ return {'Content-Type':'application/json','Authorization':'Bearer '+token}; }
+// Inject session_token into any body object
+function withAuth(body){ return Object.assign({}, body, {session_token: token}); }
 
 // ── NAV ──────────────────────────────────────────
 function showSection(id){
@@ -1330,7 +1407,7 @@ async function sendMessage(){
   loader.innerHTML='<div class="msg-bubble"><div class="dots"><span></span><span></span><span></span></div></div>';
   area.appendChild(loader); area.scrollTop=area.scrollHeight;
   try{
-    const body={message:txt,history:chatHistory,session_token:token};
+    const body=withAuth({message:txt,history:chatHistory});
     const key=localStorage.getItem('userAPIKey');
     if(key){body.api_key=key;body.model=selectedLLM;}
     const res=await fetch(BASE+'/chat',{method:'POST',headers:authH(),body:JSON.stringify(body)});
@@ -1378,7 +1455,7 @@ async function loadLesson(topic){
   const main=document.getElementById('lesson-main');
   main.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:14px;"><div class="dots"><span></span><span></span><span></span></div><div style="font-size:13px;color:var(--sub);">Generating your lesson on ${topic.name}...</div></div>`;
   try{
-    const res=await fetch(BASE+'/generate-lesson',{method:'POST',headers:authH(),body:JSON.stringify({topic:topic.name,session_token:token})});
+    const res=await fetch(BASE+'/generate-lesson',{method:'POST',headers:authH(),body:JSON.stringify(withAuth({topic:topic.name}))});
     const data=await res.json();
     const content=data.lesson||data.content||'Could not load lesson content.';
     main.innerHTML=`<div class="lesson-content-wrap">
@@ -1576,7 +1653,7 @@ async function startQuiz(topic){
     const timeout = setTimeout(()=>controller.abort(), 8000);
     const res = await fetch(BASE+'/generate-quiz',{
       method:'POST', headers:authH(), signal:controller.signal,
-      body:JSON.stringify({topic:topic.name,count:20,session_token:token})
+      body:JSON.stringify(withAuth({topic:topic.name,count:20}))
     });
     clearTimeout(timeout);
     const data = await res.json();
@@ -1661,32 +1738,122 @@ function toggleEdit(){
   f.classList.toggle('open');
   if(lastUsernameChange){
     const days=Math.floor((Date.now()-parseInt(lastUsernameChange))/86400000);
-    const left=90-days;
+    const left=60-days;
     if(left>0){
       document.getElementById('username-cooldown').style.display='flex';
-      document.getElementById('cooldown-txt').textContent=`You can change your username again in ${left} day${left!==1?'s':''}.`;
+      document.getElementById('cooldown-txt').textContent=`Display name can only be changed once every 60 days. ${left} day${left!==1?'s':''} remaining.`;
       document.getElementById('edit-username').disabled=true;
+    } else {
+      document.getElementById('username-cooldown').style.display='none';
+      document.getElementById('edit-username').disabled=false;
     }
   }
 }
 
+// ── AVATAR ZOOM MODAL ─────────────────────────────
+let pendingAvaDataURL = null;
+let currentZoom = 100;
+let dragStartX=0, dragStartY=0, imgOffX=0, imgOffY=0, isDragging=false;
+
 function previewAva(input){
   const file=input.files[0]; if(!file) return;
+  if(file.size > 2*1024*1024){ toast('Image must be under 2MB','err'); return; }
   const r=new FileReader();
   r.onload=e=>{
-    document.getElementById('ava-preview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    pendingAvaDataURL = e.target.result;
+    const modal = document.getElementById('ava-zoom-modal');
+    const img = document.getElementById('ava-zoom-img');
+    img.src = e.target.result;
+    img.style.width='160px';img.style.height='160px';img.style.objectFit='cover';
+    img.style.transform='scale(1)';img.style.left='0';img.style.top='0';
+    document.getElementById('ava-zoom-range').value=100;
+    document.getElementById('ava-zoom-val').textContent='100%';
+    currentZoom=100; imgOffX=0; imgOffY=0;
+    modal.style.display='flex';
+
+    // drag to reposition
+    img.addEventListener('mousedown', startDrag);
+    img.addEventListener('touchstart', e2=>{
+      const t=e2.touches[0];
+      dragStartX=t.clientX-imgOffX; dragStartY=t.clientY-imgOffY; isDragging=true;
+    },{passive:true});
   };
   r.readAsDataURL(file);
+}
+
+function startDrag(e){
+  dragStartX=e.clientX-imgOffX; dragStartY=e.clientY-imgOffY; isDragging=true;
+  document.addEventListener('mousemove',onDrag);
+  document.addEventListener('mouseup',()=>{isDragging=false; document.removeEventListener('mousemove',onDrag);});
+}
+function onDrag(e){
+  if(!isDragging) return;
+  imgOffX=e.clientX-dragStartX; imgOffY=e.clientY-dragStartY;
+  applyAvaTransform();
+}
+document.addEventListener('touchmove',e=>{
+  if(!isDragging) return;
+  const t=e.touches[0];
+  imgOffX=t.clientX-dragStartX; imgOffY=t.clientY-dragStartY;
+  applyAvaTransform();
+},{passive:true});
+document.addEventListener('touchend',()=>{ isDragging=false; });
+
+function applyAvaTransform(){
+  const img=document.getElementById('ava-zoom-img');
+  img.style.transform=`scale(${currentZoom/100}) translate(${imgOffX/(currentZoom/100)}px,${imgOffY/(currentZoom/100)}px)`;
+}
+function updateAvaZoom(val){
+  currentZoom=parseInt(val);
+  document.getElementById('ava-zoom-val').textContent=val+'%';
+  applyAvaTransform();
+}
+function closeAvaModal(e){
+  if(!e||e.target===document.getElementById('ava-zoom-modal')){
+    document.getElementById('ava-zoom-modal').style.display='none';
+  }
+}
+function confirmAva(){
+  // Render cropped result to canvas
+  const container=document.getElementById('ava-crop-container');
+  const img=document.getElementById('ava-zoom-img');
+  const canvas=document.createElement('canvas');
+  canvas.width=160; canvas.height=160;
+  const ctx=canvas.getContext('2d');
+  ctx.beginPath(); ctx.arc(80,80,80,0,Math.PI*2); ctx.clip();
+  const scale=currentZoom/100;
+  const iw=img.naturalWidth, ih=img.naturalHeight;
+  const drawW=160*scale, drawH=160*scale;
+  const offX=(160-drawW)/2+imgOffX, offY=(160-drawH)/2+imgOffY;
+  ctx.drawImage(img, offX, offY, drawW, drawH);
+  const cropped=canvas.toDataURL('image/jpeg',0.9);
+  // Apply to all previews
+  ['ava-preview','profile-ava','nav-avatar'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    if(id==='nav-avatar'){
+      el.style.backgroundImage=`url(${cropped})`;
+      el.style.backgroundSize='cover';
+      el.textContent='';
+    } else {
+      el.innerHTML=`<img src="${cropped}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    }
+  });
+  pendingAvaDataURL=cropped;
+  document.getElementById('ava-zoom-modal').style.display='none';
+  toast('Profile picture updated — click Save Changes','ok');
 }
 
 async function saveProfile(){
   const name=document.getElementById('edit-name').value.trim();
   const username=document.getElementById('edit-username').value.trim();
+  const body={name,username};
+  if(pendingAvaDataURL) body.avatar=pendingAvaDataURL;
   try{
-    const res=await fetch(BASE+'/profile',{method:'PUT',headers:authH(),body:JSON.stringify({name,username})});
+    const res=await fetch(BASE+'/profile',{method:'PUT',headers:authH(),body:JSON.stringify(withAuth(body))});
     if(res.ok){
       if(username!==userData.username){localStorage.setItem('lastUsernameChange',Date.now().toString());lastUsernameChange=Date.now().toString();}
-      toast('Profile updated','ok');toggleEdit();loadProfile();
+      toast('Profile updated','ok');toggleEdit();loadProfile();pendingAvaDataURL=null;
     }else{
       const d=await res.json();toast(d.error||'Failed to update','err');
     }
@@ -1744,6 +1911,23 @@ async function submitFeedback(){
     toast('Feedback sent — thanks!','ok');
   }catch(e){toast('Failed to send','err');}
 }
+
+// ── BACKGROUND PARTICLES ─────────────────────────
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const colors = ['rgba(255,107,43,0.18)','rgba(255,107,43,0.1)','rgba(96,165,250,0.12)','rgba(34,197,94,0.1)'];
+  for(let i=0;i<12;i++){
+    const p=document.createElement('div');
+    p.className='bg-particle';
+    const size=Math.random()*4+2;
+    const left=Math.random()*100;
+    const dur=Math.random()*20+12;
+    const delay=Math.random()*15;
+    const drift=(Math.random()-0.5)*200;
+    p.style.cssText=`width:${size}px;height:${size}px;left:${left}%;bottom:-20px;background:${colors[i%colors.length]};animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;`;
+    canvas.appendChild(p);
+  }
+})();
 
 // ── INIT ──────────────────────────────────────────
 buildTopics();
