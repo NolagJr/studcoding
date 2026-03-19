@@ -50,20 +50,20 @@
 }
 .bg-orb-1{
   width:600px;height:600px;
-  background:radial-gradient(circle, rgba(255,107,43,0.10) 0%, transparent 65%);
-  top:-200px;left:-100px;
+  background:radial-gradient(circle, rgba(255,107,43,0.22) 0%, transparent 60%);
+  top:-180px;left:-80px;filter:blur(80px);
   animation:orb1move 18s ease-in-out infinite;
 }
 .bg-orb-2{
   width:500px;height:500px;
-  background:radial-gradient(circle, rgba(96,165,250,0.07) 0%, transparent 65%);
-  bottom:-150px;right:-100px;filter:blur(100px);
+  background:radial-gradient(circle, rgba(96,165,250,0.14) 0%, transparent 60%);
+  bottom:-120px;right:-80px;filter:blur(90px);
   animation:orb2move 24s ease-in-out infinite;
 }
 .bg-orb-3{
   width:400px;height:400px;
-  background:radial-gradient(circle, rgba(34,197,94,0.05) 0%, transparent 65%);
-  top:40%;left:55%;filter:blur(110px);
+  background:radial-gradient(circle, rgba(34,197,94,0.10) 0%, transparent 60%);
+  top:35%;left:50%;filter:blur(100px);
   animation:orb3move 20s ease-in-out infinite;
 }
 @keyframes orb1move{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,40px)}66%{transform:translate(-20px,20px)}}
@@ -95,7 +95,8 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 /* ══ TOP NAV ══════════════════════════════════ */
 #topnav{
   height:54px;flex-shrink:0;
-  background:var(--nav);
+  background:rgba(15,15,15,0.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;
   padding:0 24px;gap:0;
@@ -153,7 +154,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 .section.active{display:flex;flex-direction:column;opacity:1;}
 
 /* ══ HOME ════════════════════════════════════ */
-#section-home{background:var(--bg);}
+#section-home{background:transparent;}
 .home-wrap{padding:40px 48px 60px;max-width:1200px;width:100%;margin:0 auto;}
 
 /* Hero */
@@ -381,7 +382,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 }
 
 /* ══ QUIZZES ═══════════════════════════════════ */
-#section-quizzes{background:var(--bg);}
+#section-quizzes{background:transparent;}
 #quiz-picker-view{padding:40px 48px;}
 .quiz-picker-title{font-size:26px;font-weight:800;color:var(--white);letter-spacing:-0.8px;margin-bottom:6px;}
 .quiz-picker-sub{font-size:13px;color:var(--sub);margin-bottom:28px;}
@@ -448,7 +449,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 .page-sub{font-size:13px;color:var(--sub);margin-bottom:32px;}
 
 /* ══ INSTALL ══════════════════════════════════ */
-#section-install{background:var(--bg);}
+#section-install{background:transparent;}
 .install-layout{padding:40px 48px;display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;max-width:1100px;}
 .steps-list{display:flex;flex-direction:column;gap:0;}
 .step-item{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);}
@@ -479,7 +480,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 .mockup-body{padding:14px;}
 
 /* ══ API KEY ══════════════════════════════════ */
-#section-apikey{background:var(--bg);}
+#section-apikey{background:transparent;}
 .api-status-row{
   display:flex;align-items:center;gap:14px;
   background:var(--surface);border:1px solid var(--border);border-radius:10px;
@@ -522,7 +523,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 .api-hint{font-size:11px;color:var(--faint);margin-top:7px;}
 
 /* ══ ACCOUNT ══════════════════════════════════ */
-#section-account{background:var(--bg);}
+#section-account{background:transparent;}
 .profile-card{
   background:var(--surface);border:1px solid var(--border);border-radius:12px;
   padding:28px;margin-bottom:14px;display:flex;align-items:center;gap:20px;
@@ -604,7 +605,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 .info-action.red:hover{background:var(--reddim);}
 
 /* ══ ABOUT ════════════════════════════════════ */
-#section-about{background:var(--bg);}
+#section-about{background:transparent;}
 .about-hero{
   background:var(--surface);border:1px solid var(--border);border-radius:12px;
   padding:36px;margin-bottom:14px;text-align:center;
@@ -669,7 +670,7 @@ body{font-family:'Sora',sans-serif;color:var(--text);}
 .about-row-text{font-size:12px;color:var(--sub);line-height:1.7;}
 
 /* ══ FUTURE ═══════════════════════════════════ */
-#section-future{background:var(--bg);}
+#section-future{background:transparent;}
 .future-wrap{padding:40px 48px 60px;max-width:1100px;margin:0 auto;}
 .future-hero{text-align:center;margin-bottom:48px;}
 .future-badge{
@@ -1359,18 +1360,35 @@ function applyProfileData(data){
 }
 
 async function loadProfile(){
-  // Always try localStorage first so UI isn't blank
+  // Always apply cached data first so UI is never blank
   const cached = localStorage.getItem('stud_user');
   if(cached){
     try{ applyProfileData(JSON.parse(cached)); }catch(e){}
   }
+  // Apply saved avatar
+  const savedAva = localStorage.getItem('stud_avatar');
+  if(savedAva){
+    ['ava-preview','profile-ava'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML=`<img src="${savedAva}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    });
+    const nav=document.getElementById('nav-avatar');
+    if(nav){nav.style.backgroundImage=`url(${savedAva})`;nav.style.backgroundSize='cover';nav.textContent='';}
+  }
   try{
-    const res = await fetch(BASE+'/profile',{headers:authH()});
+    const res = await fetch(BASE+'/get-profile',{headers:authH()});
     if(res.status===401){ window.location.href='login.html'; return; }
     if(!res.ok) return;
     const data = await res.json();
     localStorage.setItem('stud_user', JSON.stringify(data));
     applyProfileData(data);
+    // Re-apply avatar after server data loads (server data doesn't override local avatar)
+    if(savedAva){
+      ['ava-preview','profile-ava'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.innerHTML=`<img src="${savedAva}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      });
+    }
   }catch(e){
     console.warn('Profile fetch failed, using cached data', e);
   }
@@ -1407,13 +1425,13 @@ async function sendMessage(){
   loader.innerHTML='<div class="msg-bubble"><div class="dots"><span></span><span></span><span></span></div></div>';
   area.appendChild(loader); area.scrollTop=area.scrollHeight;
   try{
-    const body=withAuth({message:txt,history:chatHistory});
+    const body={message:txt,history:chatHistory};
     const key=localStorage.getItem('userAPIKey');
     if(key){body.api_key=key;body.model=selectedLLM;}
-    const res=await fetch(BASE+'/chat',{method:'POST',headers:authH(),body:JSON.stringify(body)});
+    const res=await fetch(BASE+'/tutor-chat',{method:'POST',headers:authH(),body:JSON.stringify(body)});
     const data=await res.json();
     loader.remove();
-    const reply=data.response||data.message||'Something went wrong.';
+    const reply=data.reply||data.response||data.message||'Something went wrong.';
     chatHistory.push({role:'assistant',content:reply});
     addMsg('ai',reply);
   }catch(e){loader.remove();addMsg('ai','Could not reach server. Check your connection.');}
@@ -1455,9 +1473,9 @@ async function loadLesson(topic){
   const main=document.getElementById('lesson-main');
   main.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:14px;"><div class="dots"><span></span><span></span><span></span></div><div style="font-size:13px;color:var(--sub);">Generating your lesson on ${topic.name}...</div></div>`;
   try{
-    const res=await fetch(BASE+'/generate-lesson',{method:'POST',headers:authH(),body:JSON.stringify(withAuth({topic:topic.name}))});
+    const res=await fetch(BASE+'/tutor-lesson',{method:'POST',headers:authH(),body:JSON.stringify({topic:topic.name})});
     const data=await res.json();
-    const content=data.lesson||data.content||'Could not load lesson content.';
+    const content=data.content||data.lesson||'Could not load lesson content.';
     main.innerHTML=`<div class="lesson-content-wrap">
       <div class="lesson-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>${topic.tag} Lesson</div>
       <div class="lesson-title">${topic.name}</div>
@@ -1651,9 +1669,9 @@ async function startQuiz(topic){
   try{
     const controller = new AbortController();
     const timeout = setTimeout(()=>controller.abort(), 8000);
-    const res = await fetch(BASE+'/generate-quiz',{
+    const res = await fetch(BASE+'/tutor-quiz',{
       method:'POST', headers:authH(), signal:controller.signal,
-      body:JSON.stringify(withAuth({topic:topic.name,count:20}))
+      body:JSON.stringify({topic:topic.name})
     });
     clearTimeout(timeout);
     const data = await res.json();
@@ -1847,17 +1865,39 @@ function confirmAva(){
 async function saveProfile(){
   const name=document.getElementById('edit-name').value.trim();
   const username=document.getElementById('edit-username').value.trim();
-  const body={name,username};
-  if(pendingAvaDataURL) body.avatar=pendingAvaDataURL;
-  try{
-    const res=await fetch(BASE+'/profile',{method:'PUT',headers:authH(),body:JSON.stringify(withAuth(body))});
-    if(res.ok){
-      if(username!==userData.username){localStorage.setItem('lastUsernameChange',Date.now().toString());lastUsernameChange=Date.now().toString();}
-      toast('Profile updated','ok');toggleEdit();loadProfile();pendingAvaDataURL=null;
-    }else{
-      const d=await res.json();toast(d.error||'Failed to update','err');
+  if(!name){toast('Name cannot be empty','err');return;}
+  // Check 60-day cooldown for display name
+  if(lastUsernameChange){
+    const days=Math.floor((Date.now()-parseInt(lastUsernameChange))/86400000);
+    if(days<60&&name!==userData.name&&name!==(userData.username)){
+      toast('Display name can only be changed once every 60 days','err');return;
     }
-  }catch(e){toast('Connection error','err');}
+  }
+  // Save locally (server profile endpoint is read-only)
+  const updated = Object.assign({},userData,{username:name, name:name, display_name:name});
+  localStorage.setItem('stud_user',JSON.stringify(updated));
+  userData=updated;
+  if(pendingAvaDataURL){
+    localStorage.setItem('stud_avatar',pendingAvaDataURL);
+    pendingAvaDataURL=null;
+  }
+  if(name!==userData.username){
+    localStorage.setItem('lastUsernameChange',Date.now().toString());
+    lastUsernameChange=Date.now().toString();
+  }
+  applyProfileData(updated);
+  // Also apply avatar if saved
+  const savedAva=localStorage.getItem('stud_avatar');
+  if(savedAva){
+    ['ava-preview','profile-ava'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML=`<img src="${savedAva}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    });
+    const nav=document.getElementById('nav-avatar');
+    if(nav){nav.style.backgroundImage=`url(${savedAva})`;nav.style.backgroundSize='cover';nav.textContent='';}
+  }
+  toast('Profile saved','ok');
+  toggleEdit();
 }
 
 function copyKey(){
