@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign In — StudCoding</title>
+<title>Sign In — Coraic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -21,105 +21,63 @@ body{
   display:flex;align-items:center;justify-content:center;
   padding:24px;overflow:hidden;
 }
-
-/* Background */
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
-.bg-grid{
-  position:absolute;inset:0;
-  background-image:linear-gradient(rgba(255,122,46,.028) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,122,46,.028) 1px,transparent 1px);
-  background-size:44px 44px;
-}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,122,46,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,122,46,.028) 1px,transparent 1px);background-size:44px 44px;}
 .bg-orb1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(255,122,46,.14) 0%,transparent 60%);top:-300px;right:-200px;filter:blur(80px);animation:drift1 20s ease-in-out infinite;}
 .bg-orb2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(120,80,255,.1) 0%,transparent 60%);bottom:-200px;left:-100px;filter:blur(100px);animation:drift2 26s ease-in-out infinite;}
 @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
 @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-
-/* Card */
 .card{
-  position:relative;z-index:1;
-  width:100%;max-width:420px;
-  background:rgba(15,16,24,.96);
-  border:1px solid var(--border2);
-  border-radius:24px;
-  padding:44px 40px;
-  box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.08);
+  position:relative;z-index:1;width:100%;max-width:420px;
+  background:rgba(15,16,24,.96);border:1px solid var(--border2);border-radius:24px;
+  padding:44px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.08);
   animation:cardIn .5s cubic-bezier(.22,1,.36,1) both;
 }
 @keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-/* Logo */
 .logo{display:flex;align-items:center;gap:11px;margin-bottom:36px;}
-.logo-mark{
-  width:38px;height:38px;border-radius:11px;
-  background:linear-gradient(135deg,#ff7a2e,#ff9555);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:16px;color:#fff;
-  box-shadow:0 0 24px rgba(255,122,46,.45);
-}
+.logo-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#ff7a2e,#ff9555);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(255,122,46,.45);}
+.logo-mark svg{width:18px;height:18px;}
 .logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.3px;}
-
-/* Heading */
 h1{font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
 .subtitle{font-size:14px;color:var(--sub);margin-bottom:30px;}
-
-/* Alerts */
-.alert{
-  border-radius:10px;padding:12px 15px;font-size:13px;
-  margin-bottom:18px;display:none;font-weight:500;
-}
+.alert{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:18px;display:none;font-weight:500;}
 .alert.show{display:block;}
 .alert-error{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
 .alert-success{background:rgba(34,211,127,.1);border:1px solid rgba(34,211,127,.3);color:var(--success);}
-
-/* Fields */
 .field{margin-bottom:18px;}
-.field-label{
-  display:block;font-size:11px;font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:8px;
-}
-.field-input{
-  width:100%;background:var(--surface2);
-  border:1px solid var(--border2);border-radius:11px;
-  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;
-  padding:14px 16px;outline:none;transition:all .2s;
-}
+.field-label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.field-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;padding:14px 16px;outline:none;transition:all .2s;}
 .field-input:focus{border-color:var(--orange);background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.1);}
 .field-input::placeholder{color:var(--muted);}
-
-/* Button */
-.btn-main{
-  width:100%;padding:15px;border:none;border-radius:11px;
-  background:linear-gradient(135deg,var(--orange),var(--orange-hi));
-  color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;
-  cursor:pointer;transition:all .2s;margin-top:4px;
-  box-shadow:0 6px 28px rgba(255,122,46,.38);
-}
+.btn-main{width:100%;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:4px;box-shadow:0 6px 28px rgba(255,122,46,.38);}
 .btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.52);}
 .btn-main:disabled{opacity:.5;cursor:not-allowed;}
-
-/* Divider */
 .divider{display:flex;align-items:center;gap:14px;margin:22px 0;color:var(--muted);font-size:12px;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border2);}
-
-/* Footer */
 .footer-txt{text-align:center;font-size:13.5px;color:var(--sub);}
 .footer-txt a{color:var(--orange);font-weight:600;text-decoration:none;}
 .footer-txt a:hover{text-decoration:underline;}
+.back-link{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:28px;transition:color .15s;width:fit-content;}
+.back-link:hover{color:var(--sub);}
+.back-link svg{width:13px;height:13px;}
 </style>
 </head>
 <body>
-<div class="bg">
-  <div class="bg-grid"></div>
-  <div class="bg-orb1"></div>
-  <div class="bg-orb2"></div>
-</div>
+<div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div></div>
 
 <div class="card">
+  <a href="index.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to home
+  </a>
+
   <div class="logo">
-    <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 22 22" fill="none"><path d="M6 3L2 11H9.5L7 19L20 9H12L15 3H6Z" fill="white" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-linejoin="round"/></svg></div>
-    <span class="logo-name">StudCoding</span>
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    <span class="logo-name">Coraic</span>
   </div>
+
   <h1>Welcome back</h1>
   <p class="subtitle">Sign in to your account to continue</p>
 
@@ -142,59 +100,44 @@ h1{font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:800;lette
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
 
-// Redirect if already logged in
-if (localStorage.getItem('stud_session_v3')) window.location.href = 'dashboard.html';
+// ── NO AUTO-REDIRECT ──
+// If already logged in, user chose to come here — let them stay.
+// Only redirect after a successful login form submission.
 
-// Handle token in URL (OAuth redirect)
 const params = new URLSearchParams(window.location.search);
 if (params.get('token')) {
   localStorage.setItem('stud_session_v3', params.get('token'));
   window.location.href = 'dashboard.html';
 }
 
-function showErr(msg) {
-  const e = document.getElementById('alertErr');
-  e.textContent = msg; e.classList.add('show');
-  document.getElementById('alertOk').classList.remove('show');
-}
-function showOk(msg) {
-  const e = document.getElementById('alertOk');
-  e.textContent = msg; e.classList.add('show');
-  document.getElementById('alertErr').classList.remove('show');
-}
-function setLoading(on) {
-  const btn = document.getElementById('loginBtn');
-  btn.disabled = on;
-  btn.textContent = on ? 'Signing in...' : 'Sign In →';
-}
+function showErr(msg){const e=document.getElementById('alertErr');e.textContent=msg;e.classList.add('show');document.getElementById('alertOk').classList.remove('show');}
+function showOk(msg){const e=document.getElementById('alertOk');e.textContent=msg;e.classList.add('show');document.getElementById('alertErr').classList.remove('show');}
+function setLoading(on){const btn=document.getElementById('loginBtn');btn.disabled=on;btn.textContent=on?'Signing in...':'Sign In →';}
 
-async function doLogin() {
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  if (!email) return showErr('Please enter your email.');
-  if (!email.includes('@')) return showErr('Enter a valid email address.');
-  if (!password) return showErr('Please enter your password.');
+async function doLogin(){
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  if(!email) return showErr('Please enter your email.');
+  if(!email.includes('@')) return showErr('Enter a valid email address.');
+  if(!password) return showErr('Please enter your password.');
   setLoading(true);
-  try {
-    const res = await fetch(`${BASE}/auth/login`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email, password})
+  try{
+    const res=await fetch(`${BASE}/auth/login`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password})
     });
-    const data = await res.json();
-    if (!res.ok || data.error) { showErr(data.error || 'Wrong email or password.'); return; }
-    localStorage.setItem('stud_session_v3', data.token);
-    if (data.user) localStorage.setItem('stud_user', JSON.stringify(data.user));
+    const data=await res.json();
+    if(!res.ok||data.error){showErr(data.error||'Wrong email or password.');return;}
+    localStorage.setItem('stud_session_v3',data.token);
+    if(data.user) localStorage.setItem('stud_user',JSON.stringify(data.user));
     showOk('Signed in! Redirecting...');
-    setTimeout(() => window.location.href = 'dashboard.html', 500);
-  } catch(e) {
+    setTimeout(()=>window.location.href='dashboard.html',500);
+  }catch(e){
     showErr('Could not connect to server. Please try again.');
-  } finally {
-    setLoading(false);
-  }
+  }finally{setLoading(false);}
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.addEventListener('keydown',e=>{if(e.key==='Enter') doLogin();});
 </script>
 </body>
 </html>
