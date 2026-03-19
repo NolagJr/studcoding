@@ -635,7 +635,108 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);}
 .future-cta-title{font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;}
 .future-cta-sub{font-size:13px;color:var(--sub);margin-bottom:18px;}
 
-/* ══ LOADING DOTS ══════════════════════════════════ */
+/* ══ SETTINGS ═══════════════════════════════════════ */
+.settings-wrap{padding:40px 48px 60px;max-width:640px;margin:0 auto;}
+.settings-title{font-size:24px;font-weight:800;color:var(--white);letter-spacing:-0.6px;margin-bottom:6px;}
+.settings-sub{font-size:13px;color:var(--sub);margin-bottom:32px;}
+
+/* Avatar block */
+.settings-ava-block{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:28px;}
+.settings-ava{
+  width:88px;height:88px;border-radius:50%;overflow:hidden;
+  background:linear-gradient(135deg,var(--orange),#FF9A3C);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;font-weight:700;color:#fff;
+  border:3px solid var(--border2);
+}
+.settings-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.settings-ava-btns{display:flex;gap:8px;}
+.settings-ava-btn{
+  padding:6px 16px;border-radius:8px;
+  font-family:'Sora',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all 0.15s;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text);
+}
+.settings-ava-btn:hover{background:var(--surface3);border-color:var(--border2);}
+.settings-ava-btn.remove{color:var(--red);border-color:rgba(248,113,113,0.2);}
+.settings-ava-btn.remove:hover{background:var(--rdim);}
+
+/* Info rows */
+.settings-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.settings-row{display:flex;align-items:center;padding:18px 22px;border-bottom:1px solid var(--border);}
+.settings-row:last-child{border-bottom:none;}
+.settings-row-info{flex:1;}
+.settings-row-label{font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:500;}
+.settings-row-val{font-size:14px;color:var(--text);font-weight:600;}
+.settings-row-val.editing{display:none;}
+.settings-edit-btn{
+  padding:6px 14px;border-radius:7px;border:1px solid var(--border2);
+  background:transparent;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;
+  color:var(--sub);cursor:pointer;transition:all 0.15s;
+}
+.settings-edit-btn:hover{background:var(--surface2);color:var(--text);}
+.settings-inline-input{
+  background:var(--surface2);border:1px solid var(--orange);border-radius:7px;
+  padding:7px 12px;color:var(--text);font-family:'Sora',sans-serif;font-size:13px;
+  outline:none;width:200px;display:none;
+}
+.settings-inline-save{
+  padding:6px 14px;border-radius:7px;background:var(--orange);color:#fff;
+  font-family:'Sora',sans-serif;font-size:12px;font-weight:700;
+  border:none;cursor:pointer;margin-left:8px;display:none;transition:all 0.15s;
+}
+.settings-inline-save:hover{background:var(--orange2);}
+
+/* Theme toggle */
+.settings-section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);margin:24px 0 10px;}
+.theme-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:8px;
+}
+.theme-row-left{display:flex;align-items:center;gap:12px;}
+.theme-row-left svg{width:18px;height:18px;color:var(--sub);}
+.theme-row-name{font-size:14px;font-weight:600;color:var(--text);}
+.theme-row-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.theme-toggle{
+  display:flex;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:99px;padding:3px;gap:3px;
+}
+.theme-opt{
+  padding:5px 14px;border-radius:99px;font-family:'Sora',sans-serif;
+  font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.15s;
+  border:none;background:transparent;
+}
+.theme-opt.active{background:var(--surface3);color:var(--white);}
+
+/* Manage account */
+.manage-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:8px;
+}
+.manage-row-left{}
+.manage-row-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.manage-row-sub{font-size:11px;color:var(--muted);}
+.manage-btn{
+  padding:8px 18px;border-radius:8px;border:1px solid var(--border2);
+  font-family:'Sora',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:7px;
+  background:var(--surface2);color:var(--sub);
+}
+.manage-btn svg{width:14px;height:14px;}
+.manage-btn:hover{background:var(--surface3);color:var(--text);}
+.manage-btn.danger{background:var(--rdim);color:var(--red);border-color:rgba(248,113,113,0.3);}
+.manage-btn.danger:hover{background:var(--red);color:#fff;border-color:var(--red);}
+
+/* Light mode overrides */
+body.light{
+  --bg:#F5F5F5;--sidebar:#FFFFFF;--topbar:#FFFFFF;
+  --surface:#FFFFFF;--surface2:#F0F0F0;--surface3:#E8E8E8;--hover:#EBEBEB;
+  --border:#E0E0E0;--border2:#D0D0D0;
+  --text:#111111;--sub:#555555;--muted:#888888;--faint:#BBBBBB;
+}
+body.light #bg .o1{opacity:0.06;}
+body.light #bg .o2{opacity:0.04;}
+body.light #bg .o3{opacity:0.03;}
 .dots{display:inline-flex;gap:4px;align-items:center;}
 .dots span{width:5px;height:5px;border-radius:50%;background:var(--sub);animation:db 1.4s infinite;}
 .dots span:nth-child(2){animation-delay:.2s;}
@@ -761,7 +862,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       Help
     </div>
-    <div class="sb-footer-item" onclick="showSection('apikey')">
+    <div class="sb-footer-item" onclick="showSection('settings')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
       Settings
     </div>
@@ -1156,6 +1257,95 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);}
     </div>
   </div>
 
+  <!-- SETTINGS -->
+  <div class="section" id="section-settings">
+    <div class="settings-wrap">
+      <div class="settings-title">Settings</div>
+      <div class="settings-sub">Manage your profile, appearance, and account.</div>
+
+      <!-- Avatar -->
+      <div class="settings-ava-block">
+        <div class="settings-ava" id="settings-ava">?</div>
+        <div class="settings-ava-btns">
+          <button class="settings-ava-btn" onclick="document.getElementById('settings-ava-file').click()">Change</button>
+          <input type="file" id="settings-ava-file" accept="image/*" style="display:none" onchange="settingsUploadAva(this)">
+          <button class="settings-ava-btn remove" onclick="removeAvatar()">Remove</button>
+        </div>
+      </div>
+
+      <!-- Info rows -->
+      <div class="settings-card">
+        <!-- Full name -->
+        <div class="settings-row" id="row-name">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Full name</div>
+            <div class="settings-row-val" id="srow-name-val">—</div>
+            <input class="settings-inline-input" id="srow-name-input" placeholder="Your name">
+            <button class="settings-inline-save" id="srow-name-save" onclick="saveSettingsField('name')">Save</button>
+          </div>
+          <button class="settings-edit-btn" onclick="toggleSettingsEdit('name')">Edit</button>
+        </div>
+        <!-- Username -->
+        <div class="settings-row" id="row-username">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Username</div>
+            <div class="settings-row-val" id="srow-username-val">—</div>
+            <input class="settings-inline-input" id="srow-username-input" placeholder="@username">
+            <button class="settings-inline-save" id="srow-username-save" onclick="saveSettingsField('username')">Save</button>
+            <div style="font-size:10px;color:var(--muted);margin-top:5px;display:none;" id="srow-username-hint">Changeable once every 60 days</div>
+          </div>
+          <button class="settings-edit-btn" onclick="toggleSettingsEdit('username')" id="srow-username-editbtn">Edit</button>
+        </div>
+        <!-- Email -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Email address</div>
+            <div class="settings-row-val" id="srow-email-val">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="settings-section-title">Appearance</div>
+      <div class="theme-row">
+        <div class="theme-row-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <div>
+            <div class="theme-row-name">Theme</div>
+            <div class="theme-row-sub">Choose how Coraic looks</div>
+          </div>
+        </div>
+        <div class="theme-toggle">
+          <button class="theme-opt active" id="theme-dark" onclick="setTheme('dark')">Dark</button>
+          <button class="theme-opt" id="theme-light" onclick="setTheme('light')">Light</button>
+        </div>
+      </div>
+
+      <!-- Manage account -->
+      <div class="settings-section-title">Manage account</div>
+      <div class="manage-row">
+        <div class="manage-row-left">
+          <div class="manage-row-label">Log out</div>
+          <div class="manage-row-sub">Log out of your account on this device</div>
+        </div>
+        <button class="manage-btn" onclick="signOut()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log out
+        </button>
+      </div>
+      <div class="manage-row">
+        <div class="manage-row-left">
+          <div class="manage-row-label">Delete account</div>
+          <div class="manage-row-sub">Permanently delete your account and all data</div>
+        </div>
+        <button class="manage-btn danger" onclick="confirmDelete()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /app -->
@@ -1172,7 +1362,7 @@ let selectedLLM=localStorage.getItem('preferredLLM')||'openai';
 let lastUsernameChange=localStorage.getItem('lastUsernameChange')||null;
 let pendingAvaDataURL=null, currentZoom=100, isDragging=false, dragX=0, dragY=0, offX=0, offY=0;
 
-const TOPBAR_TITLES = {home:'Home',tutor:'AI Tutor',lessons:'Lessons',quizzes:'Quizzes',install:'Install Plugin',apikey:'API Key',account:'Account',about:'About',future:'Future Updates'};
+const TOPBAR_TITLES = {home:'Home',tutor:'AI Tutor',lessons:'Lessons',quizzes:'Quizzes',install:'Install Plugin',apikey:'API Key',account:'Account',about:'About',future:'Future Updates',settings:'Settings'};
 
 function authH(){return{'Content-Type':'application/json','Authorization':'Bearer '+token};}
 
@@ -1243,6 +1433,8 @@ function applyProfile(data){
     document.getElementById('api-key-input').value=storedKey;
   }
   document.getElementById('tutor-model-lbl').textContent=selectedLLM==='claude'?'Claude':selectedLLM==='gemini'?'Gemini':'GPT-4o';
+  // sync settings page
+  applySettingsProfile(data);
 }
 
 async function loadProfile(){
@@ -1644,6 +1836,134 @@ async function submitFeedback(){
     await fetch(BASE+'/feedback',{method:'POST',headers:authH(),body:JSON.stringify({message:txt})});
     document.getElementById('feedback-txt').value='';toast('Feedback sent — thank you!','ok');
   }catch(e){toast('Failed to send','err');}
+}
+
+// ── SETTINGS PAGE ─────────────────────────────────
+function applySettingsProfile(data){
+  const name=data.username||data.email?.split('@')[0]||'there';
+  document.getElementById('srow-name-val').textContent=name;
+  document.getElementById('srow-username-val').textContent=data.username||'—';
+  document.getElementById('srow-email-val').textContent=data.email||'—';
+  // avatar
+  const savedAva=localStorage.getItem('stud_avatar');
+  const sAva=document.getElementById('settings-ava');
+  if(sAva){
+    if(savedAva) sAva.innerHTML=`<img src="${savedAva}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    else sAva.textContent=name.slice(0,2).toUpperCase();
+  }
+  // cooldown
+  if(lastUsernameChange){
+    const days=Math.floor((Date.now()-parseInt(lastUsernameChange))/86400000);
+    if(days<60){
+      document.getElementById('srow-username-editbtn').disabled=true;
+      document.getElementById('srow-username-editbtn').textContent='Locked';
+      document.getElementById('srow-username-editbtn').style.opacity='0.4';
+    }
+  }
+}
+
+function toggleSettingsEdit(field){
+  const val=document.getElementById('srow-'+field+'-val');
+  const inp=document.getElementById('srow-'+field+'-input');
+  const save=document.getElementById('srow-'+field+'-save');
+  const hint=document.getElementById('srow-'+field+'-hint');
+  const isEditing=inp.style.display==='inline-block';
+  if(isEditing){
+    val.style.display='block';inp.style.display='none';save.style.display='none';
+    if(hint) hint.style.display='none';
+  } else {
+    val.style.display='none';inp.style.display='inline-block';save.style.display='inline-block';
+    inp.value=val.textContent==='—'?'':val.textContent;inp.focus();
+    if(hint) hint.style.display='block';
+  }
+}
+
+function saveSettingsField(field){
+  const inp=document.getElementById('srow-'+field+'-input');
+  const val=document.getElementById('srow-'+field+'-val');
+  const save=document.getElementById('srow-'+field+'-save');
+  const hint=document.getElementById('srow-'+field+'-hint');
+  const newVal=inp.value.trim();
+  if(!newVal){toast('Cannot be empty','err');return;}
+  if(field==='username'&&lastUsernameChange){
+    const days=Math.floor((Date.now()-parseInt(lastUsernameChange))/86400000);
+    if(days<60){toast('Display name locked for 60 days','err');return;}
+  }
+  val.textContent=newVal;
+  val.style.display='block';inp.style.display='none';save.style.display='none';
+  if(hint) hint.style.display='none';
+  // Save to localStorage
+  const updated=Object.assign({},userData,{[field]:newVal,username:field==='name'?newVal:userData.username});
+  localStorage.setItem('stud_user',JSON.stringify(updated));
+  userData=updated;
+  if(field==='username'){localStorage.setItem('lastUsernameChange',Date.now().toString());lastUsernameChange=Date.now().toString();}
+  applyProfile(updated);
+  toast('Saved','ok');
+}
+
+function settingsUploadAva(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>2*1024*1024){toast('Image must be under 2MB','err');return;}
+  const r=new FileReader();
+  r.onload=e=>{
+    pendingAvaDataURL=e.target.result;
+    // Open zoom modal
+    const img=document.getElementById('ava-zoom-img');
+    img.src=e.target.result;
+    img.style.width='150px';img.style.height='150px';img.style.objectFit='cover';
+    img.style.transform='scale(1)';
+    document.getElementById('ava-zoom-range').value=100;
+    document.getElementById('ava-zoom-val').textContent='100%';
+    currentZoom=100;offX=0;offY=0;
+    document.getElementById('ava-modal').classList.add('open');
+    img.onmousedown=startDrag;
+  };r.readAsDataURL(file);
+}
+
+function removeAvatar(){
+  localStorage.removeItem('stud_avatar');
+  const name=userData.username||userData.email?.split('@')[0]||'?';
+  const init=name.slice(0,2).toUpperCase();
+  ['settings-ava','profile-ava','ava-prev','sb-ava'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.innerHTML='';el.textContent=init;
+  });
+  toast('Profile picture removed','ok');
+}
+
+// ── THEME ─────────────────────────────────────────
+function setTheme(mode){
+  if(mode==='light'){
+    document.body.classList.add('light');
+    document.getElementById('theme-light').classList.add('active');
+    document.getElementById('theme-dark').classList.remove('active');
+  } else {
+    document.body.classList.remove('light');
+    document.getElementById('theme-dark').classList.add('active');
+    document.getElementById('theme-light').classList.remove('active');
+  }
+  localStorage.setItem('coraicTheme',mode);
+}
+// Apply saved theme on load
+(function(){const t=localStorage.getItem('coraicTheme');if(t==='light')setTheme('light');})();
+
+// ── DELETE ACCOUNT ────────────────────────────────
+function confirmDelete(){
+  if(confirm('Are you sure you want to permanently delete your account? This cannot be undone.')){
+    localStorage.removeItem('stud_session_v3');
+    localStorage.removeItem('stud_user');
+    localStorage.removeItem('stud_avatar');
+    toast('Account deleted','err');
+    setTimeout(()=>window.location.href='index.html',1500);
+  }
+}
+
+// Also refresh settings page when navigated to
+const _origShowSection=showSection;
+// Override showSection to refresh settings data
+function showSection(id){
+  _origShowSection(id);
+  if(id==='settings'&&userData) applySettingsProfile(userData);
 }
 
 // ── INIT ──────────────────────────────────────────
