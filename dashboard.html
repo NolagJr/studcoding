@@ -8,8 +8,8 @@
 <style>
 :root {
   --bg:        #1A1A1A;
-  --sidebar:   #111111;
-  --topbar:    #111111;
+  --sidebar:   #1E1E1E;
+  --topbar:    #1E1E1E;
   --surface:   #222222;
   --surface2:  #2A2A2A;
   --surface3:  #333333;
@@ -1374,6 +1374,7 @@ function showSection(id){
   const nb=document.querySelector('[data-s="'+id+'"]');
   if(nb) nb.classList.add('active');
   document.getElementById('topbar-title').textContent=TOPBAR_TITLES[id]||id;
+  if(id==='settings'&&userData) applySettingsProfile(userData);
 }
 
 // ── TOAST ─────────────────────────────────────────
@@ -1958,13 +1959,7 @@ function confirmDelete(){
   }
 }
 
-// Also refresh settings page when navigated to
-const _origShowSection=showSection;
-// Override showSection to refresh settings data
-function showSection(id){
-  _origShowSection(id);
-  if(id==='settings'&&userData) applySettingsProfile(userData);
-}
+// Also refresh settings page when navigated to - handled in original showSection
 
 // ── INIT ──────────────────────────────────────────
 buildTopics();
