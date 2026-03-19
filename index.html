@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudCoding — AI Roblox Developer Platform</title>
+<title>Coraic — AI Roblox Developer Platform</title>
 <meta name="description" content="Fix broken scripts, write new ones, and learn Lua — all powered by AI, directly inside Roblox Studio.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -55,13 +55,6 @@ nav{
   background:linear-gradient(90deg,var(--orange),var(--orange-hi));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.nav-pro-btn{
-  padding:8px 16px;border-radius:9px;
-  background:rgba(255,196,48,.1);border:1px solid rgba(255,196,48,.3);
-  color:#ffc430;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
-  text-decoration:none;transition:all .18s;
-}
-.nav-pro-btn:hover{background:rgba(255,196,48,.18);border-color:rgba(255,196,48,.55);transform:translateY(-1px);}
 .nav-links{display:flex;gap:2px;list-style:none;}
 .nav-links a{color:var(--muted);font-size:14px;font-weight:500;text-decoration:none;padding:8px 15px;border-radius:8px;transition:all .18s;}
 .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06);}
@@ -70,6 +63,14 @@ nav{
 .nav-ghost:hover{color:var(--text);border-color:rgba(255,122,46,.45);background:rgba(255,122,46,.06);}
 .nav-cta{padding:10px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:14px;font-weight:800;text-decoration:none;cursor:pointer;box-shadow:0 4px 22px rgba(255,122,46,.4);display:inline-flex;align-items:center;gap:7px;transition:all .22s;}
 .nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 34px rgba(255,122,46,.55);}
+/* Pro Plans button — replaces old Upgrade to Pro */
+.nav-pro-btn{
+  padding:9px 18px;border-radius:9px;
+  background:transparent;border:1px solid rgba(255,255,255,.1);
+  color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;
+  cursor:pointer;transition:all .18s;
+}
+.nav-pro-btn:hover{color:var(--text);border-color:rgba(255,122,46,.45);background:rgba(255,122,46,.06);}
 
 /* HERO */
 .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 40px 80px;}
@@ -304,6 +305,84 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
 .ck-note{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.6;}
 .ck-note a{color:var(--orange-hi);text-decoration:none;}
 
+/* PRO MODAL */
+#pro-modal{
+  display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;
+}
+#pro-modal.open{display:flex;}
+.pro-card{
+  background:#0e0f1a;border:1px solid rgba(255,122,46,.25);
+  border-radius:20px;padding:48px 44px;max-width:440px;width:90%;
+  text-align:center;position:relative;
+  box-shadow:0 60px 120px rgba(0,0,0,.8),0 0 60px rgba(255,122,46,.08);
+  animation:proIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes proIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.pro-close{
+  position:absolute;top:16px;right:16px;
+  width:30px;height:30px;border-radius:8px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:var(--muted);cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-family:'DM Sans',sans-serif;
+}
+.pro-close:hover{color:var(--text);background:rgba(255,255,255,.1);}
+
+/* Orbit animation */
+.pro-orbit{width:80px;height:80px;margin:0 auto 24px;position:relative;}
+.pro-orbit-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:1.5px dashed rgba(255,122,46,.3);
+  animation:orbitSpin 4s linear infinite;
+}
+@keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.pro-orbit-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--orange);
+  position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  box-shadow:0 0 10px var(--orange);
+}
+.pro-orbit-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--orange),var(--orange-hi));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 24px rgba(255,122,46,.5);
+}
+.pro-orbit-center svg{width:18px;height:18px;color:#fff;}
+
+.pro-badge{
+  display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;
+  background:rgba(255,122,46,.1);border:1px solid rgba(255,122,46,.25);
+  border-radius:99px;padding:5px 14px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  color:var(--orange-hi);letter-spacing:.8px;text-transform:uppercase;
+}
+.pro-title{font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;letter-spacing:-1px;color:#fff;margin-bottom:10px;}
+.pro-sub{font-size:13px;color:var(--sub);line-height:1.7;margin-bottom:24px;}
+.pro-features{display:flex;flex-direction:column;gap:9px;text-align:left;margin-bottom:28px;}
+.pro-feat{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:9px;padding:11px 14px;
+}
+.pro-feat-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0;}
+.pro-feat span{font-size:12px;color:var(--sub);}
+.pro-notify-btn{
+  width:100%;padding:13px;border-radius:10px;
+  background:linear-gradient(135deg,var(--orange),var(--orange-hi));
+  color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:14px;font-weight:800;
+  border:none;cursor:pointer;transition:all .2s;
+  box-shadow:0 6px 24px rgba(255,122,46,.4);
+}
+.pro-notify-btn:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(255,122,46,.55);}
+.pro-discord-link{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  margin-top:14px;font-size:12px;color:#5865f2;text-decoration:none;transition:opacity .15s;
+}
+.pro-discord-link:hover{opacity:.8;}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
 @media(max-width:1100px){
@@ -338,12 +417,11 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
 <nav id="topnav">
   <a href="/" class="nav-logo">
     <div class="nav-mark">
-      <!-- Stud logo: lightning bolt through code brackets -->
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M6 3L2 11H9.5L7 19L20 9H12L15 3H6Z" fill="white" stroke="rgba(255,255,255,0.3)" stroke-width="0.5" stroke-linejoin="round"/>
       </svg>
     </div>
-    <span class="nav-name">Stud<span class="nav-name-accent">Coding</span></span>
+    <span class="nav-name">Cor<span class="nav-name-accent">aic</span></span>
   </a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
@@ -351,8 +429,9 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
     <li><a href="#learn">Learn</a></li>
     <li><a href="#pro">Pro</a></li>
   </ul>
+  <!-- ── ONLY THESE 3 BUTTONS CHANGED ── -->
   <div class="nav-ctas">
-    <a href="#pro" class="nav-pro-btn">⚡ Upgrade to Pro</a>
+    <button class="nav-pro-btn" onclick="openProModal()">Pro Plans</button>
     <a href="login.html" class="nav-ghost">Log in</a>
     <a href="signup.html" class="nav-cta">
       Get started free
@@ -378,7 +457,7 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
       </span>
     </span>
   </h1>
-  <p class="hero-sub">Stud lives inside Roblox Studio. It fixes broken scripts, writes new ones, scans your whole workspace, and teaches you Lua — without leaving the editor.</p>
+  <p class="hero-sub">Coraic lives inside Roblox Studio. It fixes broken scripts, writes new ones, scans your whole workspace, and teaches you Lua — without leaving the editor.</p>
   <div class="hero-btns">
     <a href="signup.html" class="btn-hero-primary">
       <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -416,7 +495,7 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
           <div id="demoBeforeCode"></div>
         </div>
         <div class="demo-col">
-          <div class="demo-col-label label-ok" id="demoAfterLabel">✓ &nbsp;Fixed by Stud</div>
+          <div class="demo-col-label label-ok" id="demoAfterLabel">✓ &nbsp;Fixed by Coraic</div>
           <div id="demoAfterCode"></div>
         </div>
       </div>
@@ -443,16 +522,16 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
 
 <!-- FEATURES -->
 <div class="section" id="features">
-  <div class="eyebrow reveal">// What Stud does</div>
+  <div class="eyebrow reveal">// What Coraic does</div>
   <h2 class="section-h reveal">Every feature built for<br>how you actually code.</h2>
-  <p class="section-sub reveal">Not generic AI. Stud knows Roblox — RemoteEvents, DataStores, leaderstats, all of it.</p>
+  <p class="section-sub reveal">Not generic AI. Coraic knows Roblox — RemoteEvents, DataStores, leaderstats, all of it.</p>
   <div class="bento">
     <div class="bento-card reveal"><div class="bento-icon">🔍</div><div class="bento-t">Full Workspace Scan</div><div class="bento-d">Reads every script in your entire game before touching anything. Understands your architecture, naming conventions, and service layout first.</div><span class="bento-tag tag-free">✓ Free</span></div>
     <div class="bento-card reveal d1"><div class="bento-icon">🔁</div><div class="bento-t">4-Pass Self Review</div><div class="bento-d">Fixes your script, scores the quality, retries up to 4 times until it hits 8/10 or better. No half-done work, ever.</div><span class="bento-tag tag-free">✓ Free</span></div>
     <div class="bento-card reveal d2"><div class="bento-icon">⚡</div><div class="bento-t">Direct Studio Injection</div><div class="bento-d">Fixed code lands straight in Roblox Studio. No clipboard. No copy-paste. The script just updates — you stay in flow.</div><span class="bento-tag tag-free">✓ Free</span></div>
-    <div class="bento-card wide reveal"><div class="bento-icon">✍️</div><div class="bento-t">Script Writer</div><div class="bento-d">Describe what you need in plain English. Stud writes a complete, production-ready Lua script — handles edge cases, error handling, DataStore safety — and injects it into the right service automatically.</div><span class="bento-tag tag-free">✓ Free</span></div>
+    <div class="bento-card wide reveal"><div class="bento-icon">✍️</div><div class="bento-t">Script Writer</div><div class="bento-d">Describe what you need in plain English. Coraic writes a complete, production-ready Lua script — handles edge cases, error handling, DataStore safety — and injects it into the right service automatically.</div><span class="bento-tag tag-free">✓ Free</span></div>
     <div class="bento-card reveal"><div class="bento-icon">🧠</div><div class="bento-t">Persistent Game Memory</div><div class="bento-d">Remembers your game's full context across sessions. Every fix respects your architecture.</div><span class="bento-tag tag-free">✓ Free</span></div>
-    <div class="bento-card reveal d1"><div class="bento-icon">👁️</div><div class="bento-t">Watch Mode</div><div class="bento-d">Monitors your Studio output live. The moment a runtime error fires — Stud catches it and queues a fix automatically.</div><span class="bento-tag tag-pro">⚡ Pro soon</span></div>
+    <div class="bento-card reveal d1"><div class="bento-icon">👁️</div><div class="bento-t">Watch Mode</div><div class="bento-d">Monitors your Studio output live. The moment a runtime error fires — Coraic catches it and queues a fix automatically.</div><span class="bento-tag tag-pro">⚡ Pro soon</span></div>
   </div>
 </div>
 
@@ -460,10 +539,10 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
 <div class="section" id="how-it-works" style="padding-top:0;">
   <div class="eyebrow reveal">// Workflow</div>
   <h2 class="section-h reveal">From broken to shipped<br>in 60 seconds.</h2>
-  <p class="section-sub reveal">Stud handles the whole cycle. You just hit fix.</p>
+  <p class="section-sub reveal">Coraic handles the whole cycle. You just hit fix.</p>
   <div class="steps-row">
     <div class="step-box reveal"><div class="step-circle">01</div><div class="step-t">Install Plugin</div><div class="step-d">One click from the Roblox Creator Store. Opens inside Studio instantly.</div></div>
-    <div class="step-box reveal d1"><div class="step-circle">02</div><div class="step-t">Scan Workspace</div><div class="step-d">Stud reads your entire game and builds full context before touching anything.</div></div>
+    <div class="step-box reveal d1"><div class="step-circle">02</div><div class="step-t">Scan Workspace</div><div class="step-d">Coraic reads your entire game and builds full context before touching anything.</div></div>
     <div class="step-box reveal d2"><div class="step-circle">03</div><div class="step-t">Fix or Write</div><div class="step-d">Name the script and describe the issue. 4-pass review handles quality automatically.</div></div>
     <div class="step-box reveal d3"><div class="step-circle">04</div><div class="step-t">Done</div><div class="step-d">Script injected. Approve and ship. Zero copy-paste, zero context switching.</div></div>
   </div>
@@ -475,7 +554,7 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
     <div class="reveal">
       <div class="eyebrow">// AI Tutor</div>
       <h2 class="section-h">Learn Lua while<br>you ship games.</h2>
-      <p class="section-sub" style="margin-bottom:0;">Stud teaches you the concepts behind every fix, tracks your weak spots, and quizzes you — so you actually get better.</p>
+      <p class="section-sub" style="margin-bottom:0;">Coraic teaches you the concepts behind every fix, tracks your weak spots, and quizzes you — so you actually get better.</p>
       <div class="checks">
         <div class="check"><div class="check-ic">✓</div>15+ structured lessons — Beginner to Expert</div>
         <div class="check"><div class="check-ic">✓</div>XP system that levels up as you learn</div>
@@ -488,7 +567,7 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
       <div class="chat-mock">
         <div class="chat-hdr">
           <div class="chat-av">S</div>
-          <div class="chat-nm">Ask Stud</div>
+          <div class="chat-nm">Ask Coraic</div>
           <div class="chat-live">online</div>
         </div>
         <div class="chat-body">
@@ -529,7 +608,7 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
     <div class="reveal">
       <div class="eyebrow">// Learn &amp; Quiz</div>
       <h2 class="section-h">Get tested.<br>Level up.</h2>
-      <p class="section-sub" style="margin-bottom:0;">Real Roblox Lua questions. Your score is saved. Your progress is tracked. Stud knows exactly where you need more practice.</p>
+      <p class="section-sub" style="margin-bottom:0;">Real Roblox Lua questions. Your score is saved. Your progress is tracked. Coraic knows exactly where you need more practice.</p>
       <div class="checks" style="margin-top:28px;">
         <div class="check"><div class="check-ic">✓</div>11 quiz topics — Variables to OOP</div>
         <div class="check"><div class="check-ic">✓</div>Scores and history saved to your profile</div>
@@ -570,13 +649,14 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
 </div>
 
 <footer>
-  <div class="footer-logo">StudCoding.</div>
+  <div class="footer-logo">Coraic</div>
   <div class="footer-links">
     <a href="login.html">Sign in</a>
     <a href="signup.html">Sign up</a>
-    <a href="index.html">Dashboard</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
   </div>
-  <div class="footer-copy">Built by Logan · AI Roblox Dev Tool</div>
+  <div class="footer-copy">Built by Logan · Coraic</div>
 </footer>
 
 <!-- COOKIE BANNER -->
@@ -607,6 +687,38 @@ footer{position:relative;z-index:1;padding:28px 60px;border-top:1px solid var(--
       <button class="ck-accept" onclick="cookieAccept()">Accept all cookies</button>
     </div>
     <div class="ck-note">By using Coraic you agree to our <a href="terms.html">Terms of Service</a>. Necessary cookies cannot be disabled.</div>
+  </div>
+</div>
+
+<!-- PRO PLANS MODAL -->
+<div id="pro-modal" onclick="handleProModalClick(event)">
+  <div class="pro-card">
+    <button class="pro-close" onclick="closeProModal()">✕</button>
+    <div class="pro-orbit">
+      <div class="pro-orbit-ring"><div class="pro-orbit-dot"></div></div>
+      <div class="pro-orbit-center">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+    </div>
+    <div class="pro-badge">Coming Soon</div>
+    <div class="pro-title">Coraic Pro</div>
+    <div class="pro-sub">We're building it. Here's what's included when it drops.</div>
+    <div class="pro-features">
+      <div class="pro-feat"><div class="pro-feat-dot"></div><span>Unlimited AI Tutor messages — no rate limits</span></div>
+      <div class="pro-feat"><div class="pro-feat-dot"></div><span>Priority script fixing with faster response times</span></div>
+      <div class="pro-feat"><div class="pro-feat-dot"></div><span>Advanced lesson paths and deeper explanations</span></div>
+      <div class="pro-feat"><div class="pro-feat-dot"></div><span>Early access to every new feature</span></div>
+      <div class="pro-feat"><div class="pro-feat-dot"></div><span>My Game — AI that knows your full codebase</span></div>
+    </div>
+    <button class="pro-notify-btn" onclick="closeProModal(); window.open('https://discord.com/channels/1483870401787465900/1483872439275356160','_blank')">
+      Notify me on Discord when it drops →
+    </button>
+    <a class="pro-discord-link" href="https://discord.com/channels/1483870401787465900/1483872439275356160" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057.102 18.082.114 18.1.129 18.11a19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 13.44 13.44 0 001.226-1.994.077.077 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+      Join our Discord community
+    </a>
   </div>
 </div>
 
@@ -740,7 +852,7 @@ function showDemo(idx, animate){
   setTimeout(()=>{
     document.getElementById('demoScoreFill').style.width=d.score+'%';
     document.getElementById('demoScoreLbl').textContent=Math.round(d.score/10)+'/10';
-    document.getElementById('demoAfterLabel').innerHTML='✓ &nbsp;Fixed by Stud';
+    document.getElementById('demoAfterLabel').innerHTML='✓ &nbsp;Fixed by Coraic';
     document.getElementById('demoAfterLabel').className='demo-col-label label-ok';
     document.getElementById('demoDot').style.background='var(--green)';
     document.getElementById('demoDot').style.boxShadow='0 0 6px var(--green)';
@@ -793,11 +905,13 @@ window.addEventListener('scroll',()=>{
   };
 })();
 
-// Redirect if logged in
-if(localStorage.getItem('stud_session_v3')){
-  document.querySelector('.nav-ghost').textContent='Dashboard';
-  document.querySelector('.nav-ghost').href='index.html';
-}
+// ── PRO MODAL ──
+function openProModal(){ document.getElementById('pro-modal').classList.add('open'); }
+function closeProModal(){ document.getElementById('pro-modal').classList.remove('open'); }
+function handleProModalClick(e){ if(e.target === document.getElementById('pro-modal')) closeProModal(); }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeProModal(); });
+
+// ── NO AUTO-REDIRECT (intentionally removed) ──
 </script>
 </body>
 </html>
