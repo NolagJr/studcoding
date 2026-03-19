@@ -1249,41 +1249,54 @@ function toast(msg, type=''){
 }
 
 // ── PROFILE ───────────────────────────────────────
+function applyProfileData(data){
+  userData = data;
+  const name = data.username || data.name || data.email?.split('@')[0] || 'there';
+  const init = name.slice(0,2).toUpperCase();
+  document.getElementById('nav-avatar').textContent = init;
+  document.getElementById('nav-xp-val').textContent = (data.xp||0)+' XP';
+  document.getElementById('home-name').innerHTML = 'Hey, <span style="color:var(--orange)">'+name+'</span> 👋';
+  document.getElementById('home-xp').textContent = (data.xp||0).toLocaleString();
+  document.getElementById('home-lessons').textContent = data.lessons_completed||0;
+  document.getElementById('home-quiz').textContent = data.quiz_avg ? data.quiz_avg+'%' : '—';
+  document.getElementById('profile-ava').textContent = init;
+  document.getElementById('ava-preview').textContent = init;
+  document.getElementById('profile-name').textContent = name;
+  document.getElementById('profile-email').textContent = data.email||'';
+  document.getElementById('profile-since').textContent = 'Member since '+(data.created_at?new Date(data.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'recently');
+  document.getElementById('acc-email').textContent = data.email||'—';
+  document.getElementById('acc-username').textContent = data.username||'—';
+  document.getElementById('acc-plugkey').textContent = data.plugin_key||'Not generated yet';
+  document.getElementById('acc-xp').textContent = (data.xp||0).toLocaleString();
+  document.getElementById('edit-name').value = name;
+  document.getElementById('edit-username').value = data.username||'';
+  const storedKey = localStorage.getItem('userAPIKey');
+  if(storedKey){
+    document.getElementById('api-dot').classList.add('on');
+    document.getElementById('api-status-lbl').textContent = 'Key connected';
+    document.getElementById('api-status-lbl').classList.add('on');
+    document.getElementById('api-key-preview').textContent = storedKey.slice(0,8)+'••••••••';
+    document.getElementById('api-key-input').value = storedKey;
+  }
+  document.getElementById('tutor-model-label').textContent = selectedLLM==='claude'?'Claude':selectedLLM==='gemini'?'Gemini':'GPT-4o';
+}
+
 async function loadProfile(){
+  // Always try localStorage first so UI isn't blank
+  const cached = localStorage.getItem('stud_user');
+  if(cached){
+    try{ applyProfileData(JSON.parse(cached)); }catch(e){}
+  }
   try{
     const res = await fetch(BASE+'/profile',{headers:authH()});
-    if(res.status===401){window.location.href='login.html';return;}
+    if(res.status===401){ window.location.href='login.html'; return; }
     if(!res.ok) return;
-    userData = await res.json();
-    const name = userData.username || userData.email?.split('@')[0] || 'there';
-    const init = name.slice(0,2).toUpperCase();
-    document.getElementById('nav-avatar').textContent = init;
-    document.getElementById('nav-xp-val').textContent = (userData.xp||0)+' XP';
-    document.getElementById('home-name').innerHTML = 'Hey, <span style="color:var(--orange)">'+name+'</span> 👋';
-    document.getElementById('home-xp').textContent = (userData.xp||0).toLocaleString();
-    document.getElementById('home-lessons').textContent = userData.lessons_completed||0;
-    document.getElementById('home-quiz').textContent = userData.quiz_avg ? userData.quiz_avg+'%' : '—';
-    document.getElementById('profile-ava').textContent = init;
-    document.getElementById('ava-preview').textContent = init;
-    document.getElementById('profile-name').textContent = name;
-    document.getElementById('profile-email').textContent = userData.email||'';
-    document.getElementById('profile-since').textContent = 'Member since '+(userData.created_at?new Date(userData.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'recently');
-    document.getElementById('acc-email').textContent = userData.email||'—';
-    document.getElementById('acc-username').textContent = userData.username||'—';
-    document.getElementById('acc-plugkey').textContent = userData.plugin_key||'Not generated yet';
-    document.getElementById('acc-xp').textContent = (userData.xp||0).toLocaleString();
-    document.getElementById('edit-name').value = name;
-    document.getElementById('edit-username').value = userData.username||'';
-    const storedKey = localStorage.getItem('userAPIKey');
-    if(storedKey){
-      document.getElementById('api-dot').classList.add('on');
-      document.getElementById('api-status-lbl').textContent = 'Key connected';
-      document.getElementById('api-status-lbl').classList.add('on');
-      document.getElementById('api-key-preview').textContent = storedKey.slice(0,8)+'••••••••';
-      document.getElementById('api-key-input').value = storedKey;
-    }
-    document.getElementById('tutor-model-label').textContent = selectedLLM==='claude'?'Claude':selectedLLM==='gemini'?'Gemini':'GPT-4o';
-  }catch(e){console.warn(e);}
+    const data = await res.json();
+    localStorage.setItem('stud_user', JSON.stringify(data));
+    applyProfileData(data);
+  }catch(e){
+    console.warn('Profile fetch failed, using cached data', e);
+  }
 }
 
 // ── CHAT ──────────────────────────────────────────
@@ -1395,6 +1408,148 @@ function fmtLesson(t){
     .replace(/\n\n/g,'</p><p>');
 }
 
+// ── OFFLINE QUIZ BANK ─────────────────────────────
+const OFFLINE_QUESTIONS = {
+  'Variables & Types':[
+    {question:'What keyword declares a local variable in Lua?',options:['var','local','let','dim'],correct_index:1},
+    {question:'What is the output of: print(type(42))',options:['"int"','"float"','"number"','"integer"'],correct_index:2},
+    {question:'Which of these is a valid Lua string?',options:['Hello','[Hello]','"Hello"','(Hello)'],correct_index:2},
+    {question:'What does nil represent in Lua?',options:['Zero','Empty string','False','No value / absence of value'],correct_index:3},
+    {question:'What is the result of: print(type(true))',options:['"bool"','"boolean"','"number"','"string"'],correct_index:1},
+    {question:'How do you concatenate strings in Lua?',options:['+ operator','& operator','.. operator','concat()'],correct_index:2},
+    {question:'Which is a valid table declaration?',options:['table t = {}','local t = {}','var t = {}','let t = {}'],correct_index:1},
+    {question:'What does # return on a table?',options:['Number of keys','Length of the table','Type name','Memory address'],correct_index:1},
+    {question:'What is the value of: not true',options:['true','nil','false','0'],correct_index:2},
+    {question:'Which Lua type stores decimals?',options:['float','double','number','decimal'],correct_index:2},
+    {question:'What is tonumber("42")?',options:['42','error','nil','"42"'],correct_index:0},
+    {question:'What is tostring(100)?',options:['"100"','100','true','error'],correct_index:0},
+    {question:'Local variables in Lua are scoped to:',options:['The whole file','The block they are declared in','Global always','The function only'],correct_index:1},
+    {question:'What does print(1 == "1") output?',options:['true','false','error','nil'],correct_index:1},
+    {question:'How do you check if a variable is nil?',options:['variable == null','variable == nil','variable == undefined','isNil(variable)'],correct_index:1},
+    {question:'What type is a Roblox Instance?',options:['"instance"','"object"','"userdata"','"table"'],correct_index:2},
+    {question:'What does the # operator return for "Hello"?',options:['4','5','6','error'],correct_index:1},
+    {question:'Which is the correct multi-line comment in Lua?',options:['/* */','<!-- -->','--[[ ]]--','## ##'],correct_index:2},
+    {question:'What is the result of 10 % 3?',options:['3','1','0.33','3.33'],correct_index:1},
+    {question:'What is math.floor(3.9)?',options:['4','3','3.9','error'],correct_index:1},
+  ],
+  'Functions':[
+    {question:'How do you define a function in Lua?',options:['function myFunc() end','def myFunc():','func myFunc() {}','void myFunc() {}'],correct_index:0},
+    {question:'How do you call a function named greet?',options:['call greet()','greet()','run greet','invoke greet()'],correct_index:1},
+    {question:'Can Lua functions return multiple values?',options:['No','Yes, using a table only','Yes, directly','Only with special syntax'],correct_index:2},
+    {question:'What is a variadic function in Lua?',options:['A function with no args','A function accepting any number of args using ...','A recursive function','A method on a class'],correct_index:1},
+    {question:'What does this return: function f() return 1, 2 end',options:['1','2','1 and 2','error'],correct_index:2},
+    {question:'What is a closure in Lua?',options:['A function that destroys itself','A function that captures variables from its enclosing scope','A function with no return','A table method'],correct_index:1},
+    {question:'How do you define a method on a table?',options:['table.method = function() end','method table() end','function table:method() end','Both A and C'],correct_index:3},
+    {question:'What does the colon (:) do in function calls?',options:['Accesses a property','Passes the table as self automatically','Creates a new table','Chains functions'],correct_index:1},
+    {question:'What is pcall used for?',options:['Calling print','Protected call - catches errors','Calling parent functions','Parallel execution'],correct_index:1},
+    {question:'What does pcall return on success?',options:['nil','false','true + return values','the function'],correct_index:2},
+    {question:'What does pcall return on failure?',options:['nil','false + error message','true','throws error'],correct_index:1},
+    {question:'How do you pass a function as an argument in Lua?',options:['You cannot','Use & like C','Just pass it by name','Wrap in quotes'],correct_index:2},
+    {question:'What is an anonymous function?',options:['A function with no return','A function with no name','A hidden function','A global function'],correct_index:1},
+    {question:'How do you call a method using self correctly?',options:['table.method(table)','table:method()','table->method()','method(table)'],correct_index:1},
+    {question:'What does xpcall add over pcall?',options:['Nothing','A custom error handler function','Async support','Multiple return values'],correct_index:1},
+    {question:'What is a recursive function?',options:['A function that runs in parallel','A function that calls itself','A function in a loop','A delayed function'],correct_index:1},
+    {question:'What is the purpose of the return keyword?',options:['Exits the program','Returns a value from a function','Prints output','Creates a variable'],correct_index:1},
+    {question:'Can you store a function in a Lua table?',options:['No','Yes','Only as a string','Only in global tables'],correct_index:1},
+    {question:'What happens if you call a nil value as a function?',options:['Returns nil','Nothing happens','Error: attempt to call a nil value','Returns false'],correct_index:2},
+    {question:'How do you make a function that runs only once?',options:['Use pcall','Set it to nil after calling','Both valid approaches','Use coroutine'],correct_index:1},
+  ],
+  'Events & Connections':[
+    {question:'How do you connect to a Roblox event?',options:['event.Connect(fn)','event:Connect(fn)','event.bind(fn)','event.on(fn)'],correct_index:1},
+    {question:'What does :Connect() return?',options:['true','A RBXScriptConnection','The event itself','nil'],correct_index:1},
+    {question:'How do you disconnect an event?',options:['event:Disconnect()','connection:Disconnect()','event:Remove()','connection:Remove()'],correct_index:1},
+    {question:'What event fires when a player touches a part?',options:['part.Touched','part.Touch','part.OnTouch','part.PlayerTouched'],correct_index:0},
+    {question:'What does game.Players.PlayerAdded fire?',options:['When any object is added','When a player joins the game','When a player levels up','When a character spawns'],correct_index:1},
+    {question:'What is PlayerRemoving?',options:['Fires when a part is removed','Fires when a player leaves','Fires when a model is deleted','Fires on game shutdown'],correct_index:1},
+    {question:'How do you fire a BindableEvent?',options:['event:Send()','event:Fire()','event:Trigger()','event:Activate()'],correct_index:1},
+    {question:'What is the difference between BindableEvent and RemoteEvent?',options:['No difference','BindableEvent is server-only communication, RemoteEvent crosses client-server','BindableEvent is faster','RemoteEvent is deprecated'],correct_index:1},
+    {question:'What does RunService.Heartbeat fire?',options:['Once per minute','Every frame (each physics step)','Once on startup','When game saves'],correct_index:1},
+    {question:'What is RunService.RenderStepped used for?',options:['Server-side loops','Client-side per-frame updates','Physics calculations','Network sync'],correct_index:1},
+    {question:'What does :Once() do on a connection?',options:['Same as Connect','Connects and auto-disconnects after one fire','Fires immediately','Delays the connection'],correct_index:1},
+    {question:'What happens if you connect to an event but never disconnect?',options:['Nothing, it is fine forever','Memory leak - connection persists until object is destroyed','Error on next frame','Game crashes'],correct_index:1},
+    {question:'Which service fires CharacterAdded?',options:['game.Workspace','The Player object','game.Players','game.ReplicatedStorage'],correct_index:1},
+    {question:'What does task.wait() return?',options:['nil','The actual time waited','true','A coroutine'],correct_index:1},
+    {question:'What is the preferred replacement for wait() in modern Roblox?',options:['sleep()','delay()','task.wait()','RunService.Heartbeat:Wait()'],correct_index:2},
+    {question:'How do you run code after a delay without blocking?',options:['wait(n)','task.delay(n, fn)','delay(n, fn) - deprecated','Both B works best'],correct_index:1},
+    {question:'What does game:GetService("RunService").IsServer return?',options:['true always','false always','true if running on server','true if running on client'],correct_index:2},
+    {question:'What fires when a BasePart stops being touched?',options:['part.TouchEnded','part.Untouched','part.TouchRemoved','part.UnTouched'],correct_index:0},
+    {question:'Can you connect multiple functions to the same event?',options:['No, only one at a time','Yes, each Connect adds a new listener','Yes but only two','Only if they have the same signature'],correct_index:1},
+    {question:'What is a good practice when connecting events inside a loop?',options:['Connect freely in loops','Store connections and disconnect old ones before reconnecting','Use wait() between connections','Never connect in loops'],correct_index:1},
+  ],
+  'RemoteEvents & Functions':[
+    {question:'Where should RemoteEvents be stored?',options:['ServerStorage','Workspace','ReplicatedStorage','ServerScriptService'],correct_index:2},
+    {question:'How does the server fire an event to ALL clients?',options:['RemoteEvent:FireClient()','RemoteEvent:FireAllClients()','RemoteEvent:Broadcast()','RemoteEvent:SendAll()'],correct_index:1},
+    {question:'How does the server fire an event to ONE client?',options:['RemoteEvent:FireOne(player)','RemoteEvent:FireClient(player)','RemoteEvent:SendTo(player)','RemoteEvent:Target(player)'],correct_index:1},
+    {question:'How does a client fire an event to the server?',options:['RemoteEvent:FireServer()','RemoteEvent:SendServer()','RemoteEvent:ToServer()','RemoteEvent:FireClient()'],correct_index:0},
+    {question:'What script type handles OnServerEvent?',options:['LocalScript','Script (server)','ModuleScript','Both'],correct_index:1},
+    {question:'What script type handles OnClientEvent?',options:['Script (server)','LocalScript','ModuleScript','Both'],correct_index:1},
+    {question:'What is a RemoteFunction used for?',options:['One-way events','Two-way communication with a return value','Connecting to databases','Saving data'],correct_index:1},
+    {question:'What is the risk of trusting client data in RemoteEvents?',options:['No risk','Clients can send exploited/fake data','It is slower','It crashes the server'],correct_index:1},
+    {question:'What does InvokeServer return?',options:['nil always','Whatever the server function returns','true','A RemoteEvent'],correct_index:1},
+    {question:'Can a LocalScript access ServerStorage?',options:['Yes','No - server only','Only with RemoteEvents','Only in Studio'],correct_index:1},
+    {question:'What should you always do with RemoteEvent data on the server?',options:['Trust it completely','Validate and sanitize all incoming data','Log it','Ignore it'],correct_index:1},
+    {question:'Can you pass tables through RemoteEvents?',options:['No','Yes','Only simple tables','Only with JSON.encode'],correct_index:1},
+    {question:'Can you pass Instances through RemoteEvents?',options:['No','Yes, as long as they are in the DataModel','Only from server to client','Only from client to server'],correct_index:1},
+    {question:'What fires on the server when a client fires a RemoteEvent?',options:['OnServerEvent','OnClientEvent','OnReceive','OnFire'],correct_index:0},
+    {question:'What fires on the client when server fires FireClient()?',options:['OnServerEvent','OnClientEvent','OnReceive','OnFired'],correct_index:1},
+    {question:'What is the first argument passed to OnServerEvent?',options:['The data sent','The player who fired it','nil','The RemoteEvent itself'],correct_index:1},
+    {question:'What is a common pattern to protect RemoteEvent handlers?',options:['Wrap in coroutine','Wrap in pcall','Use BindableEvents instead','Check game.IsLoaded'],correct_index:1},
+    {question:'Can RemoteFunctions cause infinite yielding?',options:['No','Yes, if the server/client never returns','Only on slow connections','Only in Studio'],correct_index:1},
+    {question:'What service contains ReplicatedStorage?',options:['It is a service itself','game.Workspace','game root','ServerScriptService'],correct_index:2},
+    {question:'Best practice: where should you create RemoteEvents?',options:['At runtime via code','Pre-created in ReplicatedStorage in Studio','In ServerScriptService','In Workspace'],correct_index:1},
+  ],
+  'DataStores':[
+    {question:'What service handles DataStores?',options:['game:GetService("DataService")','game:GetService("DataStoreService")','game:GetService("SaveService")','game:GetService("Storage")'],correct_index:1},
+    {question:'How do you get a DataStore?',options:['DataStoreService:GetDataStore("name")','DataStoreService.GetStore("name")','DataStoreService:Open("name")','DataStoreService:Create("name")'],correct_index:0},
+    {question:'What method saves data to a DataStore?',options:[':SetAsync(key, value)',':SaveAsync(key, value)',':WriteAsync(key, value)',':StoreAsync(key, value)'],correct_index:0},
+    {question:'What method reads data from a DataStore?',options:[':ReadAsync(key)',':LoadAsync(key)',':GetAsync(key)',':FetchAsync(key)'],correct_index:2},
+    {question:'Why must DataStore calls be wrapped in pcall?',options:['For better performance','They can fail/error due to network issues','Roblox requires it by syntax','To avoid rate limits'],correct_index:1},
+    {question:'What is the key format typically used for player data?',options:['"player_"..player.Name','tostring(player.UserId)','player.Name','player.DisplayName'],correct_index:1},
+    {question:'When should you save player data?',options:['Only on game shutdown','On PlayerRemoving AND game:BindToClose()','Every 5 seconds only','Only when player requests it'],correct_index:1},
+    {question:'What does :UpdateAsync() do differently than :SetAsync()?',options:['Nothing different','Reads current value and atomically updates it','Is faster','Works offline'],correct_index:1},
+    {question:'What is a DataStore request budget?',options:['Maximum data size','Rate limit on how many calls you can make per minute','Cost in Robux','Server memory limit'],correct_index:1},
+    {question:'Can DataStores be accessed from LocalScripts?',options:['Yes','No - server Scripts only','Only in Studio','With special permissions'],correct_index:1},
+    {question:'What is :RemoveAsync() used for?',options:['Clears all data','Deletes a specific key from the DataStore','Removes a player','Resets the DataStore'],correct_index:1},
+    {question:'What does game:BindToClose() do?',options:['Closes the game','Runs code before the server shuts down','Binds a UI element','Closes a connection'],correct_index:1},
+    {question:'What is the max value size for a DataStore entry?',options:['1 KB','64 KB','4 MB','Unlimited'],correct_index:1},
+    {question:'What happens if you try to save a value that cannot be serialized?',options:['It saves as nil','Roblox auto-converts it','SetAsync throws an error','It is silently skipped'],correct_index:2},
+    {question:'What value types CANNOT be saved in DataStores?',options:['Tables','Strings','Instances and functions','Numbers'],correct_index:2},
+    {question:'What is OrderedDataStore used for?',options:['Alphabetical saves','Sorted leaderboards by numeric value','Faster saves','Backup storage'],correct_index:1},
+    {question:'How do you list keys in a DataStore?',options:[':ListKeys()',':ListKeysAsync()',':GetKeys()','Not possible directly'],correct_index:1},
+    {question:'What is ProfileService / DataStore2?',options:['Roblox official tools','Popular community modules that wrap DataStores with extra safety','Deprecated APIs','Server-side only services'],correct_index:1},
+    {question:'What is session locking in DataStore patterns?',options:['Preventing multiple servers from writing the same key simultaneously','Locking a player from editing data','A Roblox built-in feature','Encrypting saved data'],correct_index:0},
+    {question:'What is the safest way to handle DataStore failures?',options:['Retry indefinitely','Use default values and retry with exponential backoff','Kick the player','Ignore the error'],correct_index:1},
+  ],
+};
+
+// Fill missing topics with generic questions
+function getOfflineQuestions(topicName){
+  if(OFFLINE_QUESTIONS[topicName]) return OFFLINE_QUESTIONS[topicName];
+  // Generic fallback for topics without specific banks
+  return [
+    {question:'What language is used for scripting in Roblox?',options:['Python','Lua','JavaScript','C#'],correct_index:1},
+    {question:'What is the main difference between a Script and a LocalScript?',options:['No difference','Script runs on server, LocalScript runs on client','Script is faster','LocalScript is deprecated'],correct_index:1},
+    {question:'Where should server-only scripts go?',options:['ReplicatedStorage','ServerScriptService','Workspace','StarterGui'],correct_index:1},
+    {question:'What is a ModuleScript used for?',options:['UI elements','Reusable shared code','Server-only logic','Playing sounds'],correct_index:1},
+    {question:'How do you require a ModuleScript?',options:['import(module)','require(module)','load(module)','include(module)'],correct_index:1},
+    {question:'What does game:GetService() do?',options:['Creates a new service','Gets a reference to a Roblox service','Saves game data','Starts a service'],correct_index:1},
+    {question:'What is workspace in Roblox?',options:['The game file','The 3D world where parts exist','A storage container','The server runtime'],correct_index:1},
+    {question:'What type is a Roblox Part?',options:['Model','BasePart','Object','Instance'],correct_index:1},
+    {question:'How do you get a child of a part named "Head"?',options:['part.Head','part:GetChild("Head")','part:FindFirstChild("Head")','part["Head"]'],correct_index:2},
+    {question:'What does Instance.new() do?',options:['Finds an existing instance','Creates a new Roblox object','Destroys an instance','Copies an instance'],correct_index:1},
+    {question:'What property sets where a part is parented?',options:['.Location','.Parent','.Container','.Where'],correct_index:1},
+    {question:'How do you destroy an instance?',options:['instance.Delete()','instance:Remove()','instance:Destroy()','delete(instance)'],correct_index:2},
+    {question:'What does :WaitForChild() do?',options:['Waits for a child to be destroyed','Waits until a child with that name exists','Returns nil if not found','Creates a child'],correct_index:1},
+    {question:'What is the Players service used for?',options:['Managing game assets','Accessing and managing players in the game','Storing player data','Creating UI'],correct_index:1},
+    {question:'What does player.Character return?',options:['Player name','The player\'s 3D avatar model','Player\'s inventory','Player\'s team'],correct_index:1},
+    {question:'What is Humanoid used for?',options:['Storing player stats','Controlling character health and movement','Playing animations','Managing teams'],correct_index:1},
+    {question:'What does Humanoid.Health = 0 do?',options:['Boosts health','Kills the character','Sets max health','Logs the player out'],correct_index:1},
+    {question:'What service handles teams?',options:['game:GetService("PlayerService")','game:GetService("Teams")','game.Teams','game:GetService("TeamService")'],correct_index:1},
+    {question:'What is TweenService used for?',options:['Playing music','Animating property changes smoothly','Loading assets','Managing events'],correct_index:1},
+    {question:'What does :Clone() do to an instance?',options:['Moves it','Creates an identical copy','Deletes the original','Renames it'],correct_index:1},
+  ].slice(0,20);
+}
+
 // ── QUIZZES ───────────────────────────────────────
 function buildQuizGrid(){
   const grid=document.getElementById('quiz-grid');
@@ -1410,16 +1565,39 @@ function buildQuizGrid(){
 async function startQuiz(topic){
   document.getElementById('quiz-picker-view').style.display='none';
   document.getElementById('quiz-active-view').style.display='block';
-  document.getElementById('quiz-q').textContent='Generating quiz...';
+  document.getElementById('quiz-q').textContent='Loading quiz...';
   document.getElementById('quiz-opts').innerHTML='';
   quizQs=[]; quizIdx=0; quizScore=0;
+
+  // Try server first, fall back to offline bank
+  let loaded = false;
   try{
-    const res=await fetch(BASE+'/generate-quiz',{method:'POST',headers:authH(),body:JSON.stringify({topic:topic.name,count:20,session_token:token})});
-    const data=await res.json();
-    quizQs=data.questions||[];
-    if(!quizQs.length){toast('No questions returned','err');resetQuiz();return;}
-    renderQ();
-  }catch(e){toast('Failed to load quiz','err');resetQuiz();}
+    const controller = new AbortController();
+    const timeout = setTimeout(()=>controller.abort(), 8000);
+    const res = await fetch(BASE+'/generate-quiz',{
+      method:'POST', headers:authH(), signal:controller.signal,
+      body:JSON.stringify({topic:topic.name,count:20,session_token:token})
+    });
+    clearTimeout(timeout);
+    const data = await res.json();
+    if(data.questions && data.questions.length > 0){
+      quizQs = data.questions;
+      loaded = true;
+    }
+  }catch(e){ /* will use offline */ }
+
+  if(!loaded){
+    quizQs = getOfflineQuestions(topic.name);
+    // shuffle for variety
+    for(let i=quizQs.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [quizQs[i],quizQs[j]]=[quizQs[j],quizQs[i]];
+    }
+    if(quizQs.length>20) quizQs=quizQs.slice(0,20);
+  }
+
+  if(!quizQs.length){toast('Could not load questions','err');resetQuiz();return;}
+  renderQ();
 }
 
 function renderQ(){
