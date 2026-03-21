@@ -8,136 +8,191 @@
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#09090f;--surface:#0f1018;--surface2:#141520;--border:#1e2030;--border2:#2a2d45;
-  --orange:#ff7a2e;--orange-hi:#ff9555;--orange-dim:rgba(255,122,46,.12);
-  --text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);
-  --success:#22d37f;--danger:#ff5470;
-}
-html,body{height:100%;min-height:100vh;}
-body{
-  background:var(--bg);color:var(--text);
-  font-family:'DM Sans',sans-serif;
-  display:flex;align-items:center;justify-content:center;
-  padding:24px;overflow:hidden;
-}
+:root{--bg:#09090f;--surface2:#141520;--border2:#2a2d45;--orange:#ff7a2e;--orange-hi:#ff9555;--text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);--success:#22d37f;--danger:#ff5470;}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;}
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,122,46,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,122,46,.028) 1px,transparent 1px);background-size:44px 44px;}
-.bg-orb1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(255,122,46,.14) 0%,transparent 60%);top:-300px;right:-200px;filter:blur(80px);animation:drift1 20s ease-in-out infinite;}
-.bg-orb2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(120,80,255,.1) 0%,transparent 60%);bottom:-200px;left:-100px;filter:blur(100px);animation:drift2 26s ease-in-out infinite;}
-@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
-@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.card{
-  position:relative;z-index:1;width:100%;max-width:420px;
-  background:rgba(15,16,24,.96);border:1px solid var(--border2);border-radius:24px;
-  padding:44px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.08);
-  animation:cardIn .5s cubic-bezier(.22,1,.36,1) both;
-}
-@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.logo{display:flex;align-items:center;gap:11px;margin-bottom:36px;}
+.bg-orb1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(255,122,46,.14) 0%,transparent 60%);top:-300px;right:-200px;filter:blur(80px);animation:d1 20s ease-in-out infinite;}
+.bg-orb2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(120,80,255,.1) 0%,transparent 60%);bottom:-200px;left:-100px;filter:blur(100px);animation:d2 26s ease-in-out infinite;}
+@keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
+@keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.card{position:relative;z-index:1;width:100%;max-width:420px;background:rgba(15,16,24,.96);border:1px solid var(--border2);border-radius:24px;padding:44px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7);animation:ci .5s cubic-bezier(.22,1,.36,1) both;}
+@keyframes ci{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:28px;transition:color .15s;width:fit-content;}
+.back:hover{color:var(--sub);}
+.back svg{width:13px;height:13px;}
+.logo{display:flex;align-items:center;gap:11px;margin-bottom:32px;}
 .logo-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#ff7a2e,#ff9555);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(255,122,46,.45);}
 .logo-mark svg{width:18px;height:18px;}
 .logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.3px;}
 h1{font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
-.subtitle{font-size:14px;color:var(--sub);margin-bottom:30px;}
-.alert{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:18px;display:none;font-weight:500;}
+.subtitle{font-size:14px;color:var(--sub);margin-bottom:22px;}
+.alert{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:14px;display:none;font-weight:500;line-height:1.5;}
 .alert.show{display:block;}
-.alert-error{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
-.alert-success{background:rgba(34,211,127,.1);border:1px solid rgba(34,211,127,.3);color:var(--success);}
-.field{margin-bottom:18px;}
+.err{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
+.ok{background:rgba(34,211,127,.1);border:1px solid rgba(34,211,127,.3);color:var(--success);}
+.warn{background:rgba(255,122,46,.08);border:1px solid rgba(255,122,46,.25);color:var(--orange-hi);}
+.field{margin-bottom:16px;}
 .field-label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
 .field-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;padding:14px 16px;outline:none;transition:all .2s;}
 .field-input:focus{border-color:var(--orange);background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.1);}
 .field-input::placeholder{color:var(--muted);}
-.btn-main{width:100%;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:4px;box-shadow:0 6px 28px rgba(255,122,46,.38);}
-.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.52);}
-.btn-main:disabled{opacity:.5;cursor:not-allowed;}
-.divider{display:flex;align-items:center;gap:14px;margin:22px 0;color:var(--muted);font-size:12px;}
+.code-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;padding:18px 16px;outline:none;transition:all .2s;text-align:center;letter-spacing:12px;}
+.code-input:focus{border-color:var(--orange);background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.1);}
+.code-input::placeholder{font-size:20px;letter-spacing:4px;color:var(--muted);}
+.btn{width:100%;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 6px 28px rgba(255,122,46,.38);}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.52);}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.g-btn{width:100%;padding:13px;border:1px solid var(--border2);border-radius:11px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.g-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);}
+.g-btn svg{width:18px;height:18px;flex-shrink:0;}
+.divider{display:flex;align-items:center;gap:14px;margin:18px 0;color:var(--muted);font-size:12px;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border2);}
-.footer-txt{text-align:center;font-size:13.5px;color:var(--sub);}
+.footer-txt{text-align:center;font-size:13.5px;color:var(--sub);margin-top:16px;}
 .footer-txt a{color:var(--orange);font-weight:600;text-decoration:none;}
 .footer-txt a:hover{text-decoration:underline;}
-.back-link{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:28px;transition:color .15s;width:fit-content;}
-.back-link:hover{color:var(--sub);}
-.back-link svg{width:13px;height:13px;}
+.resend-btn{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .15s;padding:0;}
+.resend-btn:hover{color:var(--sub);}
+.dev-box{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:14px;font-size:12px;color:#fbbf24;margin-bottom:14px;text-align:center;display:none;}
+.dev-box.show{display:block;}
+.dev-code{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;letter-spacing:10px;margin-top:6px;}
 </style>
 </head>
 <body>
 <div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div></div>
-
 <div class="card">
-  <a href="index.html" class="back-link">
+  <a href="index.html" class="back">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
     Back to home
   </a>
-
   <div class="logo">
-    <div class="logo-mark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    </div>
+    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
     <span class="logo-name">Coraic</span>
   </div>
 
-  <h1>Welcome back</h1>
-  <p class="subtitle">Sign in to your account to continue</p>
-
-  <div class="alert alert-error" id="alertErr"></div>
-  <div class="alert alert-success" id="alertOk"></div>
-
-  <div class="field">
-    <label class="field-label">Email</label>
-    <input class="field-input" type="email" id="email" placeholder="you@example.com" autocomplete="email">
+  <!-- STEP 1: Login -->
+  <div id="step1">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in to your account to continue</p>
+    <button class="g-btn" onclick="googleSignIn()">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="divider">or sign in with email</div>
+    <div class="alert err" id="alertErr"></div>
+    <div class="alert ok" id="alertOk"></div>
+    <div class="field"><label class="field-label">Email</label><input class="field-input" type="email" id="email" placeholder="you@example.com" autocomplete="email"></div>
+    <div class="field"><label class="field-label">Password</label><input class="field-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
+    <p class="footer-txt">Don't have an account? <a href="signup.html">Sign up free</a></p>
   </div>
-  <div class="field">
-    <label class="field-label">Password</label>
-    <input class="field-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+
+  <!-- STEP 2: Verify email (if not yet verified) -->
+  <div id="step2" style="display:none;">
+    <h1>Verify your email</h1>
+    <p class="subtitle" id="step2sub">We sent a 6-digit code to your email.</p>
+    <div class="alert err" id="err2"></div>
+    <div class="alert ok" id="ok2"></div>
+    <div class="dev-box" id="devbox">⚡ Dev mode — email service not configured. Your code:<div class="dev-code" id="devcode"></div></div>
+    <div class="field" style="margin-top:8px;"><label class="field-label">6-Digit Code</label><input class="code-input" type="text" id="verifyCode" placeholder="000000" maxlength="6" inputmode="numeric"></div>
+    <button class="btn" id="verifyBtn" onclick="doVerify()">Verify & Sign In →</button>
+    <div style="text-align:center;margin-top:12px;"><button class="resend-btn" onclick="resendCode()">Didn't get it? Resend code</button></div>
+    <p class="footer-txt"><a href="login.html">← Back to login</a></p>
   </div>
-  <button class="btn-main" id="loginBtn" onclick="doLogin()">Sign In →</button>
-  <div class="divider">or</div>
-  <p class="footer-txt">Don't have an account? <a href="signup.html">Sign up free</a></p>
 </div>
 
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
+// NO auto-redirect — user chose to be here
 
-// ── NO AUTO-REDIRECT ──
-// If already logged in, user chose to come here — let them stay.
-// Only redirect after a successful login form submission.
+let pendingUserId = null;
+let pendingEmail  = '';
 
-const params = new URLSearchParams(window.location.search);
-if (params.get('token')) {
-  localStorage.setItem('stud_session_v3', params.get('token'));
-  window.location.href = 'dashboard.html';
+function showErr(id, msg){ const e=document.getElementById(id); e.innerHTML=msg; e.className='alert err show'; }
+function showOk(id, msg){ const e=document.getElementById(id); e.textContent=msg; e.className='alert ok show'; }
+function clearA(){ ['alertErr','alertOk','err2','ok2'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='alert '+(id.includes('Ok')||id.startsWith('ok')?'ok':'err');}); }
+
+function googleSignIn(){
+  const clientId = 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID';
+  if(clientId === 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID'){
+    showErr('alertErr','Google sign-in is not yet configured. Use email login below.');
+    return;
+  }
+  if(typeof google==='undefined'){ showErr('alertErr','Google Sign-In failed to load.'); return; }
+  google.accounts.id.initialize({
+    client_id: clientId,
+    callback: async (resp) => {
+      try{
+        const res=await fetch(BASE+'/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:resp.credential})});
+        const data=await res.json();
+        if(data.error){ showErr('alertErr',data.error); return; }
+        localStorage.setItem('stud_session_v3',data.token);
+        if(data.user) localStorage.setItem('stud_user',JSON.stringify(data.user));
+        window.location.href='dashboard.html';
+      }catch(e){ showErr('alertErr','Google sign-in failed. Try email instead.'); }
+    }
+  });
+  google.accounts.id.prompt();
 }
-
-function showErr(msg){const e=document.getElementById('alertErr');e.textContent=msg;e.classList.add('show');document.getElementById('alertOk').classList.remove('show');}
-function showOk(msg){const e=document.getElementById('alertOk');e.textContent=msg;e.classList.add('show');document.getElementById('alertErr').classList.remove('show');}
-function setLoading(on){const btn=document.getElementById('loginBtn');btn.disabled=on;btn.textContent=on?'Signing in...':'Sign In →';}
 
 async function doLogin(){
+  clearA();
   const email=document.getElementById('email').value.trim();
   const password=document.getElementById('password').value;
-  if(!email) return showErr('Please enter your email.');
-  if(!email.includes('@')) return showErr('Enter a valid email address.');
-  if(!password) return showErr('Please enter your password.');
-  setLoading(true);
+  if(!email) return showErr('alertErr','Please enter your email.');
+  if(!email.includes('@')) return showErr('alertErr','Enter a valid email address.');
+  if(!password) return showErr('alertErr','Please enter your password.');
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true; btn.textContent='Signing in...';
   try{
-    const res=await fetch(`${BASE}/auth/login`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email,password})
-    });
+    const res=await fetch(BASE+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     const data=await res.json();
-    if(!res.ok||data.error){showErr(data.error||'Wrong email or password.');return;}
+    // Email not verified — move to step 2
+    if(data.needs_verification){
+      pendingUserId=data.user_id; pendingEmail=email;
+      document.getElementById('step2sub').textContent='Your email isn\'t verified yet. We sent a code to '+(data.email_preview||email)+'.';
+      if(data.dev_code){ document.getElementById('devcode').textContent=data.dev_code; document.getElementById('devbox').classList.add('show'); }
+      document.getElementById('step1').style.display='none';
+      document.getElementById('step2').style.display='block';
+      return;
+    }
+    if(!res.ok||data.error){ showErr('alertErr',data.error||'Wrong email or password.'); return; }
     localStorage.setItem('stud_session_v3',data.token);
     if(data.user) localStorage.setItem('stud_user',JSON.stringify(data.user));
-    showOk('Signed in! Redirecting...');
+    showOk('alertOk','Signed in! Redirecting...');
     setTimeout(()=>window.location.href='dashboard.html',500);
-  }catch(e){
-    showErr('Could not connect to server. Please try again.');
-  }finally{setLoading(false);}
+  }catch(e){ showErr('alertErr','Could not connect to server. Please try again.'); }
+  finally{ btn.disabled=false; btn.textContent='Sign In →'; }
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Enter') doLogin();});
+async function doVerify(){
+  const code=document.getElementById('verifyCode').value.replace(/\s/g,'');
+  if(!code||code.length<6) return showErr('err2','Enter the 6-digit code from your email.');
+  const btn=document.getElementById('verifyBtn');
+  btn.disabled=true; btn.textContent='Verifying...';
+  try{
+    const res=await fetch(BASE+'/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:pendingUserId,email:pendingEmail,code})});
+    const data=await res.json();
+    if(data.error){ showErr('err2',data.error); return; }
+    localStorage.setItem('stud_session_v3',data.token);
+    if(data.user) localStorage.setItem('stud_user',JSON.stringify(data.user));
+    showOk('ok2','Verified! Redirecting...');
+    setTimeout(()=>window.location.href='dashboard.html',600);
+  }catch(e){ showErr('err2','Could not connect. Please try again.'); }
+  finally{ btn.disabled=false; btn.textContent='Verify & Sign In →'; }
+}
+
+async function resendCode(){
+  try{
+    const res=await fetch(BASE+'/auth/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:pendingUserId,email:pendingEmail})});
+    const data=await res.json();
+    if(data.error){ showErr('err2',data.error); return; }
+    showOk('ok2','New code sent! Check your inbox.');
+    if(data.dev_code){ document.getElementById('devcode').textContent=data.dev_code; document.getElementById('devbox').classList.add('show'); }
+  }catch(e){ showErr('err2','Could not resend. Try again.'); }
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'){ if(document.getElementById('step2').style.display!=='none') doVerify(); else doLogin(); } });
 </script>
 </body>
 </html>
