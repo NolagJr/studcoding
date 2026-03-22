@@ -75,6 +75,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
 .btn-confirm:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.55);}
 .btn-confirm:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 </style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div><div class="bg-orb3"></div></div>
@@ -134,7 +135,7 @@ let checkTimer     = null;
 // ── GOOGLE SIGN IN ────────────────────────────────
 function googleSignIn(){
   const GOOGLE_CLIENT_ID = '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com';
-  if(GOOGLE_CLIENT_ID === '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com'){
+  if(!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === 'PLACEHOLDER'){
     document.getElementById('g-err').textContent = 'Google sign-in is not yet configured. Come back soon!';
     document.getElementById('g-err').className = 'alert err show';
     return;
