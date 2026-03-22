@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect
 from flask_cors import CORS
-import sqlite3, hashlib, jwt, os, json, datetime, secrets, string, smtplib, random, requests as req_lib
+import sqlite3, hashlib, jwt, os, json, datetime, secrets, string, smtplib, random, re, requests as req_lib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import anthropic
@@ -20,6 +20,7 @@ RESEND_API_KEY    = os.environ.get('RESEND_API_KEY', '')
 GOOGLE_CLIENT_ID  = os.environ.get('GOOGLE_CLIENT_ID', '')
 FROM_EMAIL        = os.environ.get('FROM_EMAIL', 'noreply@coraic.com')
 FROM_NAME         = os.environ.get('FROM_NAME', 'Coraic')
+FRONTEND_URL      = os.environ.get('FRONTEND_URL', 'https://studcoding.vercel.app')
 
 # ── DATABASE ──
 def get_db():
@@ -543,50 +544,63 @@ def login():
     return jsonify({'token': token, 'user': {'id': user['id'], 'username': user['username'], 'email': user['email']}})
 
 # ── GOOGLE OAUTH ──────────────────────────────────────────────
+# Supports both redirect mode (Google POSTs form data) and popup/API mode (JSON body).
+# Redirect mode: returns a 302 to the frontend with token in URL param.
+# API mode: returns JSON as before (used by any non-redirect callers).
 @app.route('/auth/google', methods=['POST'])
 def google_auth():
-    data     = request.json or {}
-    id_token = data.get('credential', '')
+    # Redirect mode sends form data; popup/API mode sends JSON
+    credential  = request.form.get('credential') or (request.json or {}).get('credential', '')
+    is_redirect = bool(request.form.get('credential'))
 
-    if not id_token:
+    if not credential:
+        if is_redirect:
+            return redirect(f'{FRONTEND_URL}/login.html?error=no_credential')
         return jsonify({'error': 'No Google credential provided.'}), 400
 
     # Verify with Google
     try:
-        r = req_lib.get(f'https://oauth2.googleapis.com/tokeninfo?id_token={id_token}', timeout=10)
+        r    = req_lib.get(f'https://oauth2.googleapis.com/tokeninfo?id_token={credential}', timeout=10)
         info = r.json()
         if 'error' in info:
+            if is_redirect:
+                return redirect(f'{FRONTEND_URL}/login.html?error=invalid_token')
             return jsonify({'error': 'Invalid Google token.'}), 401
         if GOOGLE_CLIENT_ID and info.get('aud') != GOOGLE_CLIENT_ID:
+            if is_redirect:
+                return redirect(f'{FRONTEND_URL}/login.html?error=token_mismatch')
             return jsonify({'error': 'Token audience mismatch.'}), 401
     except Exception as e:
+        if is_redirect:
+            return redirect(f'{FRONTEND_URL}/login.html?error=verify_failed')
         return jsonify({'error': f'Could not verify Google token: {e}'}), 500
 
     google_id = info.get('sub')
     email     = info.get('email', '').lower()
     name      = info.get('name', email.split('@')[0])
-    username  = name.replace(' ', '').lower()[:20]
+    # Build a safe username from the Google display name
+    username  = re.sub(r'[^a-z0-9_]', '', name.replace(' ', '').lower())[:20] or 'user'
 
     if not email or not google_id:
+        if is_redirect:
+            return redirect(f'{FRONTEND_URL}/login.html?error=no_email')
         return jsonify({'error': 'Could not get email from Google.'}), 400
 
     conn = get_db()
     c = conn.cursor()
-
-    # Find existing user
     c.execute('SELECT * FROM users WHERE email=? OR google_id=?', (email, google_id))
-    user = c.fetchone()
+    user   = c.fetchone()
+    is_new = not bool(user)
 
     if user:
-        # Update google_id and mark verified if not already
+        # Existing user — update google_id and mark verified
         c.execute('UPDATE users SET google_id=?, email_verified=1 WHERE id=?', (google_id, user['id']))
         conn.commit()
         user_id  = user['id']
         username = user['username']
     else:
-        # Create new account (Google accounts are auto-verified)
-        # Ensure unique username
-        base = username
+        # New user — create account (Google accounts are auto-verified)
+        base   = username
         suffix = 0
         while True:
             try:
@@ -598,14 +612,26 @@ def google_auth():
             except sqlite3.IntegrityError:
                 suffix += 1
                 username = f'{base}{suffix}'
-
         user_id = c.lastrowid
         c.execute('INSERT INTO profiles (user_id) VALUES (?)', (user_id,))
         conn.commit()
 
     conn.close()
     token = make_token(user_id, username, email)
-    return jsonify({'token': token, 'user': {'id': user_id, 'username': username, 'email': email}, 'new_user': not bool(user)})
+
+    if is_redirect:
+        if is_new:
+            # New user → username picker on signup page
+            return redirect(f'{FRONTEND_URL}/signup.html?step=username&token={token}')
+        # Existing user → straight to dashboard
+        return redirect(f'{FRONTEND_URL}/dashboard.html?token={token}')
+
+    # API/popup mode — return JSON as before
+    return jsonify({
+        'token':    token,
+        'user':     {'id': user_id, 'username': username, 'email': email},
+        'new_user': is_new,
+    })
 
 # ── CHECK USERNAME AVAILABILITY ───────────────────
 @app.route('/auth/check-username', methods=['GET'])
@@ -615,7 +641,6 @@ def check_username():
         return jsonify({'available': False, 'reason': 'Too short'})
     if len(username) > 20:
         return jsonify({'available': False, 'reason': 'Too long'})
-    import re
     if not re.match(r'^[a-z0-9_]+$', username):
         return jsonify({'available': False, 'reason': 'Only letters, numbers and underscores'})
     conn = get_db()
@@ -637,7 +662,6 @@ def set_username():
         return jsonify({'error': 'Username must be at least 3 characters.'})
     if len(username) > 20:
         return jsonify({'error': 'Username must be 20 characters or less.'})
-    import re
     if not re.match(r'^[a-z0-9_]+$', username):
         return jsonify({'error': 'Only lowercase letters, numbers and underscores allowed.'})
     conn = get_db()

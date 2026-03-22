@@ -6,7 +6,6 @@
 <title>Sign Up — Coraic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#09090f;--surface:#0f1018;--surface2:#141520;--border2:#2a2d45;--orange:#ff7a2e;--orange-hi:#ff9555;--text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);--success:#22d37f;--danger:#ff5470;}
@@ -19,26 +18,43 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
 @keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
 @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-30px)}}
 @keyframes d3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+
 .card{position:relative;z-index:1;width:100%;max-width:440px;background:rgba(15,16,24,.97);border:1px solid var(--border2);border-radius:24px;padding:48px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.06);animation:ci .5s cubic-bezier(.22,1,.36,1) both;}
 @keyframes ci{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
 .back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:32px;transition:color .15s;width:fit-content;}
-.back:hover{color:var(--sub);}.back svg{width:13px;height:13px;}
+.back:hover{color:var(--sub);}
+.back svg{width:13px;height:13px;}
+
 .logo{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:36px;}
 .logo-mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#ff7a2e,#ff9555);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(255,122,46,.5);}
 .logo-mark svg{width:20px;height:20px;}
 .logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.3px;}
-.screen{display:none;}.screen.active{display:block;}
+
+/* ── SCREEN 1: Google sign in ── */
+.screen{display:none;}
+.screen.active{display:block;}
 .screen1-title{font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.6px;text-align:center;margin-bottom:8px;}
 .screen1-sub{font-size:14px;color:var(--sub);text-align:center;margin-bottom:32px;line-height:1.6;}
+
+/* Button wrapper — positions the invisible GIS button on top of our styled one */
+.btn-wrap{position:relative;width:100%;margin-bottom:16px;}
 .g-btn{width:100%;padding:15px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.05);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:11px;}
 .g-btn:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.22);transform:translateY(-1px);}
-.g-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .g-btn svg{width:20px;height:20px;flex-shrink:0;}
+
+/* The GIS-rendered button sits invisibly on top, intercepting clicks */
+#g-render{position:absolute;inset:0;opacity:0;overflow:hidden;border-radius:13px;cursor:pointer;display:flex;align-items:stretch;}
+#g-render > div, #g-render iframe{width:100%!important;height:100%!important;}
+
 .alert{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:16px;display:none;font-weight:500;line-height:1.5;}
 .alert.show{display:block;}
 .err{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
 .screen1-footer{text-align:center;font-size:13px;color:var(--muted);margin-top:20px;}
 .screen1-footer a{color:var(--orange);font-weight:600;text-decoration:none;}
+.screen1-footer a:hover{text-decoration:underline;}
+
+/* ── SCREEN 2: Username picker ── */
 .confetti-row{display:flex;justify-content:center;gap:6px;font-size:26px;margin-bottom:20px;animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1);}
 @keyframes bounceIn{from{transform:scale(0) translateY(-20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .pick-title{font-family:'Cabinet Grotesk',sans-serif;font-size:30px;font-weight:900;letter-spacing:-.8px;text-align:center;margin-bottom:8px;}
@@ -49,23 +65,30 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
 .username-input:focus{background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.12);}
 .username-input.valid{border-color:var(--success);}
 .username-input.invalid{border-color:var(--danger);}
-.username-status{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;min-height:20px;margin-bottom:18px;padding-left:4px;}
-.status-ok{color:var(--success);}.status-err{color:var(--danger);}.status-checking{color:var(--orange);}
+.username-input.checking{border-color:var(--orange);}
+.username-status{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;min-height:20px;margin-bottom:18px;padding-left:4px;transition:all .2s;}
+.status-ok{color:var(--success);}
+.status-err{color:var(--danger);}
+.status-checking{color:var(--orange);}
 .status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
 .suggestions{margin-bottom:20px;}
 .suggestions-label{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .sugg-pills{display:flex;flex-wrap:wrap;gap:7px;}
 .sugg-pill{padding:6px 13px;border-radius:99px;border:1px solid var(--border2);background:rgba(255,255,255,.03);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);cursor:pointer;transition:all .15s;}
 .sugg-pill:hover{border-color:var(--orange);color:var(--orange);background:rgba(255,122,46,.07);}
+
 .btn-confirm{width:100%;padding:16px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 6px 28px rgba(255,122,46,.4);}
 .btn-confirm:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.55);}
 .btn-confirm:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 </style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div><div class="bg-orb3"></div></div>
+
 <div class="card">
-  <!-- SCREEN 1: Google Sign In -->
+  <!-- ── SCREEN 1: Google Sign In ── -->
   <div class="screen active" id="screen1">
     <a href="index.html" class="back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -78,178 +101,219 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
     <div class="screen1-title">Create your account</div>
     <div class="screen1-sub">Sign up with Google to get started — takes 10 seconds.</div>
     <div class="alert err" id="g-err"></div>
-    <button class="g-btn" id="g-btn" onclick="googleSignIn()">
-      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continue with Google
-    </button>
+
+    <!-- Styled button (visual only). Invisible GIS button above it captures clicks. -->
+    <div class="btn-wrap">
+      <button class="g-btn" tabindex="-1" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <!-- Invisible GIS button rendered here — sits on top and handles the actual redirect -->
+      <div id="g-render"></div>
+    </div>
+
     <div class="screen1-footer">Already have an account? <a href="login.html">Sign in</a></div>
   </div>
 
-  <!-- SCREEN 2: Pick Username -->
+  <!-- ── SCREEN 2: Pick Username ── -->
   <div class="screen" id="screen2">
     <div class="confetti-row">🎉 ⚡ 🎮</div>
     <div class="pick-title">Pick a fun username!</div>
     <div class="pick-sub">This is how other Coraic users will see you. You can change it once every 60 days.</div>
+
     <div class="alert err" id="u-err"></div>
+
     <div class="username-wrap">
       <span class="username-prefix">@</span>
-      <input class="username-input" type="text" id="username-input" placeholder="cooldevname" maxlength="20" oninput="onUsernameInput(this.value)" autocomplete="off" spellcheck="false">
+      <input class="username-input" type="text" id="username-input" placeholder="cooldevname" maxlength="20" oninput="onUsernameInput(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
     <div class="username-status" id="u-status"></div>
+
     <div class="suggestions" id="sugg-section" style="display:none;">
       <div class="suggestions-label">Suggestions</div>
       <div class="sugg-pills" id="sugg-pills"></div>
     </div>
+
     <button class="btn-confirm" id="confirm-btn" onclick="confirmUsername()" disabled>Let's go →</button>
   </div>
 </div>
 
 <script>
-const BASE = 'https://studcoding-production-3b79.up.railway.app';
+const BASE             = 'https://studcoding-production-3b79.up.railway.app';
 const GOOGLE_CLIENT_ID = '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com';
 
-let pendingToken = null;
-let pendingUser  = null;
+let pendingToken  = null;
 let usernameValid = false;
-let checkTimer = null;
+let checkTimer    = null;
 
-function googleSignIn(){
-  if(typeof google==='undefined'){
-    document.getElementById('g-err').textContent='Google Sign-In failed to load. Check your connection.';
-    document.getElementById('g-err').className='alert err show';
+// ── Decode JWT payload (client-side, no verification — display only) ──
+function decodeJWT(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+  } catch(e) {
+    return {};
+  }
+}
+
+// ── On page load: check if returning from Google redirect ─────
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const step   = params.get('step');
+  const token  = params.get('token');
+
+  // Always clean the URL immediately
+  if (step || token) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  if (step === 'username' && token) {
+    // New user returned from Google OAuth — skip straight to username picker
+    pendingToken = token;
+    const decoded = decodeJWT(token);
+    showScreen2(decoded.username || '');
     return;
   }
-  const btn=document.getElementById('g-btn');
-  btn.disabled=true;
-  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID, callback:handleGoogleResponse});
-  google.accounts.id.prompt((n)=>{
-    if(n.isNotDisplayed()||n.isSkippedMoment()){
-      btn.disabled=false;
-      document.getElementById('g-err').textContent='Popup was blocked. Please allow popups for this site and try again.';
-      document.getElementById('g-err').className='alert err show';
-    }
-  });
-}
 
-async function handleGoogleResponse(resp){
-  try{
-    const res=await fetch(BASE+'/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:resp.credential})});
-    const data=await res.json();
-    if(data.error){
-      document.getElementById('g-err').textContent=data.error;
-      document.getElementById('g-err').className='alert err show';
-      document.getElementById('g-btn').disabled=false;
-      return;
-    }
-    pendingToken=data.token;
-    pendingUser=data.user;
-
-    if(data.new_user){
-      // Brand new — show username picker
-      showScreen2(data.user);
-    } else {
-      // Already has an account — block them, send to login
-      document.getElementById('g-err').textContent='This email is already registered. Try signing in instead.';
-      document.getElementById('g-err').className='alert err show';
-      document.getElementById('g-btn').disabled=false;
-      setTimeout(()=>window.location.href='login.html', 3000);
-    }
-  }catch(e){
-    document.getElementById('g-err').textContent='Something went wrong. Please try again.';
-    document.getElementById('g-err').className='alert err show';
-    document.getElementById('g-btn').disabled=false;
+  // Init Google once the GIS library loads (for screen 1)
+  if (typeof google !== 'undefined') {
+    initGoogle();
+  } else {
+    document.querySelector('script[src*="gsi/client"]').addEventListener('load', initGoogle);
   }
+});
+
+// ── Initialize Google in redirect mode ───────────────────────
+function initGoogle() {
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    ux_mode:   'redirect',
+    login_uri: BASE + '/auth/google',
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById('g-render'),
+    { theme: 'filled_black', size: 'large', width: 360 }
+  );
 }
 
-function showScreen2(user){
+// ── Show the username picker (screen 2) ──────────────────────
+function showScreen2(suggestedUsername) {
   document.getElementById('screen1').classList.remove('active');
   document.getElementById('screen2').classList.add('active');
-  const base=(user.name||user.email.split('@')[0]).toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,16);
-  document.getElementById('username-input').value=base;
-  generateSuggestions(base);
-  onUsernameInput(base);
-}
 
-function onUsernameInput(val){
-  val=val.toLowerCase().replace(/[^a-z0-9_]/g,'');
-  document.getElementById('username-input').value=val;
-  usernameValid=false;
-  document.getElementById('confirm-btn').disabled=true;
-  clearTimeout(checkTimer);
-  if(val.length<3){setStatus('',val.length>0?'At least 3 characters':'','err');return;}
-  if(val.length>20){setStatus('','Max 20 characters','err');return;}
-  setStatus('checking','Checking...','checking');
-  checkTimer=setTimeout(()=>checkUsername(val),500);
-}
-
-async function checkUsername(val){
-  try{
-    const res=await fetch(BASE+'/auth/check-username?username='+encodeURIComponent(val));
-    const data=await res.json();
-    if(data.available){
-      setStatus('ok','@'+val+' is available ✓','ok');
-      usernameValid=true;
-      document.getElementById('confirm-btn').disabled=false;
-      document.getElementById('username-input').className='username-input valid';
-    }else{
-      setStatus('err','@'+val+' is already taken','err');
-      usernameValid=false;
-      document.getElementById('confirm-btn').disabled=true;
-      document.getElementById('username-input').className='username-input invalid';
-      generateSuggestions(val);
-    }
-  }catch(e){
-    setStatus('','Could not check — try anyway','checking');
-    usernameValid=true;
-    document.getElementById('confirm-btn').disabled=false;
+  // Pre-fill with the auto-generated username from the token (or blank)
+  const base = (suggestedUsername || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 16);
+  document.getElementById('username-input').value = base;
+  if (base.length >= 3) {
+    generateSuggestions(base);
+    onUsernameInput(base);
   }
 }
 
-function setStatus(dot,msg,type){
-  const el=document.getElementById('u-status');
-  if(!msg){el.innerHTML='';return;}
-  const colors={ok:'status-ok',err:'status-err',checking:'status-checking'};
-  el.className='username-status '+(colors[type]||'');
-  el.innerHTML=dot?`<div class="status-dot"></div>${msg}`:msg;
+// ── USERNAME CHECKER ─────────────────────────────────────────
+function onUsernameInput(val) {
+  val = val.toLowerCase().replace(/[^a-z0-9_]/g, '');
+  document.getElementById('username-input').value = val;
+  usernameValid = false;
+  document.getElementById('confirm-btn').disabled = true;
+  clearTimeout(checkTimer);
+
+  if (val.length < 3) {
+    setStatus('', val.length > 0 ? 'At least 3 characters' : '', 'err');
+    return;
+  }
+  if (val.length > 20) { setStatus('', 'Max 20 characters', 'err'); return; }
+
+  setStatus('checking', 'Checking...', 'checking');
+  checkTimer = setTimeout(() => checkUsername(val), 500);
 }
 
-function generateSuggestions(base){
-  const suffixes=[Math.floor(Math.random()*900)+100,'dev','lua','rblx',Math.floor(Math.random()*99)+1];
-  const pills=document.getElementById('sugg-pills');
-  pills.innerHTML='';
-  suffixes.slice(0,4).forEach(s=>{
-    const name=(base+s).slice(0,20);
-    const p=document.createElement('button');
-    p.className='sugg-pill';p.textContent='@'+name;
-    p.onclick=()=>{document.getElementById('username-input').value=name;onUsernameInput(name);};
+async function checkUsername(val) {
+  try {
+    const res  = await fetch(BASE + '/auth/check-username?username=' + encodeURIComponent(val));
+    const data = await res.json();
+    if (data.available) {
+      setStatus('ok', '@' + val + ' is available ✓', 'ok');
+      usernameValid = true;
+      document.getElementById('confirm-btn').disabled = false;
+      document.getElementById('username-input').className = 'username-input valid';
+    } else {
+      setStatus('err', '@' + val + ' is already taken', 'err');
+      usernameValid = false;
+      document.getElementById('confirm-btn').disabled = true;
+      document.getElementById('username-input').className = 'username-input invalid';
+      generateSuggestions(val);
+    }
+  } catch(e) {
+    setStatus('', 'Could not check — try anyway', 'checking');
+    usernameValid = true;
+    document.getElementById('confirm-btn').disabled = false;
+  }
+}
+
+function setStatus(dot, msg, type) {
+  const el = document.getElementById('u-status');
+  if (!msg) { el.innerHTML = ''; return; }
+  const colors = { ok: 'status-ok', err: 'status-err', checking: 'status-checking' };
+  el.className = 'username-status ' + (colors[type] || '');
+  el.innerHTML = dot ? `<div class="status-dot"></div>${msg}` : msg;
+}
+
+function generateSuggestions(base) {
+  const suffixes = [Math.floor(Math.random() * 900) + 100, 'dev', 'lua', 'rblx', Math.floor(Math.random() * 99) + 1];
+  const pills    = document.getElementById('sugg-pills');
+  pills.innerHTML = '';
+  suffixes.slice(0, 4).forEach(s => {
+    const name = (base + s).slice(0, 20);
+    const p    = document.createElement('button');
+    p.className   = 'sugg-pill';
+    p.textContent = '@' + name;
+    p.onclick = () => {
+      document.getElementById('username-input').value = name;
+      onUsernameInput(name);
+    };
     pills.appendChild(p);
   });
-  document.getElementById('sugg-section').style.display='block';
+  document.getElementById('sugg-section').style.display = 'block';
 }
 
-async function confirmUsername(){
-  const username=document.getElementById('username-input').value.trim();
-  if(!usernameValid||username.length<3)return;
-  document.getElementById('confirm-btn').disabled=true;
-  document.getElementById('confirm-btn').textContent='Setting up your account...';
-  try{
-    const res=await fetch(BASE+'/auth/set-username',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+pendingToken},body:JSON.stringify({username})});
-    const data=await res.json();
-    if(data.error){
-      document.getElementById('u-err').textContent=data.error;
-      document.getElementById('u-err').className='alert err show';
-      document.getElementById('confirm-btn').disabled=false;
-      document.getElementById('confirm-btn').textContent="Let's go →";
+async function confirmUsername() {
+  const username = document.getElementById('username-input').value.trim();
+  if (!usernameValid || username.length < 3) return;
+
+  document.getElementById('confirm-btn').disabled    = true;
+  document.getElementById('confirm-btn').textContent = 'Setting up your account...';
+
+  try {
+    const res  = await fetch(BASE + '/auth/set-username', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + pendingToken },
+      body:    JSON.stringify({ username }),
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      document.getElementById('u-err').textContent = data.error;
+      document.getElementById('u-err').className   = 'alert err show';
+      document.getElementById('confirm-btn').disabled    = false;
+      document.getElementById('confirm-btn').textContent = "Let's go →";
       return;
     }
-    localStorage.setItem('stud_session_v3',data.token||pendingToken);
-    localStorage.setItem('stud_user',JSON.stringify(Object.assign({},pendingUser,{username})));
-    window.location.href='dashboard.html';
-  }catch(e){
-    document.getElementById('u-err').textContent='Something went wrong. Please try again.';
-    document.getElementById('u-err').className='alert err show';
-    document.getElementById('confirm-btn').disabled=false;
-    document.getElementById('confirm-btn').textContent="Let's go →";
+
+    // Save fresh token (now has the chosen username) and head to dashboard
+    localStorage.setItem('stud_session_v3', data.token || pendingToken);
+    const decoded = decodeJWT(data.token || pendingToken);
+    localStorage.setItem('stud_user', JSON.stringify({
+      id:       decoded.user_id,
+      username: username,
+      email:    decoded.email,
+    }));
+    window.location.href = 'dashboard.html';
+  } catch(e) {
+    document.getElementById('u-err').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('u-err').className   = 'alert err show';
+    document.getElementById('confirm-btn').disabled    = false;
+    document.getElementById('confirm-btn').textContent = "Let's go →";
   }
 }
 </script>
