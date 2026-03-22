@@ -134,33 +134,33 @@ let checkTimer     = null;
 
 // ── GOOGLE SIGN IN ────────────────────────────────
 function googleSignIn(){
-  const GOOGLE_CLIENT_ID = '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com';
-  if(!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === 'PLACEHOLDER'){
-    document.getElementById('g-err').textContent = 'Google sign-in is not yet configured. Come back soon!';
-    document.getElementById('g-err').className = 'alert err show';
-    return;
-  }
-  if(typeof google === 'undefined'){
-    document.getElementById('g-err').textContent = 'Google Sign-In failed to load. Check your connection.';
-    document.getElementById('g-err').className = 'alert err show';
-    return;
-  }
-  const btn = document.getElementById('g-btn');
-  btn.disabled = true;
-  btn.innerHTML = btn.innerHTML.replace('Continue with Google','Signing in...');
-
+  if(typeof google==='undefined'){showErr('Google Sign-In failed to load. Check your connection.');return;}
+  const btn=document.getElementById('g-btn');
+  btn.disabled=true; btn.querySelector('span') && (btn.querySelectorAll('span')[1].textContent='Signing in...');
   google.accounts.id.initialize({
     client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleResponse
+    callback: handleGoogleResponse,
+    ux_mode: 'popup'
   });
-  google.accounts.id.prompt((notification) => {
-    if(notification.isNotDisplayed() || notification.isSkippedMoment()){
-      // Fallback to popup
-      google.accounts.id.renderButton(document.createElement('div'), {});
-      btn.disabled = false;
-      btn.innerHTML = btn.innerHTML.replace('Signing in...','Continue with Google');
+  // Use renderButton on a temp element then click it
+  const tmp = document.createElement('div');
+  tmp.style.display='none';
+  document.body.appendChild(tmp);
+  google.accounts.id.renderButton(tmp, {theme:'filled_black',size:'large'});
+  setTimeout(()=>{
+    const gBtn = tmp.querySelector('div[role=button]') || tmp.querySelector('iframe');
+    if(gBtn){ gBtn.click(); }
+    else {
+      // fallback - direct prompt
+      google.accounts.id.prompt((n)=>{
+        if(n.isNotDisplayed()||n.isSkippedMoment()){
+          btn.disabled=false;
+          showErr('Popup was blocked. Please allow popups for this site and try again.');
+          document.body.removeChild(tmp);
+        }
+      });
     }
-  });
+  }, 300);
 }
 
 async function handleGoogleResponse(resp){
