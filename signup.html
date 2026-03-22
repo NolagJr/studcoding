@@ -184,10 +184,11 @@ async function handleGoogleResponse(resp){
       // New user — show username picker
       showScreen2(data.user);
     } else {
-      // Existing user — go straight to dashboard
-      localStorage.setItem('stud_session_v3', data.token);
-      localStorage.setItem('stud_user', JSON.stringify(data.user));
-      window.location.href = 'dashboard.html';
+      // Already has an account — don't let them sign up again
+      document.getElementById('g-err').textContent = 'You already have an account. Redirecting to sign in...';
+      document.getElementById('g-err').className = 'alert err show';
+      document.getElementById('g-btn').disabled = false;
+      setTimeout(() => window.location.href = 'login.html', 2000);
     }
   }catch(e){
     document.getElementById('g-err').textContent = 'Something went wrong. Please try again.';
