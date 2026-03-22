@@ -6,6 +6,7 @@
 <title>Sign Up — Coraic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#09090f;--surface:#0f1018;--surface2:#141520;--border2:#2a2d45;--orange:#ff7a2e;--orange-hi:#ff9555;--text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);--success:#22d37f;--danger:#ff5470;}
@@ -18,25 +19,18 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
 @keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
 @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-30px)}}
 @keyframes d3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
-
 .card{position:relative;z-index:1;width:100%;max-width:440px;background:rgba(15,16,24,.97);border:1px solid var(--border2);border-radius:24px;padding:48px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.06);animation:ci .5s cubic-bezier(.22,1,.36,1) both;}
 @keyframes ci{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-
 .back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:32px;transition:color .15s;width:fit-content;}
-.back:hover{color:var(--sub);}
-.back svg{width:13px;height:13px;}
-
+.back:hover{color:var(--sub);}.back svg{width:13px;height:13px;}
 .logo{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:36px;}
 .logo-mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#ff7a2e,#ff9555);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(255,122,46,.5);}
 .logo-mark svg{width:20px;height:20px;}
 .logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.3px;}
-
-/* ── SCREEN 1: Google sign in ── */
-.screen{display:none;}
-.screen.active{display:block;}
+.screen{display:none;}.screen.active{display:block;}
 .screen1-title{font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.6px;text-align:center;margin-bottom:8px;}
 .screen1-sub{font-size:14px;color:var(--sub);text-align:center;margin-bottom:32px;line-height:1.6;}
-.g-btn{width:100%;padding:15px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.05);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:16px;}
+.g-btn{width:100%;padding:15px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.05);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:11px;}
 .g-btn:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.22);transform:translateY(-1px);}
 .g-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .g-btn svg{width:20px;height:20px;flex-shrink:0;}
@@ -45,9 +39,6 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
 .err{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
 .screen1-footer{text-align:center;font-size:13px;color:var(--muted);margin-top:20px;}
 .screen1-footer a{color:var(--orange);font-weight:600;text-decoration:none;}
-.screen1-footer a:hover{text-decoration:underline;}
-
-/* ── SCREEN 2: Username picker ── */
 .confetti-row{display:flex;justify-content:center;gap:6px;font-size:26px;margin-bottom:20px;animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1);}
 @keyframes bounceIn{from{transform:scale(0) translateY(-20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .pick-title{font-family:'Cabinet Grotesk',sans-serif;font-size:30px;font-weight:900;letter-spacing:-.8px;text-align:center;margin-bottom:8px;}
@@ -58,30 +49,23 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
 .username-input:focus{background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.12);}
 .username-input.valid{border-color:var(--success);}
 .username-input.invalid{border-color:var(--danger);}
-.username-input.checking{border-color:var(--orange);}
-.username-status{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;min-height:20px;margin-bottom:18px;padding-left:4px;transition:all .2s;}
-.status-ok{color:var(--success);}
-.status-err{color:var(--danger);}
-.status-checking{color:var(--orange);}
+.username-status{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;min-height:20px;margin-bottom:18px;padding-left:4px;}
+.status-ok{color:var(--success);}.status-err{color:var(--danger);}.status-checking{color:var(--orange);}
 .status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
-
 .suggestions{margin-bottom:20px;}
 .suggestions-label{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .sugg-pills{display:flex;flex-wrap:wrap;gap:7px;}
 .sugg-pill{padding:6px 13px;border-radius:99px;border:1px solid var(--border2);background:rgba(255,255,255,.03);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);cursor:pointer;transition:all .15s;}
 .sugg-pill:hover{border-color:var(--orange);color:var(--orange);background:rgba(255,122,46,.07);}
-
 .btn-confirm{width:100%;padding:16px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 6px 28px rgba(255,122,46,.4);}
 .btn-confirm:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.55);}
 .btn-confirm:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 </style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div><div class="bg-orb3"></div></div>
-
 <div class="card">
-  <!-- ── SCREEN 1: Google Sign In ── -->
+  <!-- SCREEN 1: Google Sign In -->
   <div class="screen active" id="screen1">
     <a href="index.html" class="back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -101,207 +85,171 @@ html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'D
     <div class="screen1-footer">Already have an account? <a href="login.html">Sign in</a></div>
   </div>
 
-  <!-- ── SCREEN 2: Pick Username ── -->
+  <!-- SCREEN 2: Pick Username -->
   <div class="screen" id="screen2">
     <div class="confetti-row">🎉 ⚡ 🎮</div>
     <div class="pick-title">Pick a fun username!</div>
     <div class="pick-sub">This is how other Coraic users will see you. You can change it once every 60 days.</div>
-
     <div class="alert err" id="u-err"></div>
-
     <div class="username-wrap">
       <span class="username-prefix">@</span>
-      <input class="username-input" type="text" id="username-input" placeholder="cooldevname" maxlength="20" oninput="onUsernameInput(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+      <input class="username-input" type="text" id="username-input" placeholder="cooldevname" maxlength="20" oninput="onUsernameInput(this.value)" autocomplete="off" spellcheck="false">
     </div>
     <div class="username-status" id="u-status"></div>
-
     <div class="suggestions" id="sugg-section" style="display:none;">
       <div class="suggestions-label">Suggestions</div>
       <div class="sugg-pills" id="sugg-pills"></div>
     </div>
-
     <button class="btn-confirm" id="confirm-btn" onclick="confirmUsername()" disabled>Let's go →</button>
   </div>
 </div>
 
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
+const GOOGLE_CLIENT_ID = '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com';
 
-let pendingToken   = null;
-let pendingUser    = null;
-let usernameValid  = false;
-let checkTimer     = null;
+let pendingToken = null;
+let pendingUser  = null;
+let usernameValid = false;
+let checkTimer = null;
 
-// ── GOOGLE SIGN IN ────────────────────────────────
 function googleSignIn(){
-  if(typeof google==='undefined'){showErr('Google Sign-In failed to load. Check your connection.');return;}
+  if(typeof google==='undefined'){
+    document.getElementById('g-err').textContent='Google Sign-In failed to load. Check your connection.';
+    document.getElementById('g-err').className='alert err show';
+    return;
+  }
   const btn=document.getElementById('g-btn');
-  btn.disabled=true; btn.querySelector('span') && (btn.querySelectorAll('span')[1].textContent='Signing in...');
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleResponse,
-    ux_mode: 'popup'
-  });
-  // Use renderButton on a temp element then click it
-  const tmp = document.createElement('div');
-  tmp.style.display='none';
-  document.body.appendChild(tmp);
-  google.accounts.id.renderButton(tmp, {theme:'filled_black',size:'large'});
-  setTimeout(()=>{
-    const gBtn = tmp.querySelector('div[role=button]') || tmp.querySelector('iframe');
-    if(gBtn){ gBtn.click(); }
-    else {
-      // fallback - direct prompt
-      google.accounts.id.prompt((n)=>{
-        if(n.isNotDisplayed()||n.isSkippedMoment()){
-          btn.disabled=false;
-          showErr('Popup was blocked. Please allow popups for this site and try again.');
-          document.body.removeChild(tmp);
-        }
-      });
+  btn.disabled=true;
+  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID, callback:handleGoogleResponse});
+  google.accounts.id.prompt((n)=>{
+    if(n.isNotDisplayed()||n.isSkippedMoment()){
+      btn.disabled=false;
+      document.getElementById('g-err').textContent='Popup was blocked. Please allow popups for this site and try again.';
+      document.getElementById('g-err').className='alert err show';
     }
-  }, 300);
+  });
 }
 
 async function handleGoogleResponse(resp){
   try{
-    const res  = await fetch(BASE+'/auth/google', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({credential: resp.credential})
-    });
-    const data = await res.json();
+    const res=await fetch(BASE+'/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:resp.credential})});
+    const data=await res.json();
     if(data.error){
-      document.getElementById('g-err').textContent = data.error;
-      document.getElementById('g-err').className = 'alert err show';
-      document.getElementById('g-btn').disabled = false;
+      document.getElementById('g-err').textContent=data.error;
+      document.getElementById('g-err').className='alert err show';
+      document.getElementById('g-btn').disabled=false;
       return;
     }
-
-    pendingToken = data.token;
-    pendingUser  = data.user;
+    pendingToken=data.token;
+    pendingUser=data.user;
 
     if(data.new_user){
-      // New user — show username picker
+      // Brand new — show username picker
       showScreen2(data.user);
     } else {
-      // Already has an account — don't let them sign up again
-      document.getElementById('g-err').textContent = 'You already have an account. Redirecting to sign in...';
-      document.getElementById('g-err').className = 'alert err show';
-      document.getElementById('g-btn').disabled = false;
-      setTimeout(() => window.location.href = 'login.html', 2000);
+      // Already has an account — block them, send to login
+      document.getElementById('g-err').textContent='This email is already registered. Try signing in instead.';
+      document.getElementById('g-err').className='alert err show';
+      document.getElementById('g-btn').disabled=false;
+      setTimeout(()=>window.location.href='login.html', 3000);
     }
   }catch(e){
-    document.getElementById('g-err').textContent = 'Something went wrong. Please try again.';
-    document.getElementById('g-err').className = 'alert err show';
-    document.getElementById('g-btn').disabled = false;
+    document.getElementById('g-err').textContent='Something went wrong. Please try again.';
+    document.getElementById('g-err').className='alert err show';
+    document.getElementById('g-btn').disabled=false;
   }
 }
 
 function showScreen2(user){
   document.getElementById('screen1').classList.remove('active');
   document.getElementById('screen2').classList.add('active');
-  // Pre-fill with Google name suggestion
-  const base = (user.name || user.email.split('@')[0]).toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,16);
-  document.getElementById('username-input').value = base;
+  const base=(user.name||user.email.split('@')[0]).toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,16);
+  document.getElementById('username-input').value=base;
   generateSuggestions(base);
   onUsernameInput(base);
 }
 
-// ── USERNAME CHECKER ─────────────────────────────
 function onUsernameInput(val){
-  val = val.toLowerCase().replace(/[^a-z0-9_]/g,'');
-  document.getElementById('username-input').value = val;
-  usernameValid = false;
-  document.getElementById('confirm-btn').disabled = true;
+  val=val.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  document.getElementById('username-input').value=val;
+  usernameValid=false;
+  document.getElementById('confirm-btn').disabled=true;
   clearTimeout(checkTimer);
-
-  if(val.length < 3){
-    setStatus('', val.length > 0 ? 'At least 3 characters' : '', 'err');
-    return;
-  }
-  if(val.length > 20){ setStatus('', 'Max 20 characters', 'err'); return; }
-
-  setStatus('checking', 'Checking...', 'checking');
-  checkTimer = setTimeout(()=>checkUsername(val), 500);
+  if(val.length<3){setStatus('',val.length>0?'At least 3 characters':'','err');return;}
+  if(val.length>20){setStatus('','Max 20 characters','err');return;}
+  setStatus('checking','Checking...','checking');
+  checkTimer=setTimeout(()=>checkUsername(val),500);
 }
 
 async function checkUsername(val){
   try{
-    const res  = await fetch(BASE+'/auth/check-username?username='+encodeURIComponent(val));
-    const data = await res.json();
+    const res=await fetch(BASE+'/auth/check-username?username='+encodeURIComponent(val));
+    const data=await res.json();
     if(data.available){
-      setStatus('ok', '@'+val+' is available ✓', 'ok');
-      usernameValid = true;
-      document.getElementById('confirm-btn').disabled = false;
-      document.getElementById('username-input').className = 'username-input valid';
-    } else {
-      setStatus('err', '@'+val+' is already taken', 'err');
-      usernameValid = false;
-      document.getElementById('confirm-btn').disabled = true;
-      document.getElementById('username-input').className = 'username-input invalid';
-      // Show alternatives
+      setStatus('ok','@'+val+' is available ✓','ok');
+      usernameValid=true;
+      document.getElementById('confirm-btn').disabled=false;
+      document.getElementById('username-input').className='username-input valid';
+    }else{
+      setStatus('err','@'+val+' is already taken','err');
+      usernameValid=false;
+      document.getElementById('confirm-btn').disabled=true;
+      document.getElementById('username-input').className='username-input invalid';
       generateSuggestions(val);
     }
   }catch(e){
-    setStatus('', 'Could not check — try anyway', 'checking');
-    usernameValid = true;
-    document.getElementById('confirm-btn').disabled = false;
+    setStatus('','Could not check — try anyway','checking');
+    usernameValid=true;
+    document.getElementById('confirm-btn').disabled=false;
   }
 }
 
-function setStatus(dot, msg, type){
-  const el = document.getElementById('u-status');
-  if(!msg){ el.innerHTML=''; return; }
-  const colors = {ok:'status-ok', err:'status-err', checking:'status-checking'};
-  el.className = 'username-status '+(colors[type]||'');
-  el.innerHTML = dot ? `<div class="status-dot"></div>${msg}` : msg;
+function setStatus(dot,msg,type){
+  const el=document.getElementById('u-status');
+  if(!msg){el.innerHTML='';return;}
+  const colors={ok:'status-ok',err:'status-err',checking:'status-checking'};
+  el.className='username-status '+(colors[type]||'');
+  el.innerHTML=dot?`<div class="status-dot"></div>${msg}`:msg;
 }
 
 function generateSuggestions(base){
-  const suffixes = [Math.floor(Math.random()*900)+100, 'dev', 'lua', 'rblx', Math.floor(Math.random()*99)+1];
-  const pills = document.getElementById('sugg-pills');
-  pills.innerHTML = '';
+  const suffixes=[Math.floor(Math.random()*900)+100,'dev','lua','rblx',Math.floor(Math.random()*99)+1];
+  const pills=document.getElementById('sugg-pills');
+  pills.innerHTML='';
   suffixes.slice(0,4).forEach(s=>{
-    const name = (base+s).slice(0,20);
-    const p = document.createElement('button');
-    p.className='sugg-pill'; p.textContent='@'+name;
-    p.onclick=()=>{
-      document.getElementById('username-input').value=name;
-      onUsernameInput(name);
-    };
+    const name=(base+s).slice(0,20);
+    const p=document.createElement('button');
+    p.className='sugg-pill';p.textContent='@'+name;
+    p.onclick=()=>{document.getElementById('username-input').value=name;onUsernameInput(name);};
     pills.appendChild(p);
   });
   document.getElementById('sugg-section').style.display='block';
 }
 
 async function confirmUsername(){
-  const username = document.getElementById('username-input').value.trim();
-  if(!usernameValid || username.length < 3) return;
-  document.getElementById('confirm-btn').disabled = true;
-  document.getElementById('confirm-btn').textContent = 'Setting up your account...';
+  const username=document.getElementById('username-input').value.trim();
+  if(!usernameValid||username.length<3)return;
+  document.getElementById('confirm-btn').disabled=true;
+  document.getElementById('confirm-btn').textContent='Setting up your account...';
   try{
-    const res  = await fetch(BASE+'/auth/set-username', {
-      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+pendingToken},
-      body: JSON.stringify({username})
-    });
-    const data = await res.json();
+    const res=await fetch(BASE+'/auth/set-username',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+pendingToken},body:JSON.stringify({username})});
+    const data=await res.json();
     if(data.error){
-      document.getElementById('u-err').textContent = data.error;
-      document.getElementById('u-err').className = 'alert err show';
-      document.getElementById('confirm-btn').disabled = false;
-      document.getElementById('confirm-btn').textContent = "Let's go →";
+      document.getElementById('u-err').textContent=data.error;
+      document.getElementById('u-err').className='alert err show';
+      document.getElementById('confirm-btn').disabled=false;
+      document.getElementById('confirm-btn').textContent="Let's go →";
       return;
     }
-    // Save and go to dashboard
-    localStorage.setItem('stud_session_v3', data.token || pendingToken);
-    const updatedUser = Object.assign({}, pendingUser, {username});
-    localStorage.setItem('stud_user', JSON.stringify(updatedUser));
-    window.location.href = 'dashboard.html';
+    localStorage.setItem('stud_session_v3',data.token||pendingToken);
+    localStorage.setItem('stud_user',JSON.stringify(Object.assign({},pendingUser,{username})));
+    window.location.href='dashboard.html';
   }catch(e){
-    document.getElementById('u-err').textContent = 'Something went wrong. Please try again.';
-    document.getElementById('u-err').className = 'alert err show';
-    document.getElementById('confirm-btn').disabled = false;
-    document.getElementById('confirm-btn').textContent = "Let's go →";
+    document.getElementById('u-err').textContent='Something went wrong. Please try again.';
+    document.getElementById('u-err').className='alert err show';
+    document.getElementById('confirm-btn').disabled=false;
+    document.getElementById('confirm-btn').textContent="Let's go →";
   }
 }
 </script>
