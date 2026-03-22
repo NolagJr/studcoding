@@ -113,8 +113,8 @@ function showOk(id, msg){ const e=document.getElementById(id); e.textContent=msg
 function clearA(){ ['alertErr','alertOk','err2','ok2'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='alert '+(id.includes('Ok')||id.startsWith('ok')?'ok':'err');}); }
 
 function googleSignIn(){
-  const clientId = 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID';
-  if(clientId === 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID'){
+  const clientId = '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com';
+  if(clientId === '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com'){
     showErr('alertErr','Google sign-in is not yet configured. Use email login below.');
     return;
   }

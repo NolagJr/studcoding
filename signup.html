@@ -8,209 +8,300 @@
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#09090f;--surface2:#141520;--border2:#2a2d45;--orange:#ff7a2e;--orange-hi:#ff9555;--text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);--success:#22d37f;--danger:#ff5470;}
+:root{--bg:#09090f;--surface:#0f1018;--surface2:#141520;--border2:#2a2d45;--orange:#ff7a2e;--orange-hi:#ff9555;--text:#f0f0ff;--sub:rgba(240,240,255,.6);--muted:rgba(240,240,255,.32);--success:#22d37f;--danger:#ff5470;}
 html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;}
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,122,46,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,122,46,.025) 1px,transparent 1px);background-size:44px 44px;}
-.bg-orb1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(255,122,46,.13) 0%,transparent 60%);top:-250px;left:-150px;filter:blur(90px);animation:d1 22s ease-in-out infinite;}
-.bg-orb2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(80,100,255,.1) 0%,transparent 60%);bottom:-150px;right:-100px;filter:blur(100px);animation:d2 28s ease-in-out infinite;}
+.bg-orb1{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(255,122,46,.15) 0%,transparent 60%);top:-250px;left:-150px;filter:blur(90px);animation:d1 22s ease-in-out infinite;}
+.bg-orb2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(80,100,255,.12) 0%,transparent 60%);bottom:-150px;right:-100px;filter:blur(100px);animation:d2 28s ease-in-out infinite;}
+.bg-orb3{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(34,211,127,.07) 0%,transparent 60%);top:40%;left:50%;filter:blur(120px);animation:d3 18s ease-in-out infinite;}
 @keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
 @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-30px)}}
-.card{position:relative;z-index:1;width:100%;max-width:440px;background:rgba(15,16,24,.97);border:1px solid var(--border2);border-radius:24px;padding:44px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7);animation:ci .5s cubic-bezier(.22,1,.36,1) both;}
-@keyframes ci{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:28px;transition:color .15s;width:fit-content;}
+@keyframes d3{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+
+.card{position:relative;z-index:1;width:100%;max-width:440px;background:rgba(15,16,24,.97);border:1px solid var(--border2);border-radius:24px;padding:48px 40px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,122,46,.06);animation:ci .5s cubic-bezier(.22,1,.36,1) both;}
+@keyframes ci{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+.back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:32px;transition:color .15s;width:fit-content;}
 .back:hover{color:var(--sub);}
 .back svg{width:13px;height:13px;}
-.logo{display:flex;align-items:center;gap:11px;margin-bottom:32px;}
-.logo-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#ff7a2e,#ff9555);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(255,122,46,.45);}
-.logo-mark svg{width:18px;height:18px;}
-.logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.3px;}
-h1{font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
-.subtitle{font-size:14px;color:var(--sub);margin-bottom:22px;}
-.alert{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:14px;display:none;font-weight:500;line-height:1.5;}
+
+.logo{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:36px;}
+.logo-mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#ff7a2e,#ff9555);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(255,122,46,.5);}
+.logo-mark svg{width:20px;height:20px;}
+.logo-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.3px;}
+
+/* ── SCREEN 1: Google sign in ── */
+.screen{display:none;}
+.screen.active{display:block;}
+.screen1-title{font-family:'Cabinet Grotesk',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.6px;text-align:center;margin-bottom:8px;}
+.screen1-sub{font-size:14px;color:var(--sub);text-align:center;margin-bottom:32px;line-height:1.6;}
+.g-btn{width:100%;padding:15px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.05);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:16px;}
+.g-btn:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.22);transform:translateY(-1px);}
+.g-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.g-btn svg{width:20px;height:20px;flex-shrink:0;}
+.alert{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:16px;display:none;font-weight:500;line-height:1.5;}
 .alert.show{display:block;}
 .err{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.3);color:var(--danger);}
-.ok{background:rgba(34,211,127,.1);border:1px solid rgba(34,211,127,.3);color:var(--success);}
-.field{margin-bottom:14px;}
-.field-label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
-.field-hint{font-size:11px;color:var(--muted);margin-top:5px;}
-.field-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;padding:14px 16px;outline:none;transition:all .2s;}
-.field-input:focus{border-color:var(--orange);background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.1);}
-.field-input::placeholder{color:var(--muted);}
-.code-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;padding:18px 16px;outline:none;transition:all .2s;text-align:center;letter-spacing:12px;}
-.code-input:focus{border-color:var(--orange);background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.1);}
-.code-input::placeholder{font-size:20px;letter-spacing:4px;color:var(--muted);}
-.btn{width:100%;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 6px 28px rgba(255,122,46,.38);}
-.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.52);}
-.btn:disabled{opacity:.5;cursor:not-allowed;}
-.g-btn{width:100%;padding:13px;border:1px solid var(--border2);border-radius:11px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;}
-.g-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);}
-.g-btn svg{width:18px;height:18px;flex-shrink:0;}
-.divider{display:flex;align-items:center;gap:14px;margin:18px 0;color:var(--muted);font-size:12px;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border2);}
-.footer-txt{text-align:center;font-size:13.5px;color:var(--sub);margin-top:16px;}
-.footer-txt a{color:var(--orange);font-weight:600;text-decoration:none;}
-.footer-txt a:hover{text-decoration:underline;}
-.resend-btn{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .15s;padding:0;}
-.resend-btn:hover{color:var(--sub);}
-.dev-box{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:14px;font-size:12px;color:#fbbf24;margin-bottom:16px;text-align:center;display:none;}
-.dev-box.show{display:block;}
-.dev-code{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;letter-spacing:10px;margin-top:6px;}
-.success{display:none;text-align:center;}
-.success.show{display:block;}
-.success-icon{width:72px;height:72px;border-radius:50%;background:rgba(34,211,127,.12);border:2px solid rgba(34,211,127,.4);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 22px;animation:pop .4s cubic-bezier(.22,1,.36,1);}
-@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
-.success h2{font-family:'Cabinet Grotesk',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px;}
-.success p{font-size:14px;color:var(--sub);margin-bottom:24px;line-height:1.7;}
-.btn-go{display:block;width:100%;padding:15px;background:var(--success);color:#05150d;border:none;border-radius:11px;font-family:'Cabinet Grotesk',sans-serif;font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;text-align:center;}
-.btn-go:hover{filter:brightness(1.1);}
+.screen1-footer{text-align:center;font-size:13px;color:var(--muted);margin-top:20px;}
+.screen1-footer a{color:var(--orange);font-weight:600;text-decoration:none;}
+.screen1-footer a:hover{text-decoration:underline;}
+
+/* ── SCREEN 2: Username picker ── */
+.confetti-row{display:flex;justify-content:center;gap:6px;font-size:26px;margin-bottom:20px;animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes bounceIn{from{transform:scale(0) translateY(-20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.pick-title{font-family:'Cabinet Grotesk',sans-serif;font-size:30px;font-weight:900;letter-spacing:-.8px;text-align:center;margin-bottom:8px;}
+.pick-sub{font-size:14px;color:var(--sub);text-align:center;margin-bottom:28px;line-height:1.6;}
+.username-wrap{position:relative;margin-bottom:10px;}
+.username-prefix{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--muted);pointer-events:none;font-weight:600;}
+.username-input{width:100%;background:var(--surface2);border:1.5px solid var(--border2);border-radius:13px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;padding:16px 16px 16px 30px;outline:none;transition:all .2s;letter-spacing:.5px;}
+.username-input:focus{background:#141620;box-shadow:0 0 0 3px rgba(255,122,46,.12);}
+.username-input.valid{border-color:var(--success);}
+.username-input.invalid{border-color:var(--danger);}
+.username-input.checking{border-color:var(--orange);}
+.username-status{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;min-height:20px;margin-bottom:18px;padding-left:4px;transition:all .2s;}
+.status-ok{color:var(--success);}
+.status-err{color:var(--danger);}
+.status-checking{color:var(--orange);}
+.status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+.suggestions{margin-bottom:20px;}
+.suggestions-label{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.sugg-pills{display:flex;flex-wrap:wrap;gap:7px;}
+.sugg-pill{padding:6px 13px;border-radius:99px;border:1px solid var(--border2);background:rgba(255,255,255,.03);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);cursor:pointer;transition:all .15s;}
+.sugg-pill:hover{border-color:var(--orange);color:var(--orange);background:rgba(255,122,46,.07);}
+
+.btn-confirm{width:100%;padding:16px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--orange),var(--orange-hi));color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 6px 28px rgba(255,122,46,.4);}
+.btn-confirm:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,122,46,.55);}
+.btn-confirm:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 </style>
 </head>
 <body>
-<div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div></div>
-<div class="card">
-  <a href="index.html" class="back">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-    Back to home
-  </a>
-  <div class="logo">
-    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-    <span class="logo-name">Coraic</span>
-  </div>
+<div class="bg"><div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div><div class="bg-orb3"></div></div>
 
-  <!-- STEP 1: Form -->
-  <div id="step1">
-    <h1>Create account</h1>
-    <p class="subtitle">Build smarter Roblox games with AI</p>
-    <button class="g-btn" onclick="googleSignIn()">
+<div class="card">
+  <!-- ── SCREEN 1: Google Sign In ── -->
+  <div class="screen active" id="screen1">
+    <a href="index.html" class="back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to home
+    </a>
+    <div class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <span class="logo-name">Coraic</span>
+    </div>
+    <div class="screen1-title">Create your account</div>
+    <div class="screen1-sub">Sign up with Google to get started — takes 10 seconds.</div>
+    <div class="alert err" id="g-err"></div>
+    <button class="g-btn" id="g-btn" onclick="googleSignIn()">
       <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continue with Google
     </button>
-    <div class="divider">or sign up with email</div>
-    <div class="alert err" id="err1"></div>
-    <div class="field"><label class="field-label">Username</label><input class="field-input" type="text" id="username" placeholder="cooldevname" autocomplete="username"><div class="field-hint">Minimum 3 characters</div></div>
-    <div class="field"><label class="field-label">Email</label><input class="field-input" type="email" id="email" placeholder="you@example.com" autocomplete="email"></div>
-    <div class="field"><label class="field-label">Password</label><input class="field-input" type="password" id="password" placeholder="••••••••" autocomplete="new-password"><div class="field-hint">Minimum 8 characters</div></div>
-    <button class="btn" id="signupBtn" onclick="doSignup()">Create Account →</button>
-    <p class="footer-txt">Already have an account? <a href="login.html">Sign in</a></p>
+    <div class="screen1-footer">Already have an account? <a href="login.html">Sign in</a></div>
   </div>
 
-  <!-- STEP 2: Verify Email -->
-  <div id="step2" style="display:none;">
-    <h1>Verify your email</h1>
-    <p class="subtitle" id="step2sub">We sent a 6-digit code to your email.</p>
-    <div class="alert err" id="err2"></div>
-    <div class="alert ok" id="ok2"></div>
-    <div class="dev-box" id="devbox">⚡ Dev mode — email not yet configured. Your code:<div class="dev-code" id="devcode"></div></div>
-    <div class="field" style="margin-top:8px;"><label class="field-label">6-Digit Code</label><input class="code-input" type="text" id="verifyCode" placeholder="000000" maxlength="6" inputmode="numeric"></div>
-    <button class="btn" id="verifyBtn" onclick="doVerify()">Verify & Continue →</button>
-    <div style="text-align:center;margin-top:12px;"><button class="resend-btn" onclick="resendCode()">Didn't get it? Resend code</button></div>
-    <p class="footer-txt">Wrong email? <a href="#" onclick="location.reload()">Start over</a></p>
-  </div>
+  <!-- ── SCREEN 2: Pick Username ── -->
+  <div class="screen" id="screen2">
+    <div class="confetti-row">🎉 ⚡ 🎮</div>
+    <div class="pick-title">Pick a fun username!</div>
+    <div class="pick-sub">This is how other Coraic users will see you. You can change it once every 60 days.</div>
 
-  <!-- SUCCESS -->
-  <div class="success" id="successSection">
-    <div class="success-icon">🎉</div>
-    <h2>You're verified!</h2>
-    <p>Your account is ready. Head to the dashboard to install the plugin and start building.</p>
-    <a href="dashboard.html" class="btn-go">Go to Dashboard →</a>
+    <div class="alert err" id="u-err"></div>
+
+    <div class="username-wrap">
+      <span class="username-prefix">@</span>
+      <input class="username-input" type="text" id="username-input" placeholder="cooldevname" maxlength="20" oninput="onUsernameInput(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="username-status" id="u-status"></div>
+
+    <div class="suggestions" id="sugg-section" style="display:none;">
+      <div class="suggestions-label">Suggestions</div>
+      <div class="sugg-pills" id="sugg-pills"></div>
+    </div>
+
+    <button class="btn-confirm" id="confirm-btn" onclick="confirmUsername()" disabled>Let's go →</button>
   </div>
 </div>
 
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
-// NO auto-redirect — user chose to come here
 
-let pendingUserId = null;
-let pendingEmail  = '';
+let pendingToken   = null;
+let pendingUser    = null;
+let usernameValid  = false;
+let checkTimer     = null;
 
-function showErr(id, msg){ const e=document.getElementById(id); e.innerHTML=msg; e.className='alert err show'; const ok=document.getElementById(id.replace('err','ok')); if(ok) ok.className='alert ok'; }
-function showOk(id, msg){ const e=document.getElementById(id); e.textContent=msg; e.className='alert ok show'; const er=document.getElementById(id.replace('ok','err')); if(er) er.className='alert err'; }
-function clearA(){ ['err1','err2','ok2'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='alert '+(id.startsWith('ok')?'ok':'err');}); }
-
-// Google sign-in via Google Identity Services
+// ── GOOGLE SIGN IN ────────────────────────────────
 function googleSignIn(){
-  // Google One Tap / Popup — requires GOOGLE_CLIENT_ID configured
-  // If not configured, show helpful message
-  const clientId = 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID';
-  if(clientId === 'REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID'){
-    showErr('err1', 'Google sign-in is not yet configured. Use email signup below.');
+  const GOOGLE_CLIENT_ID = '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com';
+  if(GOOGLE_CLIENT_ID === '629306556157-dp0h5ui7sk1ans1l3aokafpvcfomflk0.apps.googleusercontent.com'){
+    document.getElementById('g-err').textContent = 'Google sign-in is not yet configured. Come back soon!';
+    document.getElementById('g-err').className = 'alert err show';
     return;
   }
-  if(typeof google==='undefined'){ showErr('err1','Google Sign-In failed to load.'); return; }
+  if(typeof google === 'undefined'){
+    document.getElementById('g-err').textContent = 'Google Sign-In failed to load. Check your connection.';
+    document.getElementById('g-err').className = 'alert err show';
+    return;
+  }
+  const btn = document.getElementById('g-btn');
+  btn.disabled = true;
+  btn.innerHTML = btn.innerHTML.replace('Continue with Google','Signing in...');
+
   google.accounts.id.initialize({
-    client_id: clientId,
-    callback: async (resp) => {
-      try{
-        const res  = await fetch(BASE+'/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:resp.credential})});
-        const data = await res.json();
-        if(data.error){ showErr('err1',data.error); return; }
-        localStorage.setItem('stud_session_v3',data.token);
-        if(data.user) localStorage.setItem('stud_user',JSON.stringify(data.user));
-        window.location.href='dashboard.html';
-      }catch(e){ showErr('err1','Google sign-in failed. Try email instead.'); }
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleResponse
+  });
+  google.accounts.id.prompt((notification) => {
+    if(notification.isNotDisplayed() || notification.isSkippedMoment()){
+      // Fallback to popup
+      google.accounts.id.renderButton(document.createElement('div'), {});
+      btn.disabled = false;
+      btn.innerHTML = btn.innerHTML.replace('Signing in...','Continue with Google');
     }
   });
-  google.accounts.id.prompt();
 }
 
-async function doSignup(){
-  clearA();
-  const username=document.getElementById('username').value.trim();
-  const email=document.getElementById('email').value.trim().toLowerCase();
-  const password=document.getElementById('password').value;
-  if(!username) return showErr('err1','Please enter a username.');
-  if(username.length<3) return showErr('err1','Username must be at least 3 characters.');
-  if(!email||!email.includes('@')) return showErr('err1','Enter a valid email address.');
-  if(!password||password.length<8) return showErr('err1','Password must be at least 8 characters.');
-  const btn=document.getElementById('signupBtn');
-  btn.disabled=true; btn.textContent='Creating account...';
+async function handleGoogleResponse(resp){
   try{
-    const res=await fetch(BASE+'/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password})});
-    const data=await res.json();
-    if(data.error&&!data.needs_verification){
-      if(data.suggest_login) showErr('err1',data.error+' <a href="login.html" style="color:var(--orange);font-weight:700;">Log in →</a>');
-      else showErr('err1',data.error);
+    const res  = await fetch(BASE+'/auth/google', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({credential: resp.credential})
+    });
+    const data = await res.json();
+    if(data.error){
+      document.getElementById('g-err').textContent = data.error;
+      document.getElementById('g-err').className = 'alert err show';
+      document.getElementById('g-btn').disabled = false;
       return;
     }
-    pendingUserId=data.user_id; pendingEmail=email;
-    document.getElementById('step2sub').textContent='We sent a 6-digit code to '+(data.email_preview||email)+'. Enter it below to verify your account.';
-    if(data.dev_code){ document.getElementById('devcode').textContent=data.dev_code; document.getElementById('devbox').classList.add('show'); }
-    document.getElementById('step1').style.display='none';
-    document.getElementById('step2').style.display='block';
-  }catch(e){ showErr('err1','Could not connect to server. Please try again.'); }
-  finally{ btn.disabled=false; btn.textContent='Create Account →'; }
+
+    pendingToken = data.token;
+    pendingUser  = data.user;
+
+    if(data.new_user){
+      // New user — show username picker
+      showScreen2(data.user);
+    } else {
+      // Existing user — go straight to dashboard
+      localStorage.setItem('stud_session_v3', data.token);
+      localStorage.setItem('stud_user', JSON.stringify(data.user));
+      window.location.href = 'dashboard.html';
+    }
+  }catch(e){
+    document.getElementById('g-err').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('g-err').className = 'alert err show';
+    document.getElementById('g-btn').disabled = false;
+  }
 }
 
-async function doVerify(){
-  clearA();
-  const code=document.getElementById('verifyCode').value.replace(/\s/g,'');
-  if(!code||code.length<6) return showErr('err2','Enter the 6-digit code from your email.');
-  const btn=document.getElementById('verifyBtn');
-  btn.disabled=true; btn.textContent='Verifying...';
+function showScreen2(user){
+  document.getElementById('screen1').classList.remove('active');
+  document.getElementById('screen2').classList.add('active');
+  // Pre-fill with Google name suggestion
+  const base = (user.name || user.email.split('@')[0]).toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,16);
+  document.getElementById('username-input').value = base;
+  generateSuggestions(base);
+  onUsernameInput(base);
+}
+
+// ── USERNAME CHECKER ─────────────────────────────
+function onUsernameInput(val){
+  val = val.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  document.getElementById('username-input').value = val;
+  usernameValid = false;
+  document.getElementById('confirm-btn').disabled = true;
+  clearTimeout(checkTimer);
+
+  if(val.length < 3){
+    setStatus('', val.length > 0 ? 'At least 3 characters' : '', 'err');
+    return;
+  }
+  if(val.length > 20){ setStatus('', 'Max 20 characters', 'err'); return; }
+
+  setStatus('checking', 'Checking...', 'checking');
+  checkTimer = setTimeout(()=>checkUsername(val), 500);
+}
+
+async function checkUsername(val){
   try{
-    const res=await fetch(BASE+'/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:pendingUserId,email:pendingEmail,code})});
-    const data=await res.json();
-    if(data.error){ showErr('err2',data.error); return; }
-    localStorage.setItem('stud_session_v3',data.token);
-    if(data.user) localStorage.setItem('stud_user',JSON.stringify(data.user));
-    document.getElementById('step2').style.display='none';
-    document.getElementById('successSection').classList.add('show');
-  }catch(e){ showErr('err2','Could not connect. Please try again.'); }
-  finally{ btn.disabled=false; btn.textContent='Verify & Continue →'; }
+    const res  = await fetch(BASE+'/auth/check-username?username='+encodeURIComponent(val));
+    const data = await res.json();
+    if(data.available){
+      setStatus('ok', '@'+val+' is available ✓', 'ok');
+      usernameValid = true;
+      document.getElementById('confirm-btn').disabled = false;
+      document.getElementById('username-input').className = 'username-input valid';
+    } else {
+      setStatus('err', '@'+val+' is already taken', 'err');
+      usernameValid = false;
+      document.getElementById('confirm-btn').disabled = true;
+      document.getElementById('username-input').className = 'username-input invalid';
+      // Show alternatives
+      generateSuggestions(val);
+    }
+  }catch(e){
+    setStatus('', 'Could not check — try anyway', 'checking');
+    usernameValid = true;
+    document.getElementById('confirm-btn').disabled = false;
+  }
 }
 
-async function resendCode(){
+function setStatus(dot, msg, type){
+  const el = document.getElementById('u-status');
+  if(!msg){ el.innerHTML=''; return; }
+  const colors = {ok:'status-ok', err:'status-err', checking:'status-checking'};
+  el.className = 'username-status '+(colors[type]||'');
+  el.innerHTML = dot ? `<div class="status-dot"></div>${msg}` : msg;
+}
+
+function generateSuggestions(base){
+  const suffixes = [Math.floor(Math.random()*900)+100, 'dev', 'lua', 'rblx', Math.floor(Math.random()*99)+1];
+  const pills = document.getElementById('sugg-pills');
+  pills.innerHTML = '';
+  suffixes.slice(0,4).forEach(s=>{
+    const name = (base+s).slice(0,20);
+    const p = document.createElement('button');
+    p.className='sugg-pill'; p.textContent='@'+name;
+    p.onclick=()=>{
+      document.getElementById('username-input').value=name;
+      onUsernameInput(name);
+    };
+    pills.appendChild(p);
+  });
+  document.getElementById('sugg-section').style.display='block';
+}
+
+async function confirmUsername(){
+  const username = document.getElementById('username-input').value.trim();
+  if(!usernameValid || username.length < 3) return;
+  document.getElementById('confirm-btn').disabled = true;
+  document.getElementById('confirm-btn').textContent = 'Setting up your account...';
   try{
-    const res=await fetch(BASE+'/auth/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:pendingUserId,email:pendingEmail})});
-    const data=await res.json();
-    if(data.error){ showErr('err2',data.error); return; }
-    showOk('ok2','New code sent! Check your inbox.');
-    if(data.dev_code){ document.getElementById('devcode').textContent=data.dev_code; document.getElementById('devbox').classList.add('show'); }
-  }catch(e){ showErr('err2','Could not resend. Try again.'); }
+    const res  = await fetch(BASE+'/auth/set-username', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+pendingToken},
+      body: JSON.stringify({username})
+    });
+    const data = await res.json();
+    if(data.error){
+      document.getElementById('u-err').textContent = data.error;
+      document.getElementById('u-err').className = 'alert err show';
+      document.getElementById('confirm-btn').disabled = false;
+      document.getElementById('confirm-btn').textContent = "Let's go →";
+      return;
+    }
+    // Save and go to dashboard
+    localStorage.setItem('stud_session_v3', data.token || pendingToken);
+    const updatedUser = Object.assign({}, pendingUser, {username});
+    localStorage.setItem('stud_user', JSON.stringify(updatedUser));
+    window.location.href = 'dashboard.html';
+  }catch(e){
+    document.getElementById('u-err').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('u-err').className = 'alert err show';
+    document.getElementById('confirm-btn').disabled = false;
+    document.getElementById('confirm-btn').textContent = "Let's go →";
+  }
 }
-
-document.addEventListener('keydown',e=>{ if(e.key==='Enter'){ if(document.getElementById('step2').style.display!=='none') doVerify(); else doSignup(); } });
 </script>
 </body>
 </html>

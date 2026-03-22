@@ -605,7 +605,55 @@ def google_auth():
 
     conn.close()
     token = make_token(user_id, username, email)
-    return jsonify({'token': token, 'user': {'id': user_id, 'username': username, 'email': email}})
+    return jsonify({'token': token, 'user': {'id': user_id, 'username': username, 'email': email}, 'new_user': not bool(user)})
+
+# ── CHECK USERNAME AVAILABILITY ───────────────────
+@app.route('/auth/check-username', methods=['GET'])
+def check_username():
+    username = request.args.get('username', '').strip().lower()
+    if not username or len(username) < 3:
+        return jsonify({'available': False, 'reason': 'Too short'})
+    if len(username) > 20:
+        return jsonify({'available': False, 'reason': 'Too long'})
+    import re
+    if not re.match(r'^[a-z0-9_]+$', username):
+        return jsonify({'available': False, 'reason': 'Only letters, numbers and underscores'})
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT id FROM users WHERE LOWER(username)=?', (username,))
+    exists = c.fetchone()
+    conn.close()
+    return jsonify({'available': not bool(exists)})
+
+# ── SET USERNAME (after Google signup) ───────────────────────
+@app.route('/auth/set-username', methods=['POST'])
+def set_username():
+    user = get_current_user()
+    if not user:
+        return jsonify({'error': 'Not authenticated'}), 401
+    data     = request.json or {}
+    username = data.get('username', '').strip().lower()
+    if not username or len(username) < 3:
+        return jsonify({'error': 'Username must be at least 3 characters.'})
+    if len(username) > 20:
+        return jsonify({'error': 'Username must be 20 characters or less.'})
+    import re
+    if not re.match(r'^[a-z0-9_]+$', username):
+        return jsonify({'error': 'Only lowercase letters, numbers and underscores allowed.'})
+    conn = get_db()
+    c = conn.cursor()
+    c.execute('SELECT id FROM users WHERE LOWER(username)=? AND id!=?', (username, user['user_id']))
+    if c.fetchone():
+        conn.close()
+        return jsonify({'error': 'That username is already taken. Pick another one.'})
+    c.execute('UPDATE users SET username=? WHERE id=?', (username, user['user_id']))
+    conn.commit()
+    # Return fresh token with updated username
+    c.execute('SELECT email FROM users WHERE id=?', (user['user_id'],))
+    row = c.fetchone()
+    conn.close()
+    new_token = make_token(user['user_id'], username, row['email'] if row else user['email'])
+    return jsonify({'success': True, 'token': new_token, 'username': username})
 
 # ════════════════════════════════════════
 # PROFILE
