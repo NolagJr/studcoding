@@ -624,7 +624,7 @@ def google_auth():
             # New user → username picker on signup page
             return redirect(f'{FRONTEND_URL}/signup.html?step=username&token={token}')
         # Existing user → straight to dashboard
-        return redirect(f'{FRONTEND_URL}/login.html?already_registered=1&token={token}')
+        return redirect(f'{FRONTEND_URL}/signup.html?error=already_registered')
 
     # API/popup mode — return JSON as before
     return jsonify({
