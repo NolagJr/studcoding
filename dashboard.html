@@ -1354,6 +1354,8 @@ body.light #bg .o3{opacity:0.03;}
 
 <script>
 const BASE = 'https://studcoding-production-3b79.up.railway.app';
+// Extract token from Google OAuth redirect before checking auth
+(function(){const p=new URLSearchParams(window.location.search);const t=p.get('token');if(t){localStorage.setItem('stud_session_v3',t);window.history.replaceState({},document.title,window.location.pathname);}})();
 const token = localStorage.getItem('stud_session_v3');
 if(!token) window.location.href='login.html';
 
